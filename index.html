@@ -336,6 +336,25 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 .pigsum small{color:var(--muted)}
 .piglog{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:14px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
 .mic{width:30px;height:30px;border-radius:50%;display:inline-grid;place-items:center;border:1px solid var(--line);background:var(--soft);font-size:14px;cursor:pointer}
+/* Связи и тихий уголок */
+.bonds{display:grid;gap:10px}
+.bond{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--shadow);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.bond .ic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font:900 24px var(--jp);color:#fff;box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--line)}
+.bond b{display:block} .bond small{color:var(--muted);display:block}
+.bond .dots{display:flex;gap:4px;margin-top:6px} .bond .dots i{width:14px;height:6px;border-radius:3px;background:var(--line)} .bond .dots i.f{background:var(--torii)}
+.bond .rk{font:700 13px var(--body);color:var(--torii)}
+.bond .bar{display:block;height:5px;max-width:180px}
+.calmbtn{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.calmbtn .ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:900 22px var(--jp);background:var(--soft);color:var(--indigo)}
+.calmbtn small{display:block;color:var(--muted)}
+.breath{position:relative;width:180px;height:180px;display:grid;place-items:center}
+.breath span{position:relative;font-weight:600;color:var(--ink)}
+.orb{position:absolute;inset:30px;border-radius:50%;background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--torii) 35%,#fff),color-mix(in srgb,var(--indigo) 45%,transparent));opacity:.75;transform:scale(.7);transition:transform 4s ease-in-out,opacity 4s}
+.orb.in{transform:scale(1.25);opacity:1;transition:transform 4s ease-in-out}
+.catpet{position:relative;border:1px solid var(--line);background:var(--soft);border-radius:20px;padding:12px 22px;font-size:44px;display:grid;justify-items:center;gap:2px}
+.catpet small{font-size:12px;color:var(--muted)}
+.purr{position:absolute;left:50%;top:-6px;transform:translateX(-50%);font:700 16px var(--jp);color:var(--torii);animation:purr 1.4s ease-out forwards;pointer-events:none;white-space:nowrap}
+@keyframes purr{to{transform:translate(-50%,-40px);opacity:0}}
 /* Нижнее меню */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
 .tabs button{border:0;background:transparent;display:grid;justify-items:center;gap:2px;padding:4px;color:var(--muted);font-size:12px;font-weight:500}
@@ -388,6 +407,7 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
   </div>
   <div class="now" id="tkNow"></div>
  </div>
+ <button type="button" class="calmbtn" id="calmB"><span class="ic">静</span><span><b>Тихий уголок</b><small>Когда тяжело: дыхание, дождь, кошка и тёплые слова</small></span></button>
  <div class="tasks" id="tasks"></div>
  <div class="card jn" id="jn"></div>
  <div class="card phrase" id="pday"></div>
@@ -432,6 +452,8 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 <section class="screen" id="me">
  <div class="card lvl"><div class="badge" id="lvBadge">初</div><div><div class="rank" id="lvRank">Новичок <span>初心者</span></div><small id="lvXp">0 опыта</small><div class="bar"><i id="lvBar"></i></div></div></div>
  <div class="stats"><div><b id="stDays">1</b><small>день пути</small></div><div><b id="stStreak">0</b><small>подряд</small></div><div><b id="stKana">0</b><small>знаков</small></div><div><b id="stCorrect">0</b><small>ответов</small></div></div>
+ <div class="mini"><h2 style="font-size:20px">絆 Связи</h2><span>как в Persona</span></div>
+ <div class="bonds" id="bonds"></div>
  <div class="card" style="display:grid;gap:10px" id="pig"></div>
  <div class="card" style="display:grid;gap:10px" id="qCard"></div>
  <div class="card" style="display:grid;gap:10px"><b>Тема</b><div class="seg three" id="thSeg"><button type="button" data-m="auto">Как в Токио</button><button type="button" data-m="light">桜 Дневная</button><button type="button" data-m="dark">夜 Неоновая</button></div><small class="lead" style="font-size:13px">«Как в Токио»: когда в Токио ночь, приложение тоже становится ночным.</small></div>
@@ -519,10 +541,15 @@ function drawSky(x,W,H,tower){
 function sky(){const [h,m]=tokyoHM(),hm=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('tkT').textContent=hm;$('tkNow').innerHTML='<b>Токио, '+hm+'.</b> '+nowText(h)}
 
 /* Живой фон: дневная и ночная Япония */
-const BG={c:null,x:null,st:null,mode:null,W:0,H:0,SH:0,dpr:1,p:[],last:0,gx:0.22,signs:[],still:false};
+function tokyoMonth(){return +new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',month:'numeric'}).format(new Date())}
+function seasonOf(){const m=tokyoMonth();return m>=3&&m<=5?'spring':m>=6&&m<=8?'summer':m>=9&&m<=11?'autumn':'winter'}
+const SEAS={spring:['桜','Весна','Цветёт сакура. Японцы устраивают ханами: пикники под цветущими деревьями.'],summer:['花火','Лето','Время фестивалей мацури и фейерверков ханаби. Жарко и влажно.'],autumn:['紅葉','Осень','Момидзи: клёны краснеют, и японцы едут смотреть на листья, как весной на сакуру.'],winter:['雪','Зима','Город в огнях иллюминаций. В новогоднюю ночь едят собу, а утром идут в храм.']};
+const BCOLS={spring:['#f7c6d3','#f2aec1','#fbdde6','#eba0b5','#fff0f4'],summer:['#7fae6b','#5f9455','#9cc584','#4f7f48','#b7d79c'],autumn:['#d9572f','#e8843a','#c43d2c','#f0a54a','#b8322a'],winter:['#ffffff','#eef4fb','#e3ecf6','#ffffff','#f7fbff']};
+const GROUND={spring:'#efd9df',summer:'#d3e3c8',autumn:'#ecd3bb',winter:'#eef2f7'};
+const BG={c:null,season:'spring',fw:[],x:null,st:null,mode:null,W:0,H:0,SH:0,dpr:1,p:[],last:0,gx:0.22,signs:[],still:false};
 function bgMode(){return document.documentElement.dataset.theme==='dark'?'night':'day'}
 function bgWx(){const w=WX&&Date.now()-WX.ts<6*3600e3?wxKind(WX.code):null;return w}
-function blossom(x,cx,cy,rr,seed){let s=seed;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;const cols=['#f7c6d3','#f2aec1','#fbdde6','#eba0b5','#fff0f4'];for(let i=0;i<9;i++){const a=rnd()*6.28,d=rnd()*rr;x.fillStyle=cols[Math.floor(rnd()*cols.length)];x.globalAlpha=.85+rnd()*.15;x.beginPath();x.arc(cx+Math.cos(a)*d,cy+Math.sin(a)*d,2.5+rnd()*4.5,0,7);x.fill()}x.globalAlpha=1}
+function blossom(x,cx,cy,rr,seed){let s=seed;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;const cols=BCOLS[BG.season]||BCOLS.spring;for(let i=0;i<9;i++){const a=rnd()*6.28,d=rnd()*rr;x.fillStyle=cols[Math.floor(rnd()*cols.length)];x.globalAlpha=.85+rnd()*.15;x.beginPath();x.arc(cx+Math.cos(a)*d,cy+Math.sin(a)*d,2.5+rnd()*4.5,0,7);x.fill()}x.globalAlpha=1}
 function branch(x,x0,y0,cx,cy,x1,y1,w,seed){x.strokeStyle='#6b4a44';x.lineCap='round';x.lineWidth=w;x.beginPath();x.moveTo(x0,y0);x.quadraticCurveTo(cx,cy,x1,y1);x.stroke();
  for(let t=.15;t<=1.001;t+=.09){const px=(1-t)*(1-t)*x0+2*(1-t)*t*cx+t*t*x1,py=(1-t)*(1-t)*y0+2*(1-t)*t*cy+t*t*y1;
   x.lineWidth=Math.max(1,w*.35);x.beginPath();x.moveTo(px,py);const tx=px+((seed+t*10)%2>1?14:-10),ty=py+(t*37%2>1?16:-8);x.lineTo(tx,ty);x.stroke();blossom(x,tx,ty,13,Math.floor(seed+t*1000));blossom(x,px,py,10,Math.floor(seed*3+t*777))}}
@@ -533,10 +560,10 @@ function dayStatic(x,W,H,SH){
  x.fillStyle='#cfd8ea';x.beginPath();x.moveTo(0,SH*.74);x.bezierCurveTo(W*.2,SH*.6,W*.35,SH*.7,W*.5,SH*.66);x.bezierCurveTo(W*.7,SH*.62,W*.85,SH*.72,W,SH*.66);x.lineTo(W,SH*.8);x.lineTo(0,SH*.8);x.fill();
  g=x.createLinearGradient(0,SH*.3,0,SH*.78);g.addColorStop(0,'#7c93c0');g.addColorStop(1,'#b9c6df');x.fillStyle=g;
  x.beginPath();x.moveTo(W*.08,SH*.78);x.quadraticCurveTo(W*.44,SH*.5,W*.57,SH*.31);x.lineTo(W*.65,SH*.31);x.quadraticCurveTo(W*.8,SH*.5,W*1.18,SH*.78);x.fill();
- x.fillStyle='#f8fbff';x.beginPath();x.moveTo(W*.57,SH*.31);x.lineTo(W*.65,SH*.31);x.lineTo(W*.695,SH*.375);x.lineTo(W*.665,SH*.395);x.lineTo(W*.64,SH*.365);x.lineTo(W*.615,SH*.405);x.lineTo(W*.59,SH*.37);x.lineTo(W*.565,SH*.4);x.lineTo(W*.525,SH*.37);x.closePath();x.fill();
+ x.fillStyle=BG.season==='summer'?'rgba(248,251,255,.35)':'#f8fbff';x.beginPath();x.moveTo(W*.57,SH*.31);x.lineTo(W*.65,SH*.31);x.lineTo(W*.695,SH*.375);x.lineTo(W*.665,SH*.395);x.lineTo(W*.64,SH*.365);x.lineTo(W*.615,SH*.405);x.lineTo(W*.59,SH*.37);x.lineTo(W*.565,SH*.4);x.lineTo(W*.525,SH*.37);x.closePath();x.fill();
  g=x.createLinearGradient(0,SH*.78,0,SH*.88);g.addColorStop(0,'#d6e2ee');g.addColorStop(1,'#eaeef4');x.fillStyle=g;x.fillRect(0,SH*.78,W,SH*.1);
  x.strokeStyle='rgba(255,255,255,.7)';x.lineWidth=1;for(let i=0;i<9;i++){const yy=SH*(.795+i*.009),xx=(i*97)%W;x.beginPath();x.moveTo(xx,yy);x.lineTo(xx+40+i*6,yy);x.stroke()}
- x.fillStyle='#efd9df';x.beginPath();x.moveTo(0,SH*.88);x.bezierCurveTo(W*.3,SH*.84,W*.6,SH*.9,W,SH*.86);x.lineTo(W,SH*1.05);x.lineTo(0,SH*1.05);x.fill();
+ x.fillStyle=GROUND[BG.season]||'#efd9df';x.beginPath();x.moveTo(0,SH*.88);x.bezierCurveTo(W*.3,SH*.84,W*.6,SH*.9,W,SH*.86);x.lineTo(W,SH*1.05);x.lineTo(0,SH*1.05);x.fill();
  /* пагода */
  const cx=W*.17,base=SH*.88,th=SH*.065;x.strokeStyle='#3f4c70';x.lineWidth=2;x.beginPath();x.moveTo(cx,base-th*5.6);x.lineTo(cx,base-th*7);x.stroke();
  for(let i=0;i<5;i++){const yb=base-i*th,bw=W*.055*(1-i*.1),rw=W*.12*(1-i*.11);x.fillStyle='#5d6c92';x.fillRect(cx-bw/2,yb-th*.55,bw,th*.55);const y=yb-th*.55;x.fillStyle='#3f4c70';x.beginPath();x.moveTo(cx-rw/2,y+2);x.quadraticCurveTo(cx-rw*.3,y-2,cx-rw*.28,y-th*.38);x.lineTo(cx+rw*.28,y-th*.38);x.quadraticCurveTo(cx+rw*.3,y-2,cx+rw/2,y+2);x.fill()}
@@ -592,16 +619,19 @@ function drawGeisha(x,gx,gy,s,t){const bob=Math.sin(t/260)*s*.01;x.save();x.tran
  x.strokeStyle='rgba(255,210,220,.35)';x.lineWidth=1;for(let i=-3;i<=3;i++){x.beginPath();x.moveTo(s*.02,-s*1.09);x.lineTo(s*.02+i*s*.075,-s*.94);x.stroke()}
  x.strokeStyle='rgba(255,170,200,.35)';x.lineWidth=1.5;x.beginPath();x.moveTo(-s*.07,-s*.62);x.lineTo(-s*.11,0);x.stroke();x.restore()}
 function bgBuild(){if(!BG.c)return;const W=innerWidth,H=innerHeight,dpr=Math.min(2,devicePixelRatio||1);BG.W=W;BG.H=H;BG.SH=Math.min(H*.46,440);BG.dpr=dpr;BG.c.width=W*dpr;BG.c.height=H*dpr;
- BG.mode=bgMode();const o=document.createElement('canvas');o.width=W*dpr;o.height=H*dpr;const x=o.getContext('2d');x.scale(dpr,dpr);(BG.mode==='day'?dayStatic:nightStatic)(x,W,H,BG.SH);BG.st=o;
+ BG.mode=bgMode();BG.season=seasonOf();const o=document.createElement('canvas');o.width=W*dpr;o.height=H*dpr;const x=o.getContext('2d');x.scale(dpr,dpr);(BG.mode==='day'?dayStatic:nightStatic)(x,W,H,BG.SH);BG.st=o;
  const wx=bgWx();BG.p=[];const n=BG.mode==='day'?(wx==='rain'||wx==='storm'?60:wx==='snow'?50:30):(wx==='rain'||wx==='storm'?70:wx==='snow'?50:22);
- for(let i=0;i<n;i++)BG.p.push({x:Math.random()*W,y:Math.random()*H,s:5+Math.random()*6,r:Math.random()*6,vr:(Math.random()-.5)*.04,vy:.35+Math.random()*.6,vx:.15+Math.random()*.35,ph:Math.random()*6,c:['#f6bccb','#f2a9bd','#fbd5df','#ee9fb4'][i%4],k:wx==='rain'||wx==='storm'?'rain':wx==='snow'?'snow':BG.mode==='day'?'petal':'firefly'});
+ for(let i=0;i<n;i++)BG.p.push({x:Math.random()*W,y:Math.random()*H,s:5+Math.random()*6,r:Math.random()*6,vr:(Math.random()-.5)*.04,vy:.35+Math.random()*.6,vx:.15+Math.random()*.35,ph:Math.random()*6,c:(BG.season==='autumn'?['#d9572f','#e8843a','#c43d2c','#f0a54a']:BG.season==='summer'?['#8cbf74','#6fa35f','#a9d18f','#5f9455']:['#f6bccb','#f2a9bd','#fbd5df','#ee9fb4'])[i%4],k:wx==='rain'||wx==='storm'?'rain':wx==='snow'||BG.season==='winter'?'snow':BG.season==='autumn'?'leaf':BG.mode==='night'?(BG.season==='spring'&&i%3===0?'petal':'firefly'):BG.season==='summer'?(i%2?'firefly':'petal'):'petal'});
  bgFrame(performance.now(),true)}
 function bgFrame(ts,force){if(!BG.c)return;if(!force){requestAnimationFrame(bgFrame);if(document.hidden||BG.still||ts-BG.last<33)return}BG.last=ts;
  const x=BG.x,W=BG.W,H=BG.H,SH=BG.SH;x.setTransform(1,0,0,1,0,0);x.drawImage(BG.st,0,0);x.setTransform(BG.dpr,0,0,BG.dpr,0,0);
- if(BG.mode==='night'){BG.signs.forEach(o=>drawSign(x,o,ts));BG.gx+=.00035;if(BG.gx>1.15)BG.gx=-.15;drawGeisha(x,BG.gx*W,SH*.79,SH*.17,ts)}
+ if(BG.mode==='night'){BG.signs.forEach(o=>drawSign(x,o,ts));BG.gx+=.00035;if(BG.gx>1.15)BG.gx=-.15;drawGeisha(x,BG.gx*W,SH*.79,SH*.17,ts);
+  if(BG.season==='summer'){if(Math.random()<.012&&BG.fw.length<4){const cx=W*(.3+Math.random()*.4),cy=SH*(.06+Math.random()*.14),col=['#ffb3c6','#ffd28a','#a8e6ff','#c9b6ff'][Math.floor(Math.random()*4)];BG.fw.push({cx,cy,col,t:0})}
+   x.globalCompositeOperation='lighter';BG.fw=BG.fw.filter(f=>{f.t+=1;const r=f.t*1.6,a=Math.max(0,1-f.t/45);x.fillStyle=f.col;x.globalAlpha=a;for(let i=0;i<22;i++){const an=i/22*6.283;x.beginPath();x.arc(f.cx+Math.cos(an)*r,f.cy+Math.sin(an)*r+f.t*f.t*.01,1.6,0,7);x.fill()}x.globalAlpha=1;return f.t<45});x.globalCompositeOperation='source-over'}}
  BG.p.forEach(p=>{if(p.k==='rain'){p.y+=9;p.x-=1.5;if(p.y>H){p.y=-10;p.x=Math.random()*W*1.1}x.strokeStyle=BG.mode==='day'?'rgba(120,140,170,.45)':'rgba(180,200,255,.35)';x.lineWidth=1;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x-3,p.y+11);x.stroke();return}
   if(p.k==='snow'){p.y+=p.vy*.8;p.ph+=.02;p.x+=Math.sin(p.ph)*.4;if(p.y>H)p.y=-6;x.fillStyle='rgba(255,255,255,.9)';x.beginPath();x.arc(p.x,p.y,p.s*.3,0,7);x.fill();return}
   if(p.k==='firefly'){p.y-=p.vy*.25;p.ph+=.03;p.x+=Math.sin(p.ph)*.3;if(p.y<-10){p.y=H+10;p.x=Math.random()*W}const a=.35+Math.sin(p.ph*2)*.25;const gg=x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.s);gg.addColorStop(0,`rgba(255,215,170,${a})`);gg.addColorStop(1,'rgba(255,215,170,0)');x.fillStyle=gg;x.fillRect(p.x-p.s,p.y-p.s,p.s*2,p.s*2);return}
+  if(p.k==='leaf'){p.y+=p.vy*.9;p.ph+=.025;p.x+=p.vx*.6+Math.sin(p.ph)*.9;p.r+=p.vr*1.5;if(p.y>H+12||p.x>W+12){p.y=-12;p.x=Math.random()*W*.9}x.save();x.translate(p.x,p.y);x.rotate(p.r);x.scale(1,.45+Math.abs(Math.sin(p.ph))*.55);x.fillStyle=p.c;x.beginPath();const s2=p.s*.9;for(let i=0;i<10;i++){const an=-Math.PI/2+i*Math.PI/5,rr=i%2?s2*.42:s2;x.lineTo(Math.cos(an)*rr,Math.sin(an)*rr)}x.closePath();x.fill();x.strokeStyle='rgba(90,30,20,.5)';x.lineWidth=1;x.beginPath();x.moveTo(0,0);x.lineTo(0,s2*1.2);x.stroke();x.restore();return}
   p.y+=p.vy;p.ph+=.03;p.x+=p.vx+Math.sin(p.ph)*.6;p.r+=p.vr;if(p.y>H+10||p.x>W+10){p.y=-10;p.x=Math.random()*W*.9-20}
   x.save();x.translate(p.x,p.y);x.rotate(p.r);x.scale(1,.35+Math.abs(Math.sin(p.ph))*.65);x.fillStyle=p.c;x.beginPath();x.ellipse(0,0,p.s*.6,p.s*.38,0,0,7);x.fill();x.fillStyle='rgba(255,255,255,.35)';x.beginPath();x.ellipse(-p.s*.15,-p.s*.05,p.s*.2,p.s*.1,0,0,7);x.fill();x.restore()})}
 function bgInit(){BG.c=$('bg');BG.x=BG.c.getContext('2d');BG.still=matchMedia('(prefers-reduced-motion: reduce)').matches;bgBuild();requestAnimationFrame(bgFrame);
@@ -633,6 +663,7 @@ function renderJn(){const [h,m]=tokyoHM(),pk=periodOf(h),P2=PER[pk],day=dayN;
  $('jn').innerHTML=`<div class="hd"><div class="pk">${P2.k}</div><div><b>${P2.n}</b><small>Токио ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}, ${dtxt}</small></div></div>
  <div class="wx"><div>Погода<b>${w?WX.t+'°':'…'}</b><span class="j">${w?w[0]+' '+w[2].toLowerCase():'загрузка'}</span></div><div>1000 円<b>${FX?Math.round(FX.kzt*1000).toLocaleString('ru-RU')+' ₸':'…'}</b>${FX?'по курсу':'загрузка'}</div><div>Разница<b>${diff>0?'+':''}${diff} ч</b>с Токио</div></div>
  <div class="lbl" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Слова этого времени</div><div class="words" id="jnW"></div>
+ <div class="fact"><b>Сезон: ${SEAS[seasonOf()][0]} ${SEAS[seasonOf()][1]}</b>${SEAS[seasonOf()][2]}</div>
  <div class="fact"><b>Прикол дня</b>${fact}</div>
  ${FX?`<div class="conv"><label for="cv">Перевести</label><input id="cv" type="number" inputmode="numeric" value="${S.get('cv',1000)}" min="0"> 円 = <output id="cvo"></output></div>`:''}
  ${g?`<button type="button" class="btn ghost sm" id="jnG" style="justify-self:start">Гайд к этому времени: ${g[2]}</button>`:''}`;
@@ -649,7 +680,8 @@ function renderNews(){const el=$('news');el.innerHTML='';if(!NEWS||!NEWS.items){
   a.onclick=()=>{if(!newsRead.includes(n.l)){newsRead.push(n.l);newsRead=newsRead.slice(-200);S.set('newsRead',newsRead);stats.news=(stats.news||0)+1;saveStats();if(!done.watch)setDone('watch',true);else refresh();setTimeout(renderNews,300)}};el.appendChild(a)})}
 async function loadNews(){try{const r=await fetch('news.json?'+Math.floor(Date.now()/600000),{cache:'no-store'});if(!r.ok)return;NEWS=await r.json();S.set('news',NEWS);renderNews()}catch(e){}}
 function setR(v){S.set('rv',v);$('rNews').className=v==='news'?'on':'';$('rGuides').className=v==='guides'?'on':'';$('newsView').style.display=v==='news'?'grid':'none';$('guidesView').style.display=v==='guides'?'block':'none';if(v==='news')renderNews()}
-$('rNews').onclick=()=>setR('news');$('rGuides').onclick=()=>setR('guides');
+$('rNews').onclick=()=>setR('news');
+$('calmB').onclick=()=>openCalm();$('rGuides').onclick=()=>setR('guides');
 
 /* Задачи дня */
 const TASKS=[['kana','あ','Азбука, 10 минут','20 верных ответов закроют задачу'],['phrase','言','Фраза дня вслух','Она ниже, прочитай и послушай'],['watch','夜','Немного Японии','Новость, гайд, штамп города или серия аниме']];
@@ -663,7 +695,7 @@ function renderTasks(){const el=$('tasks');el.innerHTML='';TASKS.forEach(([id,ic
  const n=Object.values(done).filter(Boolean).length;$('ringT').textContent=n+'/3';$('ringC').style.strokeDashoffset=194.8*(1-n/3);$('streak').textContent=streakCalc()+' дн.'}
 
 /* Фраза дня */
-const PD=[['逃げちゃダメだ','nigecha dame da','«Нельзя убегать». Синдзи повторял это себе. А тебе иногда можно сбежать: в онсэн.'],['ゆっくりでいい','yukkuri de ii','«Можно не спешить».'],['一歩ずつ','ippo zutsu','«Шаг за шагом».'],['大丈夫','daijoubu','«Всё нормально, справлюсь».'],['夢','yume','«Мечта». Твоя: 東京 или 大阪.'],['今日もお疲れ様','kyou mo otsukaresama','«Ты сегодня хорошо потрудился».'],['頑張って','ganbatte','«Держись, у тебя получится».'],['仲間','nakama','«Свои, команда». Как в Persona и Star Rail.'],['怪盗','kaitou','«Призрачный вор». Persona 5.']];
+const PD=[['一人じゃない','hitori ja nai','«Ты не один». Запомни эту фразу.'],['生きてて偉い','ikitete erai','«Ты молодец уже потому, что живёшь». Так японцы поддерживают друг друга в интернете.'],['休んでもいい','yasunde mo ii','«Можно отдохнуть». Отдых не равен сдаче.'],['卍解','bankai','«Банкай», финальная форма меча из Блича. Твоя финальная форма тоже впереди.'],['逃げちゃダメだ','nigecha dame da','«Нельзя убегать». Синдзи повторял это себе. А тебе иногда можно сбежать: в онсэн.'],['ゆっくりでいい','yukkuri de ii','«Можно не спешить».'],['一歩ずつ','ippo zutsu','«Шаг за шагом».'],['大丈夫','daijoubu','«Всё нормально, справлюсь».'],['夢','yume','«Мечта». Твоя: 東京 или 大阪.'],['今日もお疲れ様','kyou mo otsukaresama','«Ты сегодня хорошо потрудился».'],['頑張って','ganbatte','«Держись, у тебя получится».'],['仲間','nakama','«Свои, команда». Как в Persona и Star Rail.'],['怪盗','kaitou','«Призрачный вор». Persona 5.']];
 const P=PD[(dayN-1)%PD.length];
 $('pday').innerHTML=`<div class="v">${P[0]}</div><div><div class="lbl">Фраза дня</div><div class="ro">${P[1]}</div><p>${P[2]}</p><div class="row" style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn sm" id="pSay">Слушать</button><button type="button" class="btn ghost sm" id="pMic">🎤 Сказать</button></div></div>`;
 $('pSay').onclick=()=>{say(P[0]);if(!done.phrase)setDone('phrase',true)};
@@ -747,7 +779,8 @@ function renderGuides(){const el=$('glist');el.innerHTML='';GUIDES.forEach(([id,
 let sheetAct=null;
 function openSheet(o){$('gIc').textContent=o.ic;$('gTitle').textContent=o.title;$('gMin').textContent=o.sub||'';$('gBody').innerHTML=o.body||'';const ex=$('gExtra');ex.innerHTML='';(o.extra||[]).forEach(n=>ex.appendChild(n));
  $('gDone').textContent=o.btn;$('gDone').disabled=!!o.btnDisabled;sheetAct=o.act||null;$('sheet').scrollTop=0;$('sheet').classList.add('on')}
-function closeSheet(){$('sheet').classList.remove('on')}
+let sheetOnClose=null;
+function closeSheet(){$('sheet').classList.remove('on');if(sheetOnClose){const f=sheetOnClose;sheetOnClose=null;try{f()}catch(e){}}}
 function openGuide(id){const g=GUIDES.find(x=>x[0]===id),r=stats.guides.includes(id);setTimeout(pickVoice,50);
  openSheet({ic:g[1],title:g[2],sub:g[3]+' мин чтения',body:g[4],btn:r?'Закрыть':'Прочитано · +10 опыта',act:()=>{if(!stats.guides.includes(id)){stats.guides.push(id);saveStats();buzz(15);if(!done.watch)setDone('watch',true);else refresh()}renderGuides()}})}
 $('gClose').onclick=closeSheet;
@@ -842,6 +875,7 @@ function drawRoom(){const c=$('roomC'),r=c.getBoundingClientRect();if(!r.width)r
  if(night){x.fillStyle='rgba(14,18,40,.38)';x.fillRect(0,0,W,H);x.globalCompositeOperation='lighter';const glow=(cx,cy,r,col)=>{const g=x.createRadialGradient(cx*W,cy*H,0,cx*W,cy*H,r*W);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,W,H)};
   if(o('andon'))glow(.92,.64,.25,'rgba(255,190,110,.45)');if(o('lantern'))glow(.5,.12,.16,'rgba(255,110,80,.4)');if(o('tv'))glow(.675,.55,.16,'rgba(110,150,255,.3)');x.globalCompositeOperation='source-over'}}
 function setJ(v){S.set('jv',v);$('jMap').className=v==='map'?'on':'';$('jRoom').className=v==='room'?'on':'';$('jStory').className=v==='story'?'on':'';$('mapView').style.display=v==='map'?'grid':'none';$('roomView').style.display=v==='room'?'grid':'none';$('storyView').style.display=v==='story'?'grid':'none';if(v==='story'){renderStory();return}if(v==='room'){renderShop();requestAnimationFrame(drawRoom)}else renderMap()}
+$('roomC').addEventListener('click',e=>{if(!owned.includes('cat'))return;const r=$('roomC').getBoundingClientRect(),fx=(e.clientX-r.left)/r.width,fy=(e.clientY-r.top)/r.height,cx=owned.includes('futon')?.3:.4;if(Math.abs(fx-cx)<.09&&fy>.6&&fy<.9)purr($('roomC').parentElement)});
 $('jMap').onclick=()=>setJ('map');$('jStory').onclick=()=>setJ('story');$('jRoom').onclick=()=>setJ('room');
 
 /* Сюжет */
@@ -937,6 +971,50 @@ function openQuiz(){const wrap=document.createElement('div');wrap.style.cssText=
  openSheet({ic:'問',title:'Анкета для Claude',sub:'100 вопросов, чтобы я лучше тебя понимал',body:'',extra:[wrap],btn:'Готово',act:()=>{refresh();renderQuizCard()}});upd()}
 function renderQuizCard(){const el=$('qCard');if(!el)return;const n=qCount();el.innerHTML=`<div class="mini"><b style="font:700 18px var(--display);color:var(--ink)">Анкета для Claude</b><span>${n} из 100</span></div><div class="bar"><i style="width:${n}%"></i></div><small class="lead" style="font-size:13px">Сто вопросов о тебе. Ответы видишь только ты, пока сам не скопируешь их мне в чат.</small><button type="button" class="btn sm" style="justify-self:start" id="qOpen">${n?'Продолжить':'Начать'}</button>`;$('qOpen').onclick=openQuiz}
 
+/* Связи 絆 */
+const BONDS=[
+ {id:'yuki',k:'雪',n:'Юки',d:'Твой гид по Токио',how:'Растёт от верных ответов в азбуке',col:'#c4455f',th:[0,30,100,250,500],pts:()=>stats.correct,
+  l:[['よろしくね、モーリー！','yoroshiku ne, moorii!','Будем дружить, Морри!'],['毎日えらいね！','mainichi erai ne!','Ты молодец, что занимаешься каждый день!'],['一人じゃないよ。','hitori ja nai yo.','Ты не один.'],['いつか一緒に渋谷を歩こう。','itsuka issho ni shibuya o arukou.','Когда-нибудь пройдёмся по Сибуе вместе.'],['あなたは弱くない。強いよ。','anata wa yowaku nai. tsuyoi yo.','Ты не слабый. Ты сильный.']]},
+ {id:'sato',k:'店',n:'Сато-сан',d:'Продавец ночного конбини',how:'Растёт от омикудзи, прослушанных фраз и покупок в комнату',col:'#2f7f72',th:[0,40,120,260,450],pts:()=>(stats.omi||0)*10+stats.listened*2+owned.length*15,
+  l:[['いらっしゃいませ！','irasshaimase!','Добро пожаловать!'],['また来ましたね。','mata kimashita ne.','Снова к нам?'],['おにぎり、温めましょうか？冗談です。','onigiri, atatamemashou ka? joudan desu.','Онигири подогреть? Шучу.'],['今日の限定スイーツ、おすすめです。','kyou no gentei suiitsu, osusume desu.','Советую сегодняшний лимитированный десерт.'],['あなたはもう常連さんです。','anata wa mou jouren-san desu.','Вы уже наш постоянный гость.']]},
+ {id:'tanaka',k:'田',n:'Танака-сан',d:'Руководитель веб-студии',how:'Растёт от гайдов, новостей и глав сюжета',col:'#7a5a42',th:[0,40,120,260,450],pts:()=>stats.guides.length*15+(stats.news||0)*5+storyDone.length*20,
+  l:[['はじめまして。田中です。','hajimemashite. tanaka desu.','Приятно познакомиться. Я Танака.'],['勉強、続けていますね。','benkyou, tsuzukete imasu ne.','Вы продолжаете учиться.'],['デザインのセンスがいいですね。','dezain no sensu ga ii desu ne.','У вас хорошее чувство дизайна.'],['失敗しても大丈夫。次がある。','shippai shite mo daijoubu. tsugi ga aru.','Ошибся? Ничего. Будет следующий раз.'],['うちのチームに来てほしい。','uchi no chiimu ni kite hoshii.','Хочу, чтобы вы пришли в нашу команду.']]},
+ {id:'neko',k:'猫',n:'Кошка',d:'Живёт у твоего окна',how:'Растёт от дней с занятиями и поглаживаний',col:'#4a4a55',th:[0,30,80,160,300],pts:()=>doneDays().filter(n=>n>0).length*10+(stats.pets||0),
+  l:[['にゃ？','nya?','Кошка смотрит на тебя издалека.'],['にゃー。','nyaa.','Кошка подошла ближе.'],['ゴロゴロ…','gorogoro…','Мурчит. По-японски мурчание звучит «горо-горо».'],['すりすり。','surisuri.','Трётся о руку. Так кошки говорят «ты мой».'],['ずっと一緒だにゃ。','zutto issho da nya.','Будем вместе всегда, ня.']]}];
+const bondRank=b=>{const p=b.pts();let r=1;b.th.forEach((t,i)=>{if(p>=t)r=i+1});return r};
+let bondSeen=S.get('bonds',{});
+function checkBonds(silent){BONDS.forEach(b=>{const r=bondRank(b);if((bondSeen[b.id]||1)<r){if(!silent)toastQ.push([b.id,b.k,`${b.n}: ранг ${r}`,'',null,'bond']);}if(!bondSeen[b.id]||bondSeen[b.id]<r)bondSeen[b.id]=r});S.set('bonds',bondSeen)}
+function renderBonds(){const el=$('bonds');if(!el)return;el.innerHTML='';BONDS.forEach(b=>{const r=bondRank(b),p=b.pts(),nx=b.th[r]??null,lo=b.th[r-1];const d=document.createElement('button');d.type='button';d.className='bond';
+ d.innerHTML=`<span class="ic" style="background:${b.col}">${b.k}</span><span><b>${b.n}</b><small>${b.d}</small><span class="dots">${[1,2,3,4,5].map(i=>`<i class="${i<=r?'f':''}"></i>`).join('')}</span><span class="bar" style="margin-top:4px"><i style="width:${nx?Math.min(100,(p-lo)/(nx-lo)*100):100}%"></i></span></span><span class="rk">${r===5?'MAX':'Ранг '+r}</span>`;
+ d.onclick=()=>openBond(b);el.appendChild(d)})}
+function openBond(b){const r=bondRank(b),wrap=document.createElement('div');wrap.style.cssText='display:grid;gap:10px';
+ b.l.forEach((l,i)=>{const row=document.createElement(i<r?'button':'div');row.className='ph';if(i<r){row.type='button';row.innerHTML=`<span class="jp">${l[0]}</span><span class="ro">${l[1]}</span><span class="ru">Ранг ${i+1}. ${l[2]}</span><span class="sp">▶</span>`;row.onclick=()=>say(l[0])}else row.innerHTML=`<span class="ru">Ранг ${i+1}. Откроется позже</span>`;wrap.appendChild(row)});
+ openSheet({ic:b.k,title:b.n,sub:b.d+'. '+b.how+'.',body:'',extra:[wrap],btn:'Закрыть'})}
+
+/* Тихий уголок 静 */
+let AC=null,rainNode=null,breathT=null;
+function audio(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
+function rainOn(){const a=audio();if(!a||rainNode)return;const len=a.sampleRate*2,buf=a.createBuffer(1,len,a.sampleRate),d=buf.getChannelData(0);let last=0;for(let i=0;i<len;i++){const w=Math.random()*2-1;last=(last+.02*w)/1.02;d[i]=last*3.2}
+ const src=a.createBufferSource();src.buffer=buf;src.loop=true;const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=1200;const g=a.createGain();g.gain.value=.0;src.connect(f).connect(g).connect(a.destination);src.start();g.gain.linearRampToValueAtTime(.55,a.currentTime+1.5);rainNode={src,g}}
+function rainOff(){if(!rainNode||!AC)return;const n=rainNode;rainNode=null;try{n.g.gain.linearRampToValueAtTime(0,AC.currentTime+.6);setTimeout(()=>{try{n.src.stop()}catch(e){}},700)}catch(e){}}
+function bell(){const a=audio();if(!a)return;const t=a.currentTime;[[196,1],[392,.5],[523,.25],[784,.12]].forEach(([fq,v])=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=fq;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35*v,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+6);o.connect(g).connect(a.destination);o.start(t);o.stop(t+6.2)})}
+function purr(el){buzz([25,35,25,35,25,35,25,35,25]);stats.pets=(stats.pets||0)+1;saveStats();if(el){const f=document.createElement('span');f.className='purr';f.textContent='ゴロゴロ';el.appendChild(f);setTimeout(()=>f.remove(),1400)}refresh()}
+const CALM=[['一人じゃない','hitori ja nai','Ты не один'],['大丈夫','daijoubu','Всё будет нормально'],['生きてて偉い','ikitete erai','Ты молодец уже потому, что живёшь'],['ゆっくりでいい','yukkuri de ii','Можно не спешить'],['休んでもいい','yasunde mo ii','Можно отдохнуть'],['あなたは大切','anata wa taisetsu','Ты важен']];
+function openCalm(){const w=document.createElement('div');w.style.cssText='display:grid;gap:16px;justify-items:center;text-align:center';let ci=0;
+ w.innerHTML=`<div class="breath"><div class="orb" id="orb"></div><span id="bTxt">вдох</span></div>
+ <div id="cw" style="display:grid;gap:2px"><div style="font:700 28px var(--jp)"></div><div style="color:var(--indigo);font-weight:600"></div><div class="lead"></div></div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button type="button" class="btn ghost sm" id="cRain">☔ Дождь</button><button type="button" class="btn ghost sm" id="cBell">🔔 Колокол</button><button type="button" class="btn ghost sm" id="cNext">Другие слова</button></div>
+ <button type="button" class="catpet" id="cCat" aria-label="Погладить кошку">🐈‍⬛<small>Погладь кошку</small></button>
+ <div class="card" style="text-align:left;width:100%;display:grid;gap:6px"><b>Если совсем тяжело</b><span class="lead" style="font-size:14px">Ты не обязан справляться один. Позвони, там отвечают живые люди. Можно написать Анилу или мне.</span><a href="tel:150" style="font-weight:700;color:var(--torii)">150 — бесплатная линия доверия для молодёжи</a><a href="tel:112" style="font-weight:700;color:var(--torii)">112 — экстренная помощь</a></div>`;
+ openSheet({ic:'静',title:'Тихий уголок',sub:'Посиди здесь, сколько нужно. Дыши вместе с кругом.',body:'',extra:[w],btn:'Мне чуть лучше'});
+ const showW=()=>{const c=CALM[ci%CALM.length],cw=$('cw').children;cw[0].textContent=c[0];cw[1].textContent=c[1];cw[2].textContent=c[2]};showW();
+ $('cNext').onclick=()=>{ci++;showW();say(CALM[ci%CALM.length][0])};
+ $('cRain').onclick=()=>{if(rainNode){rainOff();$('cRain').textContent='☔ Дождь'}else{rainOn();$('cRain').textContent='☔ Выключить дождь'}};
+ $('cBell').onclick=bell;$('cCat').onclick=()=>purr($('cCat'));
+ let ph=0;const step=()=>{const o=$('orb'),t=$('bTxt');if(!o){clearInterval(breathT);return}ph=(ph+1)%2;o.className='orb'+(ph?' in':'');t.textContent=ph?'вдох… 4 секунды':'выдох… 6 секунд'};clearInterval(breathT);setTimeout(step,60);breathT=setInterval(()=>{step()},5000);
+ stats.calm=(stats.calm||0)+1;saveStats();
+ sheetOnClose=()=>{clearInterval(breathT);rainOff()}}
+
 /* Опыт и звания */
 const RANKS=[[1,'初心者','Новичок'],[3,'旅人','Путник'],[6,'学生','Ученик'],[10,'先輩','Сэмпай'],[15,'達人','Мастер'],[21,'先生','Сэнсэй']];
 function xpCalc(){const tasks=doneDays().reduce((a,b)=>a+b,0);return stats.correct+tasks*5+stats.guides.length*10+stats.listened}
@@ -989,9 +1067,14 @@ const ACH=[
  ['pig50','半','Полпути','Половина копилки',()=>PIG.goal>0&&pigSum()>=PIG.goal/2],
  ['pig100','飛','Билет есть!','Копилка заполнена',()=>PIG.goal>0&&pigSum()>=PIG.goal],
  ['q10','問','Открылся','Ответить на 10 вопросов анкеты',()=>qCount()>=10],
- ['q100','心','Claude тебя знает','Ответить на все 100 вопросов',()=>qCount()>=100]];
+ ['q100','心','Claude тебя знает','Ответить на все 100 вопросов',()=>qCount()>=100],
+ ['calm','静','Тихий уголок','Зайти отдохнуть в тихий уголок',()=>(stats.calm||0)>=1],
+ ['pet','撫','Горо-горо','Погладить кошку 10 раз',()=>(stats.pets||0)>=10],
+ ['bond3','絆','Друзья','Ранг 3 с любым персонажем',()=>BONDS.some(b=>bondRank(b)>=3)],
+ ['bond5','友','Близкий человек','Ранг 5 с любым персонажем',()=>BONDS.some(b=>bondRank(b)>=5)],
+ ['bondall','輪','Не один','Ранг 3 со всеми',()=>BONDS.every(b=>bondRank(b)>=3)]];
 let got=S.get('ach',{}),toastQ=[],toastBusy=false;
-function showToast(){if(toastBusy||!toastQ.length)return;toastBusy=true;const a=toastQ.shift();$('tIc').textContent=a[1];$('tName').textContent=a[2];$('toast').querySelector('small').textContent=a[5]==='city'?'Новое место на карте':'Новая награда';$('toast').classList.add('on');buzz([20,60,20]);setTimeout(()=>{$('toast').classList.remove('on');setTimeout(()=>{toastBusy=false;showToast()},500)},2600)}
+function showToast(){if(toastBusy||!toastQ.length)return;toastBusy=true;const a=toastQ.shift();$('tIc').textContent=a[1];$('tName').textContent=a[2];$('toast').querySelector('small').textContent=a[5]==='city'?'Новое место на карте':a[5]==='bond'?'絆 Связь стала крепче':'Новая награда';$('toast').classList.add('on');buzz([20,60,20]);setTimeout(()=>{$('toast').classList.remove('on');setTimeout(()=>{toastBusy=false;showToast()},500)},2600)}
 function checkAch(silent){ACH.forEach(a=>{if(!got[a[0]]&&a[4]()){got[a[0]]=todayKey;if(!silent)toastQ.push(a)}});S.set('ach',got);
  PL.forEach(c=>{if(cityOpen(c)&&!seenCities.includes(c.id)){seenCities.push(c.id);if(!silent)toastQ.push([c.id,c.jp.slice(0,1),'Открыт город: '+c.ru,'',null,'city'])}});S.set('cities',seenCities);showToast()}
 function renderMe(){const xp=xpCalc(),l=levelOf(xp),r=rankOf(l),lo=10*(l-1)*(l-1),hi=10*l*l;
@@ -1000,7 +1083,7 @@ function renderMe(){const xp=xpCalc(),l=levelOf(xp),r=rankOf(l),lo=10*(l-1)*(l-1
  $('stDays').textContent=dayN;$('stStreak').textContent=streakCalc();$('stKana').textContent=learned('H')+learned('K')+learned('D')+learned('J');$('stCorrect').textContent=stats.correct;
  const el=$('ach');el.innerHTML='';ACH.forEach(a=>{const d=document.createElement('div');if(got[a[0]])d.className='got';d.innerHTML=`<span class="ic">${a[1]}</span><b>${a[2]}</b><small>${a[3]}</small>`;el.appendChild(d)});
  $('achCnt').textContent=Object.keys(got).filter(k=>ACH.some(a=>a[0]===k)).length+' из '+ACH.length}
-function refresh(){checkAch(false);renderMe()}
+function refresh(){checkBonds(false);checkAch(false);renderMe();renderBonds()}
 
 /* Линия Токио */
 const ST=[[1,21,'ひらがな','Хирагана','Недели 1–3','46 знаков. В конце сам прочитаешь ありがとう, «спасибо».'],[22,35,'カタカナ','Катакана','Недели 4–5','Иностранные слова: コーヒー, コンビニ. И твоё имя: モーリー.'],[36,60,'会話','Фразы для жизни','Недели 6–8','Все сценки и гайды, числа и цены в иенах.'],[61,180,'N5','Уровень N5','Месяцы 3–6','Грамматика, 800 слов, первые 100 кандзи. Спросишь дорогу и поймёшь ответ.'],[181,365,'旅','N4 и первая поездка','Месяцы 6–12','Неделя в Токио и Осаке туристом. Проверить, твоё ли это.'],[366,1e9,'東京','Токио','Годы 2–3','N3, сильное портфолио сайтов, работа и виза. Онсэн по выходным.']];
@@ -1008,7 +1091,7 @@ function renderLine(){const el=$('line');el.innerHTML='';ST.forEach(([a,b,jp,ru,
 
 /* Навигация */
 const tabs=['today','kana','japan','guides','me'];
-function go(t){if(t==='road')t='me';if(t==='scenes')t='japan';if(!tabs.includes(t))t='today';tabs.forEach(x=>$(x).classList.toggle('on',x===t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);$('sheet').classList.remove('on');window.scrollTo(0,0);if(t==='today')requestAnimationFrame(sky);if(t==='me'){renderMe();renderPig();renderQuizCard();try{pickVoice()}catch(e){}$('vStat2').textContent=jaVoice?'Найден: '+jaVoice.name:'Не найден. Фразы могут молчать.'}if(t==='japan')setJ(S.get('jv','map'));if(t==='guides')setR(S.get('rv','news'));if(t==='today')renderJn()}
+function go(t){if(t==='road')t='me';if(t==='scenes')t='japan';if(!tabs.includes(t))t='today';tabs.forEach(x=>$(x).classList.toggle('on',x===t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);$('sheet').classList.remove('on');window.scrollTo(0,0);if(t==='today')requestAnimationFrame(sky);if(t==='me'){renderMe();renderBonds();renderPig();renderQuizCard();try{pickVoice()}catch(e){}$('vStat2').textContent=jaVoice?'Найден: '+jaVoice.name:'Не найден. Фразы могут молчать.'}if(t==='japan')setJ(S.get('jv','map'));if(t==='guides')setR(S.get('rv','news'));if(t==='today')renderJn()}
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
 window.addEventListener('resize',()=>{if($('today').classList.contains('on'))sky();if($('japan').classList.contains('on')&&S.get('jv','map')==='room')drawRoom()});
@@ -1016,7 +1099,7 @@ setInterval(()=>{applyTheme();if($('today').classList.contains('on')){sky();rend
 setInterval(()=>{loadWx();loadFx();loadNews()},30*60e3);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();if(VN)vnClose()}});
 
-checkAch(true);
+checkBonds(true);checkAch(true);
 applyTheme();bgInit();renderJn();renderOmi();renderTasks();renderSeg();renderRows();renderGrid();next();renderGuides();renderLine();renderMe();renderMap();go(location.hash.slice(1));
 setTimeout(()=>checkAch(false),800);
 loadWx();loadFx();loadNews();
