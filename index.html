@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141b2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Токио">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Дорога в Токио</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Literata:opsz,wght@7..72,500;7..72,700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Ночная Сибуя наверху, спокойная бумага ниже. Индиго как основной, красный тории только как акцент. */
+:root{
+  --paper:#f6f5f1; --card:#ffffff; --ink:#1c2233; --muted:#5d6577;
+  --indigo:#23345a; --torii:#c0432c; --line:#dcdde3; --good:#2f7a55; --soft:#eceef4;
+  --display:"Literata",Georgia,serif; --body:"Golos Text",system-ui,sans-serif; --jp:"Noto Serif JP","Hiragino Mincho ProN",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#12151f; --card:#1a1f2d; --ink:#e7e8ee; --muted:#a2a8b8; --indigo:#8fa6dc; --torii:#e0705a; --line:#2c3346; --good:#5fbf8c; --soft:#222839; color-scheme:dark;}}
+:root[data-theme="dark"]{--paper:#12151f; --card:#1a1f2d; --ink:#e7e8ee; --muted:#a2a8b8; --indigo:#8fa6dc; --torii:#e0705a; --line:#2c3346; --good:#5fbf8c; --soft:#222839; color-scheme:dark;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--body)}
+a{color:var(--indigo)}
+.wrap{max-width:960px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+header{padding-top:env(safe-area-inset-top)}
+body{-webkit-tap-highlight-color:transparent}
+header{background:#141b2e;color:#eef0f6;position:relative;overflow:hidden}
+header::before{content:"";position:absolute;inset:0;background:
+ radial-gradient(circle at 12% 30%,rgba(255,190,120,.18) 0 3px,transparent 4px),
+ radial-gradient(circle at 78% 22%,rgba(255,190,120,.22) 0 4px,transparent 5px),
+ radial-gradient(circle at 64% 70%,rgba(150,180,255,.18) 0 3px,transparent 4px),
+ radial-gradient(circle at 90% 60%,rgba(255,120,100,.2) 0 3px,transparent 4px),
+ linear-gradient(180deg,#141b2e,#1d2a4a);}
+.hero{position:relative;padding:40px 0 34px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}
+.hero h1{font:700 clamp(30px,5vw,46px)/1.1 var(--display);margin:0 0 8px;text-wrap:balance}
+.hero p{margin:0;max-width:56ch;color:#c9cfdf}
+.big-jp{font:700 clamp(54px,10vw,96px)/1 var(--jp);color:#f3d9b8;opacity:.9;writing-mode:vertical-rl;letter-spacing:.1em}
+.stats{position:relative;display:flex;gap:10px;flex-wrap:wrap;padding-bottom:26px}
+.pill{border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:5px 12px;font-size:14px;color:#e6e9f2}
+.pill b{color:#f3d9b8;font-variant-numeric:tabular-nums}
+main{display:grid;gap:28px;padding:28px 0 60px}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+h2{font:700 24px/1.2 var(--display);margin:0 0 4px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 16px;max-width:65ch}
+.today{display:grid;gap:10px}
+.task{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.task input{width:20px;height:20px;margin-top:2px;accent-color:var(--torii)}
+.task.done{background:var(--soft)}
+.task.done span{color:var(--muted);text-decoration:line-through}
+.task small{display:block;color:var(--muted)}
+.trainer{display:grid;grid-template-columns:minmax(200px,260px) 1fr;gap:24px;align-items:start}
+.card-kana{border:1px solid var(--line);border-radius:12px;aspect-ratio:1;display:grid;place-items:center;background:var(--soft);position:relative}
+.card-kana .k{font:700 110px/1 var(--jp)}
+.card-kana .fb{position:absolute;bottom:10px;font-size:14px;font-weight:600}
+.ok{color:var(--good)} .bad{color:var(--torii)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=text]{font:500 20px var(--body);padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);width:160px}
+button{font:600 15px var(--body);padding:10px 14px;border-radius:8px;border:1px solid var(--indigo);background:var(--indigo);color:var(--paper);cursor:pointer}
+button.ghost{background:transparent;color:var(--indigo)}
+button:focus-visible,input:focus-visible,.chip:focus-visible{outline:2px solid var(--torii);outline-offset:2px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.chip{font:500 15px var(--jp);padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);cursor:pointer}
+.chip.on{border-color:var(--indigo);background:var(--soft);color:var(--indigo)}
+.bar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--torii);width:0;transition:width .3s}
+.grid-kana{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:4px;margin-top:14px}
+.grid-kana div{font:500 18px/38px var(--jp);text-align:center;border-radius:6px;background:var(--soft);color:var(--muted)}
+.grid-kana div.learned{background:var(--indigo);color:var(--paper)}
+.scenes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.scene{border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px;align-content:start}
+.scene h3{margin:0;font:700 18px var(--display)}
+.scene .where{font-size:13px;color:var(--muted)}
+.ph{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding-top:8px;border-top:1px dashed var(--line)}
+.ph .jp{font:600 20px var(--jp)}
+.ph .ro{font-size:14px;color:var(--indigo)}
+.ph .ru{grid-column:1/2;font-size:14px;color:var(--muted)}
+.say{grid-row:1/4;grid-column:2;align-self:center;padding:6px 10px;font-size:13px}
+.road{display:grid;gap:0;counter-reset:s}
+.step{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:14px 0;border-top:1px solid var(--line)}
+.step:first-child{border-top:0}
+.step .when{font-weight:600;color:var(--torii);font-variant-numeric:tabular-nums}
+.step h3{margin:0 0 4px;font:700 17px var(--display)}
+.step p{margin:0;color:var(--muted);max-width:65ch}
+.step.now{background:linear-gradient(90deg,var(--soft),transparent);border-radius:8px;padding-left:10px}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.links a{display:block;padding:14px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink)}
+.links a b{display:block;color:var(--indigo)}
+.links a span{font-size:14px;color:var(--muted)}
+.phrase-day{display:grid;gap:4px;padding:18px;border-left:3px solid var(--torii);background:var(--soft);border-radius:0 10px 10px 0}
+.phrase-day .jp{font:700 30px var(--jp)}
+footer{color:var(--muted);font-size:14px;padding-bottom:40px}
+@media (max-width:640px){.trainer{grid-template-columns:1fr}.step{grid-template-columns:1fr;gap:4px}.hero{grid-template-columns:1fr}.big-jp{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+ <div class="wrap">
+  <div class="hero">
+   <div>
+    <h1>Дорога в Токио</h1>
+    <p>Десять минут в день. Сначала азбука, потом фразы для конбини и онсэна, потом язык для работы в офисе. Каждый день ты понемногу уже там.</p>
+   </div>
+   <div class="big-jp" aria-hidden="true">東京へ</div>
+  </div>
+  <div class="stats">
+   <span class="pill">День пути: <b id="dayN">1</b></span>
+   <span class="pill">Дней подряд: <b id="streak">0</b></span>
+   <span class="pill">Знаков выучено: <b id="learnedN">0</b> из 92</span>
+  </div>
+ </div>
+</header>
+
+<div class="wrap"><main>
+
+<section>
+ <h2>Сегодня, 10 минут</h2>
+ <p class="sub">Отметь, что сделал. Если сил мало, хватит и первого пункта. Это тоже засчитывается.</p>
+ <div class="today" id="today"></div>
+ <div class="phrase-day" style="margin-top:16px" id="pday"></div>
+</section>
+
+<section id="kana">
+ <h2>Тренажёр азбуки</h2>
+ <p class="sub">Увидел знак, напиши, как он читается латиницей, и нажми Enter. Знак считается выученным после трёх верных ответов подряд. Начни с первых двух рядов.</p>
+ <div class="row">
+  <button class="ghost" id="setH" type="button">Хирагана あ</button>
+  <button class="ghost" id="setK" type="button">Катакана ア</button>
+ </div>
+ <div class="chips" id="rows"></div>
+ <div class="trainer">
+  <div class="card-kana"><div class="k" id="kchar">あ</div><div class="fb" id="kfb"></div></div>
+  <div>
+   <form class="row" id="kform">
+    <label for="kin" class="sub" style="margin:0;width:100%">Как читается?</label>
+    <input type="text" id="kin" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="например, ka">
+    <button type="submit">Проверить</button>
+    <button type="button" class="ghost" id="kskip">Подсказка</button>
+   </form>
+   <div class="bar"><i id="kbar"></i></div>
+   <div class="grid-kana" id="kgrid"></div>
+  </div>
+ </div>
+</section>
+
+<section>
+ <h2>Ты уже там: сценки</h2>
+ <p class="sub">Фразы, которые ты услышишь и скажешь в первый же вечер в Японии. Кнопка «Слушать» читает фразу голосом, если в браузере есть японский голос.</p>
+ <div class="scenes" id="scenes"></div>
+</section>
+
+<section>
+ <h2>Как погрузиться бесплатно</h2>
+ <p class="sub">Чтобы Япония была рядом каждый день, а не только в учебнике.</p>
+ <div class="links">
+  <a href="https://www.youtube.com/results?search_query=Rambalac+Tokyo+night+walk"><b>Ночные прогулки по Токио</b><span>Канал Rambalac: часами просто идёшь по улицам Сибуи и Осаки. Включи вечером фоном.</span></a>
+  <a href="https://www.google.com/maps/search/Shibuya+Crossing"><b>Сибуя на картах</b><span>Пройдись по перекрёстку Сибуя в режиме просмотра улиц. Найди «Севен-Илевен».</span></a>
+  <a href="https://www.renshuu.org"><b>Renshuu</b><span>Бесплатное приложение для азбуки, слов и грамматики. Удобнее, чем Duolingo, для японского.</span></a>
+  <a href="https://guidetojapanese.org/learn/"><b>Грамматика Тае Кима</b><span>Бесплатный учебник грамматики. Открывай, когда выучишь обе азбуки.</span></a>
+  <a href="https://apps.ankiweb.net"><b>Anki</b><span>Бесплатные карточки для слов, есть для Linux и телефона. Ставь колоду Core 2k.</span></a>
+  <a href="https://www.jlpt.jp/e/"><b>Экзамен JLPT</b><span>Официальный экзамен по японскому, проходит в июле и декабре. Для работы обычно нужен уровень N3 или N2.</span></a>
+ </div>
+ <p class="sub" style="margin-top:14px">Ещё три привычки: смотри аниме с японской озвучкой, включи японские голоса в Honkai: Star Rail и Zenless Zone Zero, и раз в неделю пересматривай одну серию Евангелиона, вылавливая знакомые слова.</p>
+</section>
+
+<section>
+ <h2>Карта пути</h2>
+ <p class="sub">Честно: до работы в японском офисе путь длиной в пару лет. Но каждый этап короткий, и после каждого ты умеешь что-то настоящее.</p>
+ <div class="road" id="road">
+  <div class="step" data-from="1" data-to="21"><div class="when">Недели 1–3</div><div><h3>Хирагана</h3><p>46 знаков, по одному-два ряда за пару дней. В конце сам прочитаешь ありがとう, «спасибо».</p></div></div>
+  <div class="step" data-from="22" data-to="35"><div class="when">Недели 4–5</div><div><h3>Катакана</h3><p>Ею пишут иностранные слова: コーヒー (кофе), コンビニ (конбини). Напиши своё имя: モーリー.</p></div></div>
+  <div class="step" data-from="36" data-to="60"><div class="when">Недели 6–8</div><div><h3>Фразы для жизни</h3><p>Сценки этой страницы наизусть: магазин, онсэн, вокзал, храм. Числа и цены в иенах.</p></div></div>
+  <div class="step" data-from="61" data-to="180"><div class="when">Месяцы 3–6</div><div><h3>Уровень N5</h3><p>Грамматика Тае Кима, 800 слов в Anki, первые 100 кандзи. Сможешь спросить дорогу и понять ответ.</p></div></div>
+  <div class="step" data-from="181" data-to="365"><div class="when">Месяцы 6–12</div><div><h3>Уровень N4 и первая поездка</h3><p>Копишь на поездку туристом. Неделя в Токио и Осаке: проверить, твоё ли это.</p></div></div>
+  <div class="step" data-from="366" data-to="99999"><div class="when">Годы 2–3</div><div><h3>N3, портфолио и работа</h3><p>Сайты и веб-разработка, сильное портфолио, поиск работы с рабочей визой. Многие IT-компании в Токио работают на английском, так что английский тоже копим.</p></div></div>
+ </div>
+</section>
+
+<footer>Прогресс хранится в телефоне. Интернет нужен только при первом запуске. Ты можешь уйти отдохнуть на день, страница подождёт.</footer>
+</main></div>
+
+<script>
+const S={get(k,d){try{const v=localStorage.getItem('jp_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('jp_'+k,JSON.stringify(v))}catch(e){}}};
+const todayKey=new Date().toISOString().slice(0,10);
+let start=S.get('start',null); if(!start){start=todayKey;S.set('start',start)}
+const dayN=Math.floor((new Date(todayKey)-new Date(start))/864e5)+1;
+document.getElementById('dayN').textContent=dayN;
+
+/* Фраза дня */
+const PD=[
+ ['逃げちゃダメだ','nigecha dame da','«Нельзя убегать». Синдзи повторял это себе. А тебе можно иногда сбежать: в онсэн.'],
+ ['ゆっくりでいい','yukkuri de ii','«Можно не спешить».'],
+ ['一歩ずつ','ippo zutsu','«Шаг за шагом».'],
+ ['大丈夫','daijoubu','«Всё нормально, справлюсь».'],
+ ['夢','yume','«Мечта». Твоя: 東京 (Токио) или 大阪 (Осака).'],
+ ['今日もお疲れ様','kyou mo otsukaresama','«Ты сегодня хорошо потрудился».'],
+ ['頑張って','ganbatte','«Держись, у тебя получится».']];
+const p=PD[(dayN-1)%PD.length];
+document.getElementById('pday').innerHTML=`<small class="sub" style="margin:0">Фраза дня</small><div class="jp">${p[0]}</div><div style="color:var(--indigo)">${p[1]}</div><div>${p[2]}</div>`;
+
+/* Задачи дня и серия */
+const TASKS=[['kana','5 минут тренажёра азбуки','Прямо на этой странице, ниже.'],['phrase','Прочитать фразу дня вслух','И одну фразу из сценок.'],['watch','Немного Японии','Серия аниме с японским звуком или 10 минут ночной прогулки по Токио.']];
+let done=S.get('done_'+todayKey,{});
+function streakCalc(){let n=0;for(let i=0;i<400;i++){const d=new Date(Date.now()-i*864e5).toISOString().slice(0,10);const x=S.get('done_'+d,{});if(Object.values(x).some(Boolean))n++;else if(i>0)break;}return n}
+function renderTasks(){const el=document.getElementById('today');el.innerHTML='';TASKS.forEach(([id,t,s])=>{const l=document.createElement('label');l.className='task'+(done[id]?' done':'');l.innerHTML=`<input type="checkbox" id="t_${id}" ${done[id]?'checked':''}><span>${t}<small>${s}</small></span>`;l.querySelector('input').onchange=e=>{done[id]=e.target.checked;S.set('done_'+todayKey,done);renderTasks()};el.appendChild(l)});document.getElementById('streak').textContent=streakCalc()}
+renderTasks();
+
+/* Азбука */
+const RO='a i u e o ka ki ku ke ko sa shi su se so ta chi tsu te to na ni nu ne no ha hi fu he ho ma mi mu me mo ya yu yo ra ri ru re ro wa wo n'.split(' ');
+const H=[...'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん'];
+const K=[...'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'];
+const ROWS=[[0,5],[5,10],[10,15],[15,20],[20,25],[25,30],[30,35],[35,38],[38,43],[43,46]];
+const ALT={shi:['si'],chi:['ti'],tsu:['tu'],fu:['hu'],wo:['o'],n:['nn']};
+let set=S.get('set','H'), rowsOn=S.get('rows_'+set,[0,1]), score=S.get('score',{}), cur=null, missed=false;
+function chars(){return set==='H'?H:K}
+function learnedCount(){return [...H,...K].filter(c=>(score[c]||0)>=3).length}
+function renderRows(){const el=document.getElementById('rows');el.innerHTML='';ROWS.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className='chip'+(rowsOn.includes(i)?' on':'');b.textContent=chars().slice(r[0],r[1]).join('');b.onclick=()=>{rowsOn=rowsOn.includes(i)?rowsOn.filter(x=>x!==i):[...rowsOn,i];if(!rowsOn.length)rowsOn=[i];S.set('rows_'+set,rowsOn);renderRows();next()};el.appendChild(b)});
+ document.getElementById('setH').className=set==='H'?'':'ghost';document.getElementById('setK').className=set==='K'?'':'ghost'}
+function renderGrid(){const g=document.getElementById('kgrid');g.innerHTML='';chars().forEach(c=>{const d=document.createElement('div');d.textContent=c;if((score[c]||0)>=3)d.className='learned';g.appendChild(d)});
+ const n=chars().filter(c=>(score[c]||0)>=3).length;document.getElementById('kbar').style.width=(n/46*100)+'%';document.getElementById('learnedN').textContent=learnedCount()}
+function pool(){const idx=[];rowsOn.forEach(i=>{for(let j=ROWS[i][0];j<ROWS[i][1];j++)idx.push(j)});return idx}
+function next(){const p=pool();const weak=p.filter(i=>(score[chars()[i]]||0)<3);const from=weak.length&&Math.random()<.8?weak:p;let i;do{i=from[Math.floor(Math.random()*from.length)]}while(from.length>1&&i===cur);cur=i;missed=false;document.getElementById('kchar').textContent=chars()[i];document.getElementById('kin').value='';}
+document.getElementById('kform').onsubmit=e=>{e.preventDefault();const v=document.getElementById('kin').value.trim().toLowerCase();if(!v)return;const r=RO[cur],c=chars()[cur],fb=document.getElementById('kfb');
+ if(v===r||(ALT[r]||[]).includes(v)){if(!missed)score[c]=(score[c]||0)+1;fb.className='fb ok';fb.textContent=`Верно: ${c} = ${r}`;S.set('score',score);renderGrid();setTimeout(()=>{fb.textContent='';next()},650)}
+ else{missed=true;score[c]=0;S.set('score',score);fb.className='fb bad';fb.textContent=`Это ${r}. Напиши ещё раз.`;renderGrid();document.getElementById('kin').value=''}};
+document.getElementById('kskip').onclick=()=>{missed=true;const fb=document.getElementById('kfb');fb.className='fb';fb.textContent='Читается: '+RO[cur];document.getElementById('kin').focus()};
+function setSet(x){set=x;S.set('set',x);rowsOn=S.get('rows_'+set,[0,1]);renderRows();renderGrid();next()}
+document.getElementById('setH').onclick=()=>setSet('H');document.getElementById('setK').onclick=()=>setSet('K');
+renderRows();renderGrid();next();
+
+/* Сценки */
+const SC=[
+ ['Вечер в «Севен-Илевен»','コンビニ · конбини',[['いらっしゃいませ','irasshaimase','Добро пожаловать (говорит продавец, отвечать не нужно)'],['温めますか？','atatamemasu ka','Подогреть? (про бэнто или онигири)'],['はい、お願いします','hai, onegaishimasu','Да, пожалуйста'],['袋はいりますか？','fukuro wa irimasu ka','Пакет нужен?'],['大丈夫です','daijoubu desu','Не нужно, спасибо']]],
+ ['Онсэн после работы','温泉 · горячие источники',[['気持ちいい','kimochi ii','Как хорошо!'],['タオルはありますか？','taoru wa arimasu ka','Есть полотенце?'],['ゆ','yu','Знак на занавеске у входа в онсэн. Значит «горячая вода»']]],
+ ['Ночная прогулка','渋谷 · Сибуя',[['すみません','sumimasen','Извините (и чтобы позвать, и чтобы пройти)'],['駅はどこですか？','eki wa doko desu ka','Где станция?'],['きれい','kirei','Красиво (про ночной вид с Shibuya Sky)']]],
+ ['Храм','神社 · святилище',[['お参り','omairi','Посещение храма'],['二礼二拍手一礼','nirei nihakushu ichirei','Два поклона, два хлопка, один поклон. Так молятся в святилище'],['おみくじ','omikuji','Бумажка с предсказанием']]],
+ ['Первый день в офисе','会社 · компания',[['はじめまして','hajimemashite','Приятно познакомиться'],['よろしくお願いします','yoroshiku onegaishimasu','Рад работать вместе'],['お疲れ様です','otsukaresama desu','Спасибо за работу (так здороваются и прощаются коллеги)']]]];
+let jaVoice=null;function pickVoice(){try{jaVoice=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith('ja'))||null}catch(e){}}
+try{pickVoice();speechSynthesis.onvoiceschanged=()=>{pickVoice();renderScenes()}}catch(e){}
+function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';if(jaVoice)u.voice=jaVoice;u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function renderScenes(){const el=document.getElementById('scenes');el.innerHTML='';SC.forEach(([t,w,ps])=>{const d=document.createElement('div');d.className='scene';d.innerHTML=`<div><h3>${t}</h3><div class="where">${w}</div></div>`;ps.forEach(([jp,ro,ru])=>{const r=document.createElement('div');r.className='ph';r.innerHTML=`<div class="jp">${jp}</div><div class="ro">${ro}</div><div class="ru">${ru}</div>`;if(jaVoice){const b=document.createElement('button');b.type='button';b.className='ghost say';b.textContent='Слушать';b.onclick=()=>say(jp);r.appendChild(b)}d.appendChild(r)});el.appendChild(d)})}
+renderScenes();
+
+/* Текущий этап */
+document.querySelectorAll('.step').forEach(s=>{if(dayN>=+s.dataset.from&&dayN<=+s.dataset.to)s.classList.add('now')});
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
