@@ -147,10 +147,65 @@ h2{font:700 26px/1.15 var(--display);margin:0;text-wrap:balance}
 .links a .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--soft);font:700 18px var(--jp);color:var(--indigo)}
 .links a small{display:block;color:var(--muted);font-size:14px}
 
+
+/* Профиль и награды */
+.lvl{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center;background:linear-gradient(135deg,var(--night),var(--night2));color:var(--onnight);border:0}
+.lvl .badge{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);font:900 26px var(--jp);color:var(--gold)}
+.lvl .rank{font:700 20px var(--display)}
+.lvl .rank span{font:700 16px var(--jp);color:var(--gold);margin-left:6px}
+.lvl small{color:var(--onnight2)}
+.lvl .bar{background:rgba(255,255,255,.12);margin-top:8px}
+.lvl .bar i{background:var(--gold)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;box-shadow:var(--shadow)}
+.stats b{display:block;font:700 22px var(--body);font-variant-numeric:tabular-nums}
+.stats small{font-size:11px;color:var(--muted)}
+.ach{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ach div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 8px;text-align:center;display:grid;gap:4px;justify-items:center;box-shadow:var(--shadow)}
+.ach .ic{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font:900 22px var(--jp);background:var(--soft);color:var(--muted)}
+.ach b{font-size:13px;line-height:1.2}
+.ach small{font-size:11px;color:var(--muted);line-height:1.25}
+.ach .got .ic{background:var(--torii);color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--torii) 18%,transparent)}
+.ach div:not(.got){opacity:.62}
+.ach div:not(.got) b{color:var(--muted)}
+.mini{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--muted)}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 12px);transform:translate(-50%,-250%);z-index:20;display:flex;gap:12px;align-items:center;background:var(--night);color:var(--onnight);border-radius:16px;padding:10px 16px 10px 10px;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:transform .45s cubic-bezier(.2,.9,.3,1.2);width:max-content;max-width:calc(100% - 32px)}
+.toast.on{transform:translate(-50%,0)}
+.toast .ic{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--torii);font:900 20px var(--jp);color:#fff;flex:none}
+.toast small{display:block;color:var(--gold);font-size:12px;font-weight:600}
+/* Гайды */
+.glist{display:grid;gap:10px}
+.gitem{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--shadow)}
+.gitem .ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--soft);color:var(--indigo);font:900 22px var(--jp)}
+.gitem b{display:block}
+.gitem small{color:var(--muted)}
+.gitem .st2{font-size:12px;font-weight:600;color:var(--muted)}
+.gitem.read .ic{background:var(--good);color:#fff}
+.gitem.read .st2{color:var(--good)}
+.sheet{position:fixed;inset:0;z-index:15;background:var(--paper);overflow-y:auto;transform:translateY(100%);transition:transform .35s ease;padding:calc(env(safe-area-inset-top) + 12px) 0 calc(30px + env(safe-area-inset-bottom))}
+.sheet.on{transform:none}
+.sheet .wrap2{max-width:560px;margin:0 auto;padding:0 18px;display:grid;gap:14px}
+.sheet .close{justify-self:start;border:0;background:var(--soft);border-radius:12px;padding:8px 14px;font-weight:600}
+.sheet .gh{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:center}
+.sheet .gh .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--torii);color:#fff;font:900 26px var(--jp)}
+.sheet h2{font-size:24px}
+.sheet .body p{margin:0 0 12px;max-width:65ch}
+.sheet .body h4{margin:18px 0 6px;font:700 17px var(--display)}
+.sheet .body ul{margin:0 0 12px;padding-left:20px}
+.sheet .body li{margin-bottom:6px}
+.ex{background:var(--soft);border-radius:12px;padding:10px 12px;margin:0 0 12px}
+.ex .j{font:700 20px var(--jp)}
+.ex .r{color:var(--indigo);font-weight:600;font-size:14px}
+.ex .t{color:var(--muted);font-size:14px}
+.seg.three{grid-template-columns:1fr 1fr 1fr}
+.seg.three button{font-size:14px;padding:10px 4px}
+.lvchip{display:inline-flex;gap:6px;align-items:center;font-size:12px;color:var(--muted);margin-top:2px}
+.lvchip b{font:700 13px var(--jp);color:var(--torii)}
+
 /* Нижнее меню */
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
 .tabs button{border:0;background:transparent;display:grid;justify-items:center;gap:2px;padding:4px;color:var(--muted);font-size:12px;font-weight:500}
-.tabs button .g{font:700 20px/1.2 var(--jp);width:44px;border-radius:12px;padding:2px 0}
+.tabs button .g{font:700 20px/1.2 var(--jp);width:40px;border-radius:12px;padding:2px 0}
 .tabs button.on{color:var(--ink)}
 .tabs button.on .g{background:var(--soft);color:var(--torii)}
 @media (min-width:700px){.tabs{max-width:560px;margin:0 auto 16px;border:1px solid var(--line);border-radius:20px;left:16px;right:16px}}
@@ -161,7 +216,7 @@ h2{font:700 26px/1.15 var(--display);margin:0;text-wrap:balance}
 
 <section class="screen" id="today">
  <div class="top">
-  <div class="hello"><span class="jp" id="hiJ">こんばんは</span><small id="hiR">Добрый вечер</small></div>
+  <div class="hello"><span class="jp" id="hiJ">こんばんは</span><small id="hiR">Добрый вечер</small><span class="lvchip">Звание <b id="topRank">初心者</b> · ур. <span id="topLv">1</span></span></div>
   <div class="clock">Токио сейчас<b id="tkT">--:--</b></div>
  </div>
  <div class="hero">
@@ -179,11 +234,11 @@ h2{font:700 26px/1.15 var(--display);margin:0;text-wrap:balance}
 
 <section class="screen" id="kana">
  <div><h2>Азбука</h2><p class="lead">Смотри на знак и выбирай, как он читается. Знак выучен после трёх верных ответов подряд.</p></div>
- <div class="seg"><button type="button" id="sH">Хирагана あ</button><button type="button" id="sK">Катакана ア</button></div>
+ <div class="seg three"><button type="button" id="sH">Хирагана あ</button><button type="button" id="sK">Катакана ア</button><button type="button" id="sD">Звонкие が</button></div>
  <div class="rows" id="rows"></div>
  <div class="flash" id="flash"><div class="lv" id="lv"></div><button type="button" class="btn ghost sm say" id="kSay" hidden>Слушать</button><div class="k" id="kch">あ</div><div class="hint" id="hint"></div></div>
  <div class="choices" id="choices"></div>
- <div><div class="prog"><span>Выучено</span><span id="kCnt">0 из 46</span></div><div class="bar"><i id="kBar"></i></div></div>
+ <div><div class="prog"><span>Выучено</span><span id="kCnt">0</span></div><div class="bar"><i id="kBar"></i></div></div>
  <div class="kgrid" id="kgrid"></div>
 </section>
 
@@ -192,8 +247,18 @@ h2{font:700 26px/1.15 var(--display);margin:0;text-wrap:balance}
  <div id="sc" style="display:grid;gap:16px"></div>
 </section>
 
-<section class="screen" id="road">
- <div><h2>Линия Токио</h2><p class="lead">Твой путь как ветка метро. Каждая станция короткая, и на каждой ты уже умеешь что-то настоящее.</p></div>
+<section class="screen" id="guides">
+ <div><h2>Гайды</h2><p class="lead">Короткие объяснения на пару минут. Прочитал, нажал «Прочитано», получил опыт.</p></div>
+ <div class="glist" id="glist"></div>
+</section>
+
+<section class="screen" id="me">
+ <div class="card lvl"><div class="badge" id="lvBadge">初</div><div><div class="rank" id="lvRank">Новичок <span>初心者</span></div><small id="lvXp">0 опыта</small><div class="bar"><i id="lvBar"></i></div></div></div>
+ <div class="stats"><div><b id="stDays">1</b><small>день пути</small></div><div><b id="stStreak">0</b><small>подряд</small></div><div><b id="stKana">0</b><small>знаков</small></div><div><b id="stCorrect">0</b><small>ответов</small></div></div>
+ <div class="mini"><h2 style="font-size:20px">Награды</h2><span id="achCnt">0 из 0</span></div>
+ <div class="ach" id="ach"></div>
+ <h2 style="font-size:20px">Линия Токио</h2>
+ <p class="lead">Твой путь как ветка метро. На каждой станции ты уже умеешь что-то настоящее.</p>
  <div class="card"><div class="line" id="line"></div></div>
  <h2 style="font-size:20px">Бесплатные помощники</h2>
  <div class="card links">
@@ -206,11 +271,21 @@ h2{font:700 26px/1.15 var(--display);margin:0;text-wrap:balance}
  <p class="lead" style="font-size:14px">Ещё привычки: аниме с японской озвучкой, японские голоса в Honkai: Star Rail и Zenless Zone Zero, раз в неделю серия Евангелиона с охотой на знакомые слова.</p>
 </section>
 
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="gTitle"><div class="wrap2">
+ <button type="button" class="close" id="gClose">← Назад</button>
+ <div class="gh"><div class="ic" id="gIc">字</div><div><h2 id="gTitle">Гайд</h2><small class="lead" id="gMin"></small></div></div>
+ <div class="body" id="gBody"></div>
+ <button type="button" class="btn" id="gDone">Прочитано</button>
+</div></div>
+
+<div class="toast" id="toast" aria-live="polite"><div class="ic" id="tIc">初</div><div><small>Новая награда</small><b id="tName">Первый шаг</b></div></div>
+
 <nav class="tabs" aria-label="Разделы">
  <button type="button" data-t="today"><span class="g">今</span>Сегодня</button>
  <button type="button" data-t="kana"><span class="g">あ</span>Азбука</button>
  <button type="button" data-t="scenes"><span class="g">街</span>Сценки</button>
- <button type="button" data-t="road"><span class="g">駅</span>Путь</button>
+ <button type="button" data-t="guides"><span class="g">読</span>Гайды</button>
+ <button type="button" data-t="me"><span class="g">私</span>Я</button>
 </nav>
 
 <script>
@@ -221,83 +296,87 @@ const todayKey=dkey(Date.now());
 let start=S.get('start',null); if(!start){start=todayKey;S.set('start',start)}
 const dayN=Math.max(1,Math.round((new Date(todayKey)-new Date(start))/864e5)+1);
 $('dayN').textContent=dayN;
+const stats=Object.assign({correct:0,listened:0,scenes:[],guides:[],night:false,morning:false,perfect:0,comeback:false},S.get('stats',{}));
+const saveStats=()=>S.set('stats',stats);
+/* Возвращение после перерыва */
+(function(){const last=S.get('last',null);if(last&&last!==todayKey){const gap=Math.round((new Date(todayKey)-new Date(last))/864e5);if(gap>=3){stats.comeback=true;saveStats()}}S.set('last',todayKey)})();
 
-/* Голос */
+/* Голос и вибрация */
 let jaVoice=null;function pickVoice(){try{jaVoice=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.toLowerCase().startsWith('ja'))||null}catch(e){}$('kSay').hidden=!jaVoice}
 function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';if(jaVoice)u.voice=jaVoice;u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
 try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice}catch(e){}
 const buzz=ms=>{try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}};
 
 /* Время в Токио и небо */
-function tokyoHM(){const p=new Intl.DateTimeFormat('ru-RU',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());const h=+p.find(x=>x.type==='hour').value%24,m=+p.find(x=>x.type==='minute').value;return[h,m]}
+function tokyoHM(){const p=new Intl.DateTimeFormat('ru-RU',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());return[+p.find(x=>x.type==='hour').value%24,+p.find(x=>x.type==='minute').value]}
 function localGreet(){const h=new Date().getHours();if(h>=5&&h<11)return['おはよう','Доброе утро'];if(h>=11&&h<18)return['こんにちは','Добрый день'];return['こんばんは','Добрый вечер']}
 const [gj,gr]=localGreet();$('hiJ').textContent=gj;$('hiR').textContent=gr;
 function nowText(h){if(h>=5&&h<9)return'Утро. Люди едут на работу в переполненных электричках.';if(h>=9&&h<12)return'Позднее утро. В офисах уже говорят «おはようございます».';if(h>=12&&h<14)return'Обед. Очередь в конбини за бэнто.';if(h>=14&&h<17)return'День. Над Сибуей ясное небо.';if(h>=17&&h<20)return'Вечер. Зажигаются вывески, офисы говорят «お疲れ様です».';if(h>=20&&h<24)return'Ночь. Сибуя светится, онсэны полны.';return'Глубокая ночь. Работает только конбини, и это уютно.'}
 function sky(){
- const c=$('sky'),r=c.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);c.width=r.width*dpr;c.height=r.height*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);const W=r.width,H=r.height;
- const [h,m]=tokyoHM();$('tkT').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('tkNow').innerHTML='<b>Токио, '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+'.</b> '+nowText(h);
- const night=h>=20||h<5,dusk=(h>=17&&h<20),dawn=(h>=5&&h<8);
+ const c=$('sky'),r=c.getBoundingClientRect();if(!r.width)return;const dpr=Math.min(2,window.devicePixelRatio||1);c.width=r.width*dpr;c.height=r.height*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);const W=r.width,H=r.height;
+ const [h,m]=tokyoHM(),hm=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('tkT').textContent=hm;$('tkNow').innerHTML='<b>Токио, '+hm+'.</b> '+nowText(h);
+ const night=h>=20||h<5,dusk=h>=17&&h<20,dawn=h>=5&&h<8;
  const top=night?'#0d1426':dusk?'#2a2f5a':dawn?'#3b4a78':'#5b7fb6',bot=night?'#22305a':dusk?'#c9805f':dawn?'#e3a98a':'#a9c3e2';
  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,top);g.addColorStop(1,bot);x.fillStyle=g;x.fillRect(0,0,W,H);
  let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
- if(night){x.fillStyle='rgba(255,255,255,.7)';for(let i=0;i<40;i++){x.globalAlpha=.3+rnd()*.6;x.fillRect(rnd()*W,rnd()*H*.5,1.2,1.2)}x.globalAlpha=1;
-  x.fillStyle='#f3e6c8';x.beginPath();x.arc(W*.4,H*.2,14,0,7);x.fill();x.fillStyle=top;x.beginPath();x.arc(W*.4+6,H*.2-4,12,0,7);x.fill();}
- else{x.fillStyle=dusk||dawn?'rgba(240,120,90,.85)':'rgba(255,240,210,.9)';x.beginPath();x.arc(W*.4,H*(dusk?.55:.25),dusk||dawn?22:16,0,7);x.fill();}
- /* Токийская башня */
+ if(night){x.fillStyle='#fff';for(let i=0;i<40;i++){x.globalAlpha=.3+rnd()*.6;x.fillRect(rnd()*W,rnd()*H*.5,1.2,1.2)}x.globalAlpha=1;x.fillStyle='#f3e6c8';x.beginPath();x.arc(W*.4,H*.2,14,0,7);x.fill();x.fillStyle=top;x.beginPath();x.arc(W*.4+6,H*.2-4,12,0,7);x.fill()}
+ else{x.fillStyle=dusk||dawn?'rgba(240,120,90,.85)':'rgba(255,240,210,.9)';x.beginPath();x.arc(W*.4,H*(dusk?.55:.25),dusk||dawn?22:16,0,7);x.fill()}
  const tx=W*.62,tb=H,tt=H*.18;x.strokeStyle=night?'#d8573e':'#c0432c';x.lineWidth=2;x.beginPath();x.moveTo(tx-22,tb);x.lineTo(tx,tt);x.lineTo(tx+22,tb);x.stroke();
  for(let i=1;i<9;i++){const y=tt+(tb-tt)*i/9,w=22*i/9;x.beginPath();x.moveTo(tx-w,y);x.lineTo(tx+w,y);x.stroke()}
  x.fillStyle=x.strokeStyle;x.fillRect(tx-10,tt+(tb-tt)*.38,20,5);x.fillRect(tx-14,tt+(tb-tt)*.62,28,5);
- /* Дома с окнами */
  const lit=night||dusk;let bx=-10;
- while(bx<W){const bw=26+rnd()*40,bh=H*(.22+rnd()*.42);const by=H-bh;
-  x.fillStyle=night?'#0a0f1e':dusk?'#1d2340':'#2b3a5c';x.fillRect(bx,by,bw,bh);
+ while(bx<W){const bw=26+rnd()*40,bh=H*(.22+rnd()*.42),by=H-bh;x.fillStyle=night?'#0a0f1e':dusk?'#1d2340':'#2b3a5c';x.fillRect(bx,by,bw,bh);
   if(lit){for(let wy=by+8;wy<H-6;wy+=9)for(let wx=bx+5;wx<bx+bw-5;wx+=8){if(rnd()<.38){x.fillStyle=rnd()<.15?'#f2a07e':'#f1d79c';x.globalAlpha=.55+rnd()*.4;x.fillRect(wx,wy,3,4)}}x.globalAlpha=1}
   bx+=bw+2+rnd()*6}
- const fade=x.createLinearGradient(0,0,0,H);fade.addColorStop(0,'rgba(10,14,28,.55)');fade.addColorStop(.5,'rgba(10,14,28,0)');x.fillStyle=fade;x.fillRect(0,0,W,H);
-}
+ const f=x.createLinearGradient(0,0,0,H);f.addColorStop(0,'rgba(10,14,28,.55)');f.addColorStop(.5,'rgba(10,14,28,0)');x.fillStyle=f;x.fillRect(0,0,W,H)}
 
-/* Задачи */
-const TASKS=[['kana','あ','Азбука, 5 минут','Открыть тренажёр'],['phrase','言','Фраза дня вслух','Она ниже, прочитай и послушай'],['watch','夜','Немного Японии','Серия аниме с японским звуком или ночная прогулка']];
+/* Задачи дня */
+const TASKS=[['kana','あ','Азбука, 5 минут','10 верных ответов закроют задачу'],['phrase','言','Фраза дня вслух','Она ниже, прочитай и послушай'],['watch','夜','Немного Японии','Серия аниме с японским звуком, ночная прогулка или гайд']];
 let done=S.get('done_'+todayKey,{});
-function streakCalc(){let n=0;for(let i=0;i<400;i++){const d=dkey(Date.now()-i*864e5);const v=S.get('done_'+d,{});if(Object.values(v).some(Boolean))n++;else if(i>0)break}return n}
-function renderTasks(){const el=$('tasks');el.innerHTML='';TASKS.forEach(([id,ic,t,s])=>{const b=document.createElement('button');b.type='button';b.className='task'+(done[id]?' done':'');b.innerHTML=`<span class="ic">${ic}</span><span><b>${t}</b><small>${s}</small></span><span class="check">${done[id]?'✓':''}</span>`;
- b.onclick=e=>{if(id==='kana'&&!done[id]&&!e.target.closest('.check')){go('kana');return}done[id]=!done[id];S.set('done_'+todayKey,done);if(done[id])buzz(15);renderTasks()};
- b.querySelector('.check').onclick=e=>{e.stopPropagation();done[id]=!done[id];S.set('done_'+todayKey,done);if(done[id])buzz(15);renderTasks()};el.appendChild(b)});
+function doneDays(){const out=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('jp_done_')){const v=JSON.parse(localStorage.getItem(k)||'{}');out.push(Object.values(v).filter(Boolean).length)}}}catch(e){}return out}
+function streakCalc(){let n=0;for(let i=0;i<400;i++){const v=S.get('done_'+dkey(Date.now()-i*864e5),{});if(Object.values(v).some(Boolean))n++;else if(i>0)break}return n}
+function setDone(id,val){const before=Object.values(done).filter(Boolean).length;done[id]=val;S.set('done_'+todayKey,done);const after=Object.values(done).filter(Boolean).length;if(after===3&&before<3){stats.perfect++;saveStats()}if(val)buzz(15);renderTasks();refresh()}
+function renderTasks(){const el=$('tasks');el.innerHTML='';TASKS.forEach(([id,ic,t,sub])=>{const b=document.createElement('button');b.type='button';b.className='task'+(done[id]?' done':'');b.innerHTML=`<span class="ic">${ic}</span><span><b>${t}</b><small>${sub}</small></span><span class="check">${done[id]?'✓':''}</span>`;
+ b.onclick=e=>{if(id==='kana'&&!done[id]){go('kana');return}if(id==='watch'&&!done[id]&&false)return;setDone(id,!done[id])};
+ b.querySelector('.check').onclick=e=>{e.stopPropagation();setDone(id,!done[id])};el.appendChild(b)});
  const n=Object.values(done).filter(Boolean).length;$('ringT').textContent=n+'/3';$('ringC').style.strokeDashoffset=194.8*(1-n/3);$('streak').textContent=streakCalc()+' дн.'}
 
 /* Фраза дня */
 const PD=[['逃げちゃダメだ','nigecha dame da','«Нельзя убегать». Синдзи повторял это себе. А тебе иногда можно сбежать: в онсэн.'],['ゆっくりでいい','yukkuri de ii','«Можно не спешить».'],['一歩ずつ','ippo zutsu','«Шаг за шагом».'],['大丈夫','daijoubu','«Всё нормально, справлюсь».'],['夢','yume','«Мечта». Твоя: 東京 или 大阪.'],['今日もお疲れ様','kyou mo otsukaresama','«Ты сегодня хорошо потрудился».'],['頑張って','ganbatte','«Держись, у тебя получится».']];
 const P=PD[(dayN-1)%PD.length];
 $('pday').innerHTML=`<div class="v">${P[0]}</div><div><div class="lbl">Фраза дня</div><div class="ro">${P[1]}</div><p>${P[2]}</p><button type="button" class="btn sm" id="pSay">Слушать</button></div>`;
-$('pSay').onclick=()=>{say(P[0]);if(!done.phrase){done.phrase=true;S.set('done_'+todayKey,done);renderTasks()}};
+$('pSay').onclick=()=>{say(P[0]);if(!done.phrase)setDone('phrase',true)};
 
 /* Азбука */
-const RO='a i u e o ka ki ku ke ko sa shi su se so ta chi tsu te to na ni nu ne no ha hi fu he ho ma mi mu me mo ya yu yo ra ri ru re ro wa wo n'.split(' ');
-const H=[...'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん'];
-const K=[...'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'];
-const ROWS=[[0,5],[5,10],[10,15],[15,20],[20,25],[25,30],[30,35],[35,38],[38,43],[43,46]];
-let set=S.get('set','H'),rowsOn=S.get('rows_'+set,[0,1]),score=S.get('score',{}),cur=null,busy=false,missed=false,answered=0;
-const ch=()=>set==='H'?H:K;
-function renderSeg(){$('sH').className=set==='H'?'on':'';$('sK').className=set==='K'?'on':''}
-function renderRows(){const el=$('rows');el.innerHTML='';ROWS.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className=rowsOn.includes(i)?'on':'';b.textContent=ch().slice(r[0],r[1]).join(' ');b.onclick=()=>{rowsOn=rowsOn.includes(i)?rowsOn.filter(v=>v!==i):[...rowsOn,i];if(!rowsOn.length)rowsOn=[i];S.set('rows_'+set,rowsOn);renderRows();next()};el.appendChild(b)})}
-function renderGrid(){const g=$('kgrid');g.innerHTML='';const lay=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,-1,36,-1,37,38,39,40,41,42,43,-1,-1,44,45];
- lay.forEach(i=>{const d=document.createElement('div');if(i<0){d.className='gap';g.appendChild(d);return}const c=ch()[i],l=Math.min(3,score[c]||0);d.className=l?'l'+l:'';d.innerHTML=c+'<small>'+RO[i]+'</small>';g.appendChild(d)});
- const n=ch().filter(c=>(score[c]||0)>=3).length;$('kCnt').textContent=n+' из 46';$('kBar').style.width=(n/46*100)+'%'}
-function pool(){const a=[];rowsOn.forEach(i=>{for(let j=ROWS[i][0];j<ROWS[i][1];j++)a.push(j)});return a}
+const SETS={
+ H:{ch:[...'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん'],ro:'a i u e o ka ki ku ke ko sa shi su se so ta chi tsu te to na ni nu ne no ha hi fu he ho ma mi mu me mo ya yu yo ra ri ru re ro wa wo n'.split(' '),rows:[[0,5],[5,10],[10,15],[15,20],[20,25],[25,30],[30,35],[35,38],[38,43],[43,46]],lay:[...Array(36).keys(),-1,36,-1,37,38,39,40,41,42,43,-1,-1,44,45]},
+ D:{ch:[...'がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ'],ro:'ga gi gu ge go za ji zu ze zo da ji zu de do ba bi bu be bo pa pi pu pe po'.split(' '),rows:[[0,5],[5,10],[10,15],[15,20],[20,25]],lay:[...Array(25).keys()]}};
+SETS.K={ch:[...'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'],ro:SETS.H.ro,rows:SETS.H.rows,lay:SETS.H.lay};
+let set=S.get('set','H');if(!SETS[set])set='H';
+let rowsOn=S.get('rows_'+set,[0,1]),score=S.get('score',{}),cur=null,busy=false,missed=false,answered=S.get('ans_'+todayKey,0);
+const C=()=>SETS[set];
+const learned=k=>SETS[k].ch.filter(c=>(score[c]||0)>=3).length;
+function renderSeg(){['H','K','D'].forEach(k=>$('s'+k).className=set===k?'on':'')}
+function renderRows(){const el=$('rows');el.innerHTML='';C().rows.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className=rowsOn.includes(i)?'on':'';b.textContent=C().ch.slice(r[0],r[1]).join(' ');b.onclick=()=>{rowsOn=rowsOn.includes(i)?rowsOn.filter(v=>v!==i):[...rowsOn,i];if(!rowsOn.length)rowsOn=[i];S.set('rows_'+set,rowsOn);renderRows();next()};el.appendChild(b)})}
+function renderGrid(){const g=$('kgrid');g.innerHTML='';C().lay.forEach(i=>{const d=document.createElement('div');if(i<0){d.className='gap';g.appendChild(d);return}const c=C().ch[i],l=Math.min(3,score[c]||0);d.className=l?'l'+l:'';d.innerHTML=c+'<small>'+C().ro[i]+'</small>';g.appendChild(d)});
+ const n=learned(set),t=C().ch.length;$('kCnt').textContent=n+' из '+t;$('kBar').style.width=(n/t*100)+'%'}
+function pool(){const a=[];rowsOn.filter(i=>i<C().rows.length).forEach(i=>{for(let j=C().rows[i][0];j<C().rows[i][1];j++)a.push(j)});return a.length?a:[0,1,2,3,4]}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function next(){const p=pool(),weak=p.filter(i=>(score[ch()[i]]||0)<3),from=weak.length&&Math.random()<.8?weak:p;let i;do{i=from[Math.floor(Math.random()*from.length)]}while(from.length>1&&i===cur);cur=i;missed=false;busy=false;
- $('kch').textContent=ch()[i];$('hint').textContent='';$('flash').className='flash';
- const lv=Math.min(3,score[ch()[i]]||0);$('lv').innerHTML=[0,1,2].map(k=>`<i class="${k<lv?'f':''}"></i>`).join('');
- const others=shuffle((p.length>=4?p:[...Array(46).keys()]).filter(j=>j!==i)).slice(0,3);
- const el=$('choices');el.innerHTML='';shuffle([i,...others]).forEach(j=>{const b=document.createElement('button');b.type='button';b.textContent=RO[j];b.onclick=()=>pick(j,b);el.appendChild(b)})}
-function pick(j,b){if(busy)return;const c=ch()[cur];
- if(j===cur){busy=true;b.className='ok';if(!missed)score[c]=(score[c]||0)+1;$('flash').className='flash ok';$('hint').textContent=(score[c]>=3&&!missed)?'Выучено!':'Верно';S.set('score',score);
-  answered++;if(answered>=10&&!done.kana){done.kana=true;S.set('done_'+todayKey,done);renderTasks()}
+function next(){const p=pool(),weak=p.filter(i=>(score[C().ch[i]]||0)<3),from=weak.length&&Math.random()<.8?weak:p;let i;do{i=from[Math.floor(Math.random()*from.length)]}while(from.length>1&&i===cur);cur=i;missed=false;busy=false;
+ $('kch').textContent=C().ch[i];$('hint').textContent='';$('flash').className='flash';
+ const lv=Math.min(3,score[C().ch[i]]||0);$('lv').innerHTML=[0,1,2].map(k=>`<i class="${k<lv?'f':''}"></i>`).join('');
+ const right=C().ro[i],seen=new Set([right]),others=[];
+ for(const j of shuffle([...(p.length>=6?p:[]),...shuffle([...C().ro.keys()])])){if(!seen.has(C().ro[j])){seen.add(C().ro[j]);others.push(j)}if(others.length===3)break}
+ const el=$('choices');el.innerHTML='';shuffle([i,...others]).forEach(j=>{const b=document.createElement('button');b.type='button';b.textContent=C().ro[j];b.onclick=()=>pick(j,b);el.appendChild(b)})}
+function pick(j,b){if(busy)return;const c=C().ch[cur];
+ if(C().ro[j]===C().ro[cur]){busy=true;b.className='ok';if(!missed)score[c]=(score[c]||0)+1;$('flash').className='flash ok';$('hint').textContent=(score[c]===3&&!missed)?'Выучено!':'Верно';S.set('score',score);
+  stats.correct++;const hr=new Date().getHours();if(hr>=23||hr<4)stats.night=true;if(hr>=5&&hr<8)stats.morning=true;saveStats();
+  answered++;S.set('ans_'+todayKey,answered);if(answered>=10&&!done.kana)setDone('kana',true);else refresh();
   renderGrid();buzz(10);setTimeout(next,missed?900:550)}
- else{missed=true;score[c]=0;S.set('score',score);b.className='no';b.disabled=true;$('flash').className='flash no';$('hint').textContent='Это не '+RO[j]+'. Попробуй ещё';buzz([30,40,30]);renderGrid();$('lv').innerHTML='<i></i><i></i><i></i>'}}
-$('kSay').onclick=()=>say(ch()[cur]);
+ else{missed=true;score[c]=0;S.set('score',score);b.className='no';b.disabled=true;$('flash').className='flash no';$('hint').textContent='Это не '+C().ro[j]+'. Попробуй ещё';buzz([30,40,30]);renderGrid();$('lv').innerHTML='<i></i><i></i><i></i>'}}
+$('kSay').onclick=()=>say(C().ch[cur]);
 function setSet(v){set=v;S.set('set',v);rowsOn=S.get('rows_'+set,[0,1]);renderSeg();renderRows();renderGrid();next()}
-$('sH').onclick=()=>setSet('H');$('sK').onclick=()=>setSet('K');
+['H','K','D'].forEach(k=>$('s'+k).onclick=()=>setSet(k));
 
 /* Сценки */
 const SC=[
@@ -306,22 +385,81 @@ const SC=[
  ['Ночная прогулка','渋谷 · Сибуя','渋','linear-gradient(135deg,#141b2e,#34477a)',[['すみません','sumimasen','Извините. И чтобы позвать, и чтобы пройти'],['駅はどこですか？','eki wa doko desu ka','Где станция?'],['きれい','kirei','Красиво. Про ночной вид с Shibuya Sky']]],
  ['Храм','神社 · святилище','神','linear-gradient(135deg,#8c2f22,#c0432c)',[['お参り','omairi','Посещение храма'],['二礼二拍手一礼','nirei nihakushu ichirei','Два поклона, два хлопка, один поклон. Так молятся в святилище'],['おみくじ','omikuji','Бумажка с предсказанием']]],
  ['Первый день в офисе','会社 · компания','社','linear-gradient(135deg,#3a4256,#5a6580)',[['はじめまして','hajimemashite','Приятно познакомиться'],['よろしくお願いします','yoroshiku onegaishimasu','Рад работать вместе'],['お疲れ様です','otsukaresama desu','Спасибо за работу. Так здороваются и прощаются коллеги']]]];
-function renderScenes(){const el=$('sc');el.innerHTML='';SC.forEach(([t,w,big,bg,ps])=>{const d=document.createElement('div');d.className='card scene';d.innerHTML=`<div class="art" style="background:${bg}"><span class="big">${big}</span><div><h3>${t}</h3><small>${w}</small></div></div>`;
- ps.forEach(([jp,ro,ru])=>{const b=document.createElement('button');b.type='button';b.className='ph';b.innerHTML=`<span class="jp">${jp}</span><span class="ro">${ro}</span><span class="ru">${ru}</span><span class="sp" aria-hidden="true">▶</span>`;b.onclick=()=>say(jp);d.appendChild(b)});el.appendChild(d)})}
+function renderScenes(){const el=$('sc');el.innerHTML='';SC.forEach(([t,w,big,bg,ps],si)=>{const d=document.createElement('div');d.className='card scene';d.innerHTML=`<div class="art" style="background:${bg}"><span class="big">${big}</span><div><h3>${t}</h3><small>${w}</small></div></div>`;
+ ps.forEach(([jp,ro,ru])=>{const b=document.createElement('button');b.type='button';b.className='ph';b.innerHTML=`<span class="jp">${jp}</span><span class="ro">${ro}</span><span class="ru">${ru}</span><span class="sp" aria-hidden="true">▶</span>`;
+  b.onclick=()=>{say(jp);stats.listened++;if(!stats.scenes.includes(si))stats.scenes.push(si);saveStats();refresh()};d.appendChild(b)});el.appendChild(d)})}
+
+/* Гайды */
+const ex=(j,r,t)=>`<div class="ex"><div class="j">${j}</div><div class="r">${r}</div><div class="t">${t}</div></div>`;
+const GUIDES=[
+ ['write','字','Как устроен японский',3,`<p>В японском три вида письма, и они живут в одном предложении.</p><ul><li><b>Хирагана</b> пишет японские слова и окончания. С неё начинают все.</li><li><b>Катакана</b> пишет иностранные слова: コーヒー, «кофе».</li><li><b>Кандзи</b> это иероглифы со смыслом: 山 гора, 人 человек.</li></ul><h4>Порядок слов</h4><p>Глагол всегда в конце. Пробелов между словами нет.</p>${ex('私は寿司を食べます','watashi wa sushi o tabemasu','Я ем суши. Дословно: «я суши ем»')}<p>Частица は (читается «ва») показывает, о ком речь, а を (читается «о») показывает, что именно делают.</p>`],
+ ['dots','が','Точки и кружочки',3,`<p>Две маленькие точки ゛ делают звук звонким.</p>${ex('か → が','ka → ga','Так же さ → ざ, た → だ, は → ば')}<p>Кружочек ゜ превращает «х» в «п».</p>${ex('は → ぱ','ha → pa','ぱん это «хлеб»')}<h4>Маленькие знаки</h4><ul><li>Маленькие ゃ ゅ ょ склеиваются с соседом: き + ゃ = きゃ, «кья».</li><li>Маленькая っ удваивает следующий звук: きって, «китте», марка.</li><li>Чёрточка ー в катакане тянет звук: コーヒー, «ко̄хӣ».</li></ul><p>Звонкие знаки есть в тренажёре, вкладка «Звонкие».</p>`],
+ ['polite','礼','Вежливость за две минуты',2,`<ul><li>Добавляй です и ます: это вежливая форма, с ней не ошибёшься.</li><li>К имени собеседника добавляй さん: Танака-сан. К своему имени никогда.</li><li>Вместо рукопожатия лёгкий поклон.</li><li>В электричке говорят тихо, по телефону не разговаривают.</li><li>На ходу не едят. Купил в конбини, съешь рядом с магазином.</li><li>Чаевые не оставляют. Это даже может смутить.</li></ul>${ex('ありがとうございます','arigatou gozaimasu','Спасибо большое. Самая полезная фраза')}`],
+ ['onsen','湯','Как ходить в онсэн',2,`<ul><li>Сначала моешься целиком в душевой, сидя на маленьком табурете.</li><li>В воду заходят без одежды. Полотенце в воду не опускают, его кладут на голову.</li><li>Длинные волосы собирают, чтобы не касались воды.</li><li>Во многих онсэнах нельзя с татуировками. Проверяй заранее.</li><li>Синяя занавеска 男 для мужчин, красная 女 для женщин.</li></ul>${ex('ゆ','yu','Этот знак на занавеске значит «горячая вода». Ты пришёл куда надо')}`],
+ ['konbini','店','Конбини: выживание',2,`<p>Главные сети: 7-Eleven, FamilyMart и Lawson. Работают круглосуточно.</p><ul><li>Онигири открывают по номерам на упаковке: 1, 2, 3. Тогда водоросли не порвутся.</li><li>Бэнто продавец предложит подогреть: 温めますか？</li><li>В банкоматах 7-Eleven можно снять наличные с иностранной карты.</li><li>Урн на улице мало. Мусор выбрасывают у входа в конбини.</li></ul>`],
+ ['train','電','Электрички и метро',2,`<ul><li>Карта Suica или PASMO работает почти во всём транспорте и в конбини.</li><li>Электрички ходят минута в минуту. Опоздание на пять минут здесь событие.</li><li>Последняя электричка уходит около полуночи. Потом остаётся дорогое такси.</li><li>В час пик бывают отдельные вагоны только для женщин, они отмечены розовым.</li></ul>${ex('次は渋谷','tsugi wa shibuya','Следующая станция Сибуя')}`],
+ ['work','職','Как переехать работать',4,`<p>Честно о главном. Для обычной рабочей визы Японии обычно нужен диплом вуза или многолетний опыт в профессии, около десяти лет. Без этого прямой путь сложный, но обходные пути есть.</p><h4>Путь через учёбу</h4><p>Языковая школа в Японии даёт студенческую визу. Со студенческой визой можно подрабатывать ограниченное число часов в неделю. Многие потом находят работу и меняют визу.</p><h4>Путь через IT</h4><ul><li>Учишь японский до N3 или N2. Английский тоже помогает: часть IT-компаний в Токио работает на английском.</li><li>Собираешь сильное портфолио сайтов.</li><li>Ищешь вакансии на TokyoDev и Japan Dev. Там компании, которые нанимают иностранцев и помогают с визой.</li></ul><p>Правила меняются, поэтому перед решением проверяй их на сайте посольства Японии.</p>`],
+ ['adhd','脳','Учить с СДВГ',2,`<ul><li>Десять минут каждый день лучше часа раз в неделю.</li><li>Даже одна минута считается. Главное не рвать цепочку.</li><li>Пропустил неделю? Не начинай сначала, просто продолжай. За возвращение тут даже есть награда.</li><li>Учи через то, что любишь: аниме, Евангелион, японская озвучка в играх.</li><li>Хвали себя за каждый выученный знак. Это настоящий прогресс.</li></ul>${ex('ゆっくりでいい','yukkuri de ii','Можно не спешить')}`],
+ ['trip','旅','Первая поездка',3,`<ul><li>Гражданам Казахстана для поездки в Японию нужна виза. Актуальные правила смотри на сайте посольства Японии в Казахстане.</li><li>Копи на поездку в отдельной копилке, понемногу с каждого заработка.</li><li>Капсульные отели и хостелы дешевле обычных гостиниц.</li><li>Еда из конбини недорогая и вкусная.</li><li>Неделя: три дня Токио, три дня Осака, между ними скоростной поезд синкансэн.</li></ul>${ex('大阪','oosaka','Осака. Там едят такояки и говорят на смешном диалекте')}`]];
+function renderGuides(){const el=$('glist');el.innerHTML='';GUIDES.forEach(([id,ic,t,min])=>{const r=stats.guides.includes(id);const b=document.createElement('button');b.type='button';b.className='gitem'+(r?' read':'');b.innerHTML=`<span class="ic">${ic}</span><span><b>${t}</b><small>${min} мин чтения</small></span><span class="st2">${r?'Прочитано':'+10'}</span>`;b.onclick=()=>openGuide(id);el.appendChild(b)})}
+let openG=null;
+function openGuide(id){const g=GUIDES.find(x=>x[0]===id);openG=id;$('gIc').textContent=g[1];$('gTitle').textContent=g[2];$('gMin').textContent=g[3]+' мин чтения';$('gBody').innerHTML=g[4];$('gDone').textContent=stats.guides.includes(id)?'Закрыть':'Прочитано';$('sheet').scrollTop=0;$('sheet').classList.add('on')}
+$('gClose').onclick=()=>$('sheet').classList.remove('on');
+$('gDone').onclick=()=>{if(!stats.guides.includes(openG)){stats.guides.push(openG);saveStats();buzz(15);if(!done.watch)setDone('watch',true);else refresh()}$('sheet').classList.remove('on');renderGuides()};
+
+/* Опыт и звания */
+const RANKS=[[1,'初心者','Новичок'],[3,'旅人','Путник'],[6,'学生','Ученик'],[10,'先輩','Сэмпай'],[15,'達人','Мастер'],[21,'先生','Сэнсэй']];
+function xpCalc(){const tasks=doneDays().reduce((a,b)=>a+b,0);return stats.correct+tasks*5+stats.guides.length*10+stats.listened}
+function levelOf(xp){let l=1;while(10*l*l<=xp)l++;return l}
+function rankOf(l){let r=RANKS[0];RANKS.forEach(x=>{if(l>=x[0])r=x});return r}
+
+/* Награды */
+const ACH=[
+ ['first','初','Первый шаг','Первый верный ответ',()=>stats.correct>=1],
+ ['ten','十','Десять знаков','Выучить 10 знаков',()=>learned('H')+learned('K')+learned('D')>=10],
+ ['hira','ひ','Хирагана','Выучить всю хирагану',()=>learned('H')>=46],
+ ['kata','カ','Катакана','Выучить всю катакану',()=>learned('K')>=46],
+ ['dakt','が','Звонкий','Выучить все звонкие',()=>learned('D')>=25],
+ ['hund','百','Сотня','100 верных ответов',()=>stats.correct>=100],
+ ['thou','千','Тысяча','1000 верных ответов',()=>stats.correct>=1000],
+ ['perf','完','Идеальный день','Все 3 задачи за день',()=>stats.perfect>=1],
+ ['s3','三','Три дня','3 дня подряд',()=>streakCalc()>=3],
+ ['s7','週','Неделя','7 дней подряд',()=>streakCalc()>=7],
+ ['s30','月','Месяц','30 дней подряд',()=>streakCalc()>=30],
+ ['voice','声','Первые слова','Послушать 10 фраз',()=>stats.listened>=10],
+ ['tour','旅','Турист','Побывать во всех сценках',()=>stats.scenes.length>=SC.length],
+ ['read','読','Читатель','Прочитать 3 гайда',()=>stats.guides.length>=3],
+ ['allg','書','Книжный червь','Прочитать все гайды',()=>stats.guides.length>=GUIDES.length],
+ ['owl','夜','Ночная сова','Заниматься после 23:00',()=>stats.night],
+ ['bird','朝','Ранняя пташка','Заниматься до 8 утра',()=>stats.morning],
+ ['back','帰','Не убежал','Вернуться после перерыва в 3 дня',()=>stats.comeback]];
+let got=S.get('ach',{}),toastQ=[],toastBusy=false;
+function showToast(){if(toastBusy||!toastQ.length)return;toastBusy=true;const a=toastQ.shift();$('tIc').textContent=a[1];$('tName').textContent=a[2];$('toast').classList.add('on');buzz([20,60,20]);setTimeout(()=>{$('toast').classList.remove('on');setTimeout(()=>{toastBusy=false;showToast()},500)},2600)}
+function checkAch(silent){ACH.forEach(a=>{if(!got[a[0]]&&a[4]()){got[a[0]]=todayKey;if(!silent)toastQ.push(a)}});S.set('ach',got);showToast()}
+function renderMe(){const xp=xpCalc(),l=levelOf(xp),r=rankOf(l),lo=10*(l-1)*(l-1),hi=10*l*l;
+ $('lvBadge').textContent=r[1].slice(0,1);$('lvRank').innerHTML=`${r[2]} <span>${r[1]}</span>`;$('lvXp').textContent=`Уровень ${l} · ${xp} опыта · до следующего ${hi-xp}`;$('lvBar').style.width=((xp-lo)/(hi-lo)*100)+'%';
+ $('topRank').textContent=r[1];$('topLv').textContent=l;
+ $('stDays').textContent=dayN;$('stStreak').textContent=streakCalc();$('stKana').textContent=learned('H')+learned('K')+learned('D');$('stCorrect').textContent=stats.correct;
+ const el=$('ach');el.innerHTML='';ACH.forEach(a=>{const d=document.createElement('div');if(got[a[0]])d.className='got';d.innerHTML=`<span class="ic">${a[1]}</span><b>${a[2]}</b><small>${a[3]}</small>`;el.appendChild(d)});
+ $('achCnt').textContent=Object.keys(got).filter(k=>ACH.some(a=>a[0]===k)).length+' из '+ACH.length}
+function refresh(){checkAch(false);renderMe()}
 
 /* Линия Токио */
-const ST=[[1,21,'ひらがな','Хирагана','Недели 1–3','46 знаков. В конце сам прочитаешь ありがとう, «спасибо».'],[22,35,'カタカナ','Катакана','Недели 4–5','Иностранные слова: コーヒー, コンビニ. И твоё имя: モーリー.'],[36,60,'会話','Фразы для жизни','Недели 6–8','Все сценки наизусть, числа и цены в иенах.'],[61,180,'N5','Уровень N5','Месяцы 3–6','Грамматика, 800 слов, первые 100 кандзи. Спросишь дорогу и поймёшь ответ.'],[181,365,'旅','N4 и первая поездка','Месяцы 6–12','Неделя в Токио и Осаке туристом. Проверить, твоё ли это.'],[366,1e9,'東京','Токио','Годы 2–3','N3, сильное портфолио сайтов, работа с рабочей визой. Онсэн по выходным.']];
+const ST=[[1,21,'ひらがな','Хирагана','Недели 1–3','46 знаков. В конце сам прочитаешь ありがとう, «спасибо».'],[22,35,'カタカナ','Катакана','Недели 4–5','Иностранные слова: コーヒー, コンビニ. И твоё имя: モーリー.'],[36,60,'会話','Фразы для жизни','Недели 6–8','Все сценки и гайды, числа и цены в иенах.'],[61,180,'N5','Уровень N5','Месяцы 3–6','Грамматика, 800 слов, первые 100 кандзи. Спросишь дорогу и поймёшь ответ.'],[181,365,'旅','N4 и первая поездка','Месяцы 6–12','Неделя в Токио и Осаке туристом. Проверить, твоё ли это.'],[366,1e9,'東京','Токио','Годы 2–3','N3, сильное портфолио сайтов, работа и виза. Онсэн по выходным.']];
 function renderLine(){const el=$('line');el.innerHTML='';ST.forEach(([a,b,jp,ru,when,txt],i)=>{const st=dayN>b?'done':(dayN>=a?'now':'');const d=document.createElement('div');d.className='st '+st;d.innerHTML=`<div class="dot">${i+1}</div><div><div class="when">${when}</div><h3><span class="jp">${jp}</span> · ${ru}</h3><p>${txt}</p>${st==='now'?'<span class="you">Ты здесь</span>':''}</div>`;el.appendChild(d)})}
 
 /* Навигация */
-const tabs=['today','kana','scenes','road'];
-function go(t){if(!tabs.includes(t))t='today';tabs.forEach(x=>$(x).classList.toggle('on',x===t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);window.scrollTo(0,0);if(t==='today')requestAnimationFrame(sky)}
+const tabs=['today','kana','scenes','guides','me'];
+function go(t){if(t==='road')t='me';if(!tabs.includes(t))t='today';tabs.forEach(x=>$(x).classList.toggle('on',x===t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);$('sheet').classList.remove('on');window.scrollTo(0,0);if(t==='today')requestAnimationFrame(sky);if(t==='me')renderMe()}
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
 window.addEventListener('resize',()=>{if($('today').classList.contains('on'))sky()});
 setInterval(()=>{if($('today').classList.contains('on'))sky()},60000);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('sheet').classList.remove('on')});
 
-renderTasks();renderSeg();renderRows();renderGrid();next();renderScenes();renderLine();go(location.hash.slice(1));
+checkAch(true);
+renderTasks();renderSeg();renderRows();renderGrid();next();renderScenes();renderGuides();renderLine();renderMe();go(location.hash.slice(1));
+setTimeout(()=>checkAch(false),800);
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
 </body>
