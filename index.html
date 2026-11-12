@@ -304,6 +304,28 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 .nw span{color:var(--muted);font-size:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .nw.read b{color:var(--muted)}
 .src{font-size:13px;color:var(--muted)}
+/* Сюжет-новелла */
+.chap{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--shadow)}
+.chap .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--soft);font:900 22px var(--jp);color:var(--indigo)}
+.chap b{display:block} .chap small{color:var(--muted)}
+.chap .st2{font-size:12px;font-weight:700;color:var(--muted)}
+.chap.done .ic{background:var(--torii);color:#fff} .chap.done .st2{color:var(--good)}
+.chap.lock{opacity:.6}
+#vn{position:fixed;inset:0;z-index:16;display:none;background:linear-gradient(180deg,rgba(10,12,28,.8),rgba(10,12,28,.93));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);-webkit-tap-highlight-color:transparent}
+#vn.on{display:block}
+#vn .wm{position:absolute;top:calc(env(safe-area-inset-top) + 70px);left:0;right:0;text-align:center;font:900 min(38vw,200px)/1 var(--jp);color:#fff;opacity:.16;pointer-events:none}
+#vn .ttl{position:absolute;top:calc(env(safe-area-inset-top) + 16px);left:16px;right:70px;color:#fff;font:700 15px var(--body);text-shadow:0 1px 8px rgba(0,0,0,.6)}
+#vn .x{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:12px;border:0;border-radius:12px;background:rgba(0,0,0,.4);color:#fff;padding:8px 12px;font-weight:600}
+#vn .av{position:absolute;left:20px;bottom:calc(env(safe-area-inset-bottom) + 210px);width:96px;height:96px;border-radius:50%;display:grid;place-items:center;font:900 44px var(--jp);color:#fff;border:3px solid rgba(255,255,255,.8);box-shadow:0 8px 30px rgba(0,0,0,.35);transition:transform .25s}
+#vn .av.pop{transform:scale(1.06)}
+#vn .box{position:absolute;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 14px);max-width:560px;margin:0 auto;min-height:180px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 18px 16px;display:grid;gap:4px;align-content:start;box-shadow:0 10px 40px rgba(0,0,0,.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+#vn .nm{position:absolute;top:-15px;left:16px;padding:4px 14px;border-radius:10px;color:#fff;font-weight:700;font-size:14px}
+#vn .jp{font:700 22px/1.35 var(--jp)} #vn .ro{color:var(--indigo);font-weight:600;font-size:14px} #vn .ru{color:var(--muted)}
+#vn .narr{font:500 17px/1.5 var(--display);font-style:italic}
+#vn .nx{justify-self:end;font-size:12px;color:var(--muted);margin-top:6px}
+#vn .qz{display:grid;gap:8px;margin-top:8px}
+#vn .qz button{border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:10px;font:700 18px var(--jp);text-align:left}
+#vn .qz button.no{background:var(--bad);color:#fff} #vn .qz button.ok{background:var(--good);color:#fff}
 /* Нижнее меню */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
 .tabs button{border:0;background:transparent;display:grid;justify-items:center;gap:2px;padding:4px;color:var(--muted);font-size:12px;font-weight:500}
@@ -374,7 +396,7 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 
 <section class="screen" id="japan">
  <div class="top"><div><h2>Мини-Япония</h2><p class="lead">Города открываются с каждым уровнем. В комнате копится уют.</p></div><div class="yen"><span>円</span><b id="yen1">0</b></div></div>
- <div class="seg"><button type="button" id="jMap">地図 · Карта</button><button type="button" id="jRoom">部屋 · Комната</button></div>
+ <div class="seg three"><button type="button" id="jMap">地図 Карта</button><button type="button" id="jRoom">部屋 Комната</button><button type="button" id="jStory">物語 Сюжет</button></div>
  <div id="mapView" style="display:grid;gap:14px">
   <div class="mapbox"><svg id="map" viewBox="0 0 680 720" role="img" aria-label="Карта Японии с городами"></svg></div>
   <div class="legend"><span><i></i>Закрыт</span><span><i class="o"></i>Открыт</span><span><i class="s"></i>Есть штамп</span></div>
@@ -382,6 +404,7 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
   <p class="lead" style="font-size:14px">На каждой станции в Японии стоит свой штамп, и люди собирают их в тетрадку. Открой город, прочитай карточку и поставь штамп.</p>
   <div class="stamps" id="stamps"></div>
  </div>
+ <div id="storyView" style="display:none;gap:10px"><p class="lead" style="font-size:14px">Новелла о твоём переезде в Токио. Главы открываются с уровнем. В конце каждой короткий вопрос и иены.</p><div id="chaps" style="display:grid;gap:10px"></div></div>
  <div id="roomView" style="display:none;gap:14px">
   <div class="room"><canvas id="roomC"></canvas></div>
   <p class="lead" id="roomHint" style="font-size:14px"></p>
@@ -425,6 +448,7 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
  <button type="button" class="btn" id="gDone">Прочитано</button>
 </div></div>
 
+<div id="vn" role="dialog" aria-modal="true" aria-label="Сюжет"><div class="wm" id="vnWm">東</div><div class="ttl" id="vnTtl"></div><button type="button" class="x" id="vnX">Закрыть</button><div class="av" id="vnAv">雪</div><div class="box" id="vnBox"></div></div>
 <div class="toast" id="toast" aria-live="polite"><div class="ic" id="tIc">初</div><div><small>Новая награда</small><b id="tName">Первый шаг</b></div></div>
 
 <nav class="tabs" aria-label="Разделы">
@@ -698,7 +722,7 @@ const GUIDES=[
  ['onsen','湯','Как ходить в онсэн',2,`<ul><li>Сначала моешься целиком в душевой, сидя на маленьком табурете.</li><li>В воду заходят без одежды. Полотенце в воду не опускают, его кладут на голову.</li><li>Длинные волосы собирают, чтобы не касались воды.</li><li>Во многих онсэнах нельзя с татуировками. Проверяй заранее.</li><li>Синяя занавеска 男 для мужчин, красная 女 для женщин.</li></ul>${ex('ゆ','yu','Этот знак на занавеске значит «горячая вода». Ты пришёл куда надо')}`],
  ['konbini','店','Конбини: выживание',2,`<p>Главные сети: 7-Eleven, FamilyMart и Lawson. Работают круглосуточно.</p><ul><li>Онигири открывают по номерам на упаковке: 1, 2, 3. Тогда водоросли не порвутся.</li><li>Бэнто продавец предложит подогреть: 温めますか？</li><li>В банкоматах 7-Eleven можно снять наличные с иностранной карты.</li><li>Урн на улице мало. Мусор выбрасывают у входа в конбини.</li></ul>`],
  ['train','電','Электрички и метро',2,`<ul><li>Карта Suica или PASMO работает почти во всём транспорте и в конбини.</li><li>Электрички ходят минута в минуту. Опоздание на пять минут здесь событие.</li><li>Последняя электричка уходит около полуночи. Потом остаётся дорогое такси.</li><li>В час пик бывают отдельные вагоны только для женщин, они отмечены розовым.</li></ul>${ex('次は渋谷','tsugi wa shibuya','Следующая станция Сибуя')}`],
- ['work','職','Как переехать работать',4,`<p>Честно о главном. Для обычной рабочей визы Японии обычно нужен диплом вуза или многолетний опыт в профессии, около десяти лет. Без этого прямой путь сложный, но обходные пути есть.</p><h4>Путь через учёбу</h4><p>Языковая школа в Японии даёт студенческую визу. Со студенческой визой можно подрабатывать ограниченное число часов в неделю. Многие потом находят работу и меняют визу.</p><h4>Путь через IT</h4><ul><li>Учишь японский до N3 или N2. Английский тоже помогает: часть IT-компаний в Токио работает на английском.</li><li>Собираешь сильное портфолио сайтов.</li><li>Ищешь вакансии на TokyoDev и Japan Dev. Там компании, которые нанимают иностранцев и помогают с визой.</li></ul><p>Правила меняются, поэтому перед решением проверяй их на сайте посольства Японии.</p>`],
+ ['work','職','Как переехать работать',5,`<p>Честно о главном. Для обычной рабочей визы Японии нужен диплом вуза или около десяти лет опыта по профессии. Если у тебя школа, прямой путь закрыт, но есть обходной, и по нему ездят тысячи людей.</p><h4>Путь через учёбу в Японии</h4><ol><li><b>Языковая школа в Японии.</b> Даёт студенческую визу на год-два. Со студенческой визой можно подрабатывать ограниченное число часов в неделю.</li><li><b>Колледж сэммон гакко.</b> Это японское профессиональное училище на два года. Есть направления по веб-дизайну, программированию и созданию игр. Учёба идёт на японском, поэтому нужен уровень около N2.</li><li><b>Диплом сэммонси.</b> После колледжа он даёт право на рабочую визу, если работа связана с тем, чему ты учился.</li></ol><h4>Ещё один путь</h4><p>Виза «особые навыки», токутэй гино. Диплом для неё не нужен. Нужны японский уровня N4 и экзамен по профессии. Но работа там в основном в сервисе, общепите и гостиницах, не в IT.</p><h4>Что важно знать</h4><ul><li>Языковая школа и колледж платные. Ещё нужно показать, что у тебя или у поручителя есть деньги на учёбу и жизнь.</li><li>Поэтому сейчас главное — заработать на сайтах и копить.</li><li>Английский тоже помогает. Читать со словарём уже хорошее начало.</li><li>Правила меняются. Перед решением проверяй их на сайте посольства Японии.</li></ul>`],
  ['adhd','脳','Учить с СДВГ',2,`<ul><li>Десять минут каждый день лучше часа раз в неделю.</li><li>Даже одна минута считается. Главное не рвать цепочку.</li><li>Пропустил неделю? Не начинай сначала, просто продолжай. За возвращение тут даже есть награда.</li><li>Учи через то, что любишь: аниме, Евангелион, японская озвучка в играх.</li><li>Хвали себя за каждый выученный знак. Это настоящий прогресс.</li></ul>${ex('ゆっくりでいい','yukkuri de ii','Можно не спешить')}`],
  ['voice','声','Как включить японский голос',2,`<p>Приложение говорит голосом, который установлен в самом телефоне. Если японского голоса нет, фразы молчат или их читает русский голос.</p><h4>Samsung</h4><ol><li>«Настройки», потом «Общие настройки», потом «Язык и ввод».</li><li>«Преобразование текста в речь».</li><li>В «Предпочтительный модуль» выбери Samsung или Google.</li><li>Нажми шестерёнку рядом с модулем, потом «Установить голосовые данные».</li><li>Скачай «日本語», японский. Потом закрой и открой «Токио».</li></ol><h4>Другой Андроид</h4><ol><li>Открой «Настройки» и найди в поиске «Синтез речи» или «Преобразование текста в речь».</li><li>Выбери движок «Синтез речи Google» или «Распознавание и синтез речи от Google».</li><li>Нажми шестерёнку рядом с ним, потом «Установить голосовые данные».</li><li>Найди «日本語 (Японский)» и скачай голос.</li><li>Полностью закрой приложение «Токио» и открой снова.</li></ol><p>Если движка Google нет, установи «Распознавание и синтез речи от Google» из Play Маркета. Он бесплатный.</p><h4>Айфон</h4><ol><li>«Настройки», потом «Универсальный доступ», потом «Устный контент».</li><li>«Голоса», потом «Японский».</li><li>Скачай любой голос, например Kyoko.</li><li>Закрой и открой приложение.</li></ol><div class="ex"><div class="t" id="vStat">Проверяю голос…</div></div><button type="button" class="btn sm" onclick="say('こんにちは、東京へようこそ')">Проверить: こんにちは</button>`],
  ['games','遊','Японский через твои игры',3,`<p>Твои любимые игры почти все японские. Это бесплатный тренажёр на сотни часов.</p><ul><li><b>Honkai: Star Rail и Zenless Zone Zero.</b> В настройках включи японскую озвучку, а субтитры оставь русскими. Лови знакомые слова.</li><li><b>Persona 3 Reload и Persona 5 Royal.</b> Японский звук и сама Япония: школа, электрички, конбини, токийские районы. Persona 5 почти вся в Сибуе.</li><li><b>Визуальные новеллы</b> лучший шаг после азбуки. Текст на экране и голос одновременно, можно читать в своём темпе.</li><li><b>Resident Evil и Devil May Cry</b> делает Capcom из Осаки. <b>Silent Hill</b> придумали в Konami.</li><li><b>Евангелион</b> смотри с японским звуком. Ты знаешь сюжет, поэтому слова ловить легче.</li></ul><h4>Слова, которые ты точно слышал</h4>${ex('逃げちゃダメだ','nigecha dame da','Нельзя убегать. Евангелион')}${ex('仲間','nakama','Друзья, команда. Persona, Star Rail')}${ex('怪盗','kaitou','Призрачный вор. Persona 5')}${ex('影','kage','Тень. Persona')}${ex('悪魔','akuma','Демон. Devil May Cry')}`],
@@ -764,7 +788,7 @@ function openCity(id){const c=PL.find(x=>x.id===id),open=cityOpen(c),st=stamps.i
 /* Комната и магазин */
 const ITEMS=[['futon','布','Футон','Матрас, на котором спят прямо на полу',300],['table','卓','Низкий столик','Тябудай для чая и рамена',400],['plant','緑','Растение','Немного зелени в углу',500],['lantern','灯','Красный фонарик','Тётин под потолком',600],['andon','行','Бумажная лампа','Андон, тёплый свет вечером',800],['poster','画','Плакат с роботом','Тот самый фиолетовый',1000],['shelf','本','Полка с мангой','Ряды томиков на стене',1500],['tv','電','Телик и приставка','Для вечера хикки',2000],['kotatsu','炬','Котацу','Столик с одеялом и обогревом',3000],['cat','猫','Кошка','Приютить кошку. Самое дорогое в жизни',4000],['window','窓','Окно с видом','Большое окно на Токийскую башню',6000]];
 let owned=S.get('owned',[]),spent=S.get('spent',0);
-function earned(){const tasks=doneDays().reduce((a,b)=>a+b,0);return (stats.omiYen||0)+stats.correct*10+tasks*50+stats.guides.length*100+stamps.length*200+Object.keys(got).length*100}
+function earned(){const tasks=doneDays().reduce((a,b)=>a+b,0);return (stats.omiYen||0)+(stats.storyYen||0)+stats.correct*10+tasks*50+stats.guides.length*100+stamps.length*200+Object.keys(got).length*100}
 const yen=()=>Math.max(0,earned()-spent);
 function renderShop(){const el=$('shop');el.innerHTML='';const y=yen();ITEMS.forEach(([id,ic,n,d,p])=>{const own=owned.includes(id);const r=document.createElement('div');r.className='item'+(own?' own':'');r.innerHTML=`<span class="ic">${ic}</span><span><b>${n}</b><small>${d}</small></span>`;
   if(own){const s2=document.createElement('span');s2.className='ownd';s2.textContent='Дома ✓';r.appendChild(s2)}else{const b=document.createElement('button');b.type='button';b.className='btn sm';b.textContent=p+' 円';b.disabled=y<p;b.onclick=()=>{if(yen()<p)return;owned.push(id);spent+=p;S.set('owned',owned);S.set('spent',spent);buzz([15,30,15]);refresh();renderShop();drawRoom()};r.appendChild(b)}el.appendChild(r)});
@@ -804,8 +828,34 @@ function drawRoom(){const c=$('roomC'),r=c.getBoundingClientRect();if(!r.width)r
  /* ночь в Токио: в комнате темнеет, свет горит */
  if(night){x.fillStyle='rgba(14,18,40,.38)';x.fillRect(0,0,W,H);x.globalCompositeOperation='lighter';const glow=(cx,cy,r,col)=>{const g=x.createRadialGradient(cx*W,cy*H,0,cx*W,cy*H,r*W);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,W,H)};
   if(o('andon'))glow(.92,.64,.25,'rgba(255,190,110,.45)');if(o('lantern'))glow(.5,.12,.16,'rgba(255,110,80,.4)');if(o('tv'))glow(.675,.55,.16,'rgba(110,150,255,.3)');x.globalCompositeOperation='source-over'}}
-function setJ(v){S.set('jv',v);$('jMap').className=v==='map'?'on':'';$('jRoom').className=v==='room'?'on':'';$('mapView').style.display=v==='map'?'grid':'none';$('roomView').style.display=v==='room'?'grid':'none';if(v==='room'){renderShop();requestAnimationFrame(drawRoom)}else renderMap()}
-$('jMap').onclick=()=>setJ('map');$('jRoom').onclick=()=>setJ('room');
+function setJ(v){S.set('jv',v);$('jMap').className=v==='map'?'on':'';$('jRoom').className=v==='room'?'on':'';$('jStory').className=v==='story'?'on':'';$('mapView').style.display=v==='map'?'grid':'none';$('roomView').style.display=v==='room'?'grid':'none';$('storyView').style.display=v==='story'?'grid':'none';if(v==='story'){renderStory();return}if(v==='room'){renderShop();requestAnimationFrame(drawRoom)}else renderMap()}
+$('jMap').onclick=()=>setJ('map');$('jStory').onclick=()=>setJ('story');$('jRoom').onclick=()=>setJ('room');
+
+/* Сюжет */
+const WHO={yuki:['Юки','雪','#c4455f'],me:['Ты','森','#3d4c80'],clerk:['Продавец','店','#2f7f72'],anno:['Объявление','駅','#6b6275'],boss:['Танака-сан','田','#7a5a42'],cat:['Кошка','猫','#3b3b40'],narr:null};
+const STORY=[
+ {id:'c1',lv:1,k:'着',t:'Прибытие',rw:150,l:[['narr','Аэропорт Ханэда. Табло на японском, пахнет кофе и чем-то сладким.'],['yuki','ようこそ、東京へ！','youkoso, toukyou e!','Добро пожаловать в Токио!'],['yuki','わたしはユキ。あなたは？','watashi wa yuki. anata wa?','Я Юки. А ты?'],['me','はじめまして。モーリーです。','hajimemashite. moorii desu.','Приятно познакомиться. Я Морри.'],['yuki','よろしくね！','yoroshiku ne!','Рада знакомству!'],['narr','Юки протягивает карту Suica. Начинается твоя жизнь в Токио.']],q:['Как сказать «приятно познакомиться»?',['はじめまして','おやすみ','いくら'],0]},
+ {id:'c2',lv:2,k:'店',t:'Первая ночь',rw:150,l:[['narr','Час ночи. Не спится. Внизу светится «Севен-Илевен».'],['clerk','いらっしゃいませ！','irasshaimase!','Добро пожаловать!'],['narr','Ты берёшь онигири и бэнто. Продавец смотрит на бэнто.'],['clerk','温めますか？','atatamemasu ka?','Подогреть?'],['me','はい、お願いします。','hai, onegaishimasu.','Да, пожалуйста.'],['clerk','袋はいりますか？','fukuro wa irimasu ka?','Пакет нужен?'],['me','大丈夫です。','daijoubu desu.','Не нужно, спасибо.'],['narr','Тёплое бэнто, тихая улица и огоньки. Кажется, тут можно жить.']],q:['Продавец спрашивает 温めますか. Чего он хочет?',['Подогреть еду','Дать пакет','Узнать имя'],0]},
+ {id:'c3',lv:3,k:'渋',t:'Сибуя',rw:200,l:[['yuki','渋谷に行こう！','shibuya ni ikou!','Поехали в Сибую!'],['narr','Электричка приходит минута в минуту. В вагоне тихо, никто не говорит по телефону.'],['anno','次は渋谷、渋谷です。','tsugi wa shibuya, shibuya desu.','Следующая станция Сибуя.'],['me','すみません、降ります！','sumimasen, orimasu!','Извините, я выхожу!'],['yuki','ここがスクランブル交差点！','koko ga sukuranburu kousaten!','Это тот самый перекрёсток!'],['me','すごい…','sugoi…','Офигеть…']],q:['Что значит 次は渋谷?',['Следующая станция Сибуя','Сибуя закрыта','Выход в Сибуе'],0]},
+ {id:'c4',lv:4,k:'湯',t:'Хаконэ',rw:200,l:[['yuki','週末は箱根の温泉に行こう。','shuumatsu wa hakone no onsen ni ikou.','На выходных поедем в онсэн в Хаконэ.'],['narr','Горы, туман и запах серы. Где-то здесь стоит Токио-3.'],['me','エヴァの町だ！','eva no machi da!','Это же город из Евы!'],['narr','Сначала моешься сидя, потом медленно опускаешься в горячую воду.'],['me','気持ちいい…','kimochi ii…','Как хорошо…'],['yuki','逃げちゃダメだ。でも、休んでもいいよ。','nigecha dame da. demo, yasunde mo ii yo.','Убегать нельзя. Но отдыхать можно.']],q:['Что говорят в онсэне от удовольствия?',['気持ちいい','すみません','いらっしゃいませ'],0]},
+ {id:'c5',lv:5,k:'職',t:'Собеседование',rw:250,l:[['narr','Маленькая веб-студия в Сибуе. На стене постеры игр.'],['boss','はじめまして、田中です。','hajimemashite, tanaka desu.','Здравствуйте, я Танака.'],['me','モーリーです。よろしくお願いします。','moorii desu. yoroshiku onegaishimasu.','Я Морри. Рад работать вместе.'],['boss','このサイト、あなたが作りましたか？','kono saito, anata ga tsukurimashita ka?','Этот сайт вы сделали?'],['me','はい、作りました！','hai, tsukurimashita!','Да, я сделал!'],['boss','いいですね。来週から来てください。','ii desu ne. raishuu kara kite kudasai.','Отлично. Приходите со следующей недели.'],['me','頑張ります！','ganbarimasu!','Буду стараться!']],q:['Что сказать, когда начинаешь работать с людьми?',['よろしくお願いします','おやすみ','温めますか'],0]},
+ {id:'c6',lv:7,k:'家',t:'Дом',rw:300,l:[['narr','Вечер. Ты возвращаешься с работы. На подоконнике кошка, за окном Токийская башня.'],['me','ただいま。','tadaima.','Я дома.'],['cat','にゃあ。','nyaa.','Мяу. Японские кошки говорят «ня».'],['yuki','おかえり！今日もお疲れ様！','okaeri! kyou mo otsukaresama!','С возвращением! Ты сегодня хорошо потрудился!'],['narr','Тихо, тепло и спокойно. Ровно так, как ты мечтал.'],['narr','Это не конец. Это начало твоей настоящей истории.']],q:['Что японцы говорят, когда приходят домой?',['ただいま','いただきます','さようなら'],0]}];
+let storyDone=S.get('story',[]),VN=null;
+function renderStory(){const el=$('chaps');el.innerHTML='';const L=curLevel();STORY.forEach((c,i)=>{const open=L>=c.lv,dn=storyDone.includes(c.id);const b=document.createElement('button');b.type='button';b.className='chap'+(dn?' done':'')+(open?'':' lock');
+ b.innerHTML=`<span class="ic">${open?c.k:'?'}</span><span><b>Глава ${i+1}. ${open?c.t:'???'}</b><small>${open?(dn?'Пройдена. Можно перечитать':'+'+c.rw+' 円 за прохождение'):'Откроется на уровне '+c.lv}</small></span><span class="st2">${dn?'✓':open?'▶':'ур. '+c.lv}</span>`;
+ b.onclick=()=>{if(open)vnOpen(c)};el.appendChild(b)})}
+function vnOpen(c){VN={c,i:0,quiz:false};$('vnWm').textContent=c.k;$('vnTtl').textContent=c.t;$('vn').classList.add('on');vnShow()}
+function vnClose(){$('vn').classList.remove('on');VN=null;renderStory()}
+function vnShow(){const {c,i}=VN,box=$('vnBox'),av=$('vnAv');
+ if(i>=c.l.length){VN.quiz=true;av.style.background=WHO.yuki[2];av.textContent=WHO.yuki[1];av.style.display='grid';
+  box.innerHTML=`<span class="nm" style="background:${WHO.yuki[2]}">Юки</span><div class="ru" style="color:var(--ink);font-weight:600">${c.q[0]}</div><div class="qz" id="qz"></div>`;
+  c.q[1].forEach((o,k)=>{const b=document.createElement('button');b.type='button';b.textContent=o;b.onclick=e=>{e.stopPropagation();if(k===c.q[2]){b.className='ok';buzz([20,40,20]);const first=!storyDone.includes(c.id);if(first){storyDone.push(c.id);S.set('story',storyDone);stats.storyYen=(stats.storyYen||0)+c.rw;saveStats()}setTimeout(()=>{box.innerHTML=`<span class="nm" style="background:${WHO.yuki[2]}">Юки</span><div class="jp">正解！すごい！</div><div class="ro">seikai! sugoi!</div><div class="ru">Правильно! ${first?'+'+c.rw+' 円 в копилку.':''}</div><div class="nx">Нажми, чтобы закрыть ▸</div>`;VN.end=true;refresh()},500)}else{b.className='no';buzz(60)}};$('qz').appendChild(b)});return}
+ const [w,jp,ro,ru]=c.l[i];
+ if(w==='narr'){av.style.display='none';box.innerHTML=`<div class="narr">${jp}</div><div class="nx">Нажми, чтобы дальше ▸</div>`}
+ else{const W2=WHO[w];av.style.display='grid';av.style.background=W2[2];av.textContent=W2[1];av.classList.add('pop');setTimeout(()=>av.classList.remove('pop'),200);
+  box.innerHTML=`<span class="nm" style="background:${W2[2]}">${W2[0]}</span><div class="jp">${jp}</div><div class="ro">${ro}</div><div class="ru">${ru}</div><div class="nx">Нажми, чтобы дальше ▸</div>`;say(jp)}}
+$('vn').addEventListener('click',e=>{if(!VN||e.target.id==='vnX')return;if(VN.end){vnClose();return}if(VN.quiz)return;VN.i++;vnShow()});
+$('vnX').onclick=e=>{e.stopPropagation();vnClose()};
 
 /* Опыт и звания */
 const RANKS=[[1,'初心者','Новичок'],[3,'旅人','Путник'],[6,'学生','Ученик'],[10,'先輩','Сэмпай'],[15,'達人','Мастер'],[21,'先生','Сэнсэй']];
@@ -850,7 +900,9 @@ const ACH=[
  ['k20','漢','Двадцать кандзи','Выучить все 20 кандзи',()=>learned('J')>=20],
  ['n1','報','Первая новость','Прочитать новость из Японии',()=>(stats.news||0)>=1],
  ['n10','新','В курсе','Прочитать 10 новостей',()=>(stats.news||0)>=10],
- ['n50','聞','Знаток Японии','Прочитать 50 новостей',()=>(stats.news||0)>=50]];
+ ['n50','聞','Знаток Японии','Прочитать 50 новостей',()=>(stats.news||0)>=50],
+ ['ch1','話','Первая глава','Пройти главу сюжета',()=>storyDone.length>=1],
+ ['chall','物','Вся история','Пройти все главы',()=>storyDone.length>=STORY.length]];
 let got=S.get('ach',{}),toastQ=[],toastBusy=false;
 function showToast(){if(toastBusy||!toastQ.length)return;toastBusy=true;const a=toastQ.shift();$('tIc').textContent=a[1];$('tName').textContent=a[2];$('toast').querySelector('small').textContent=a[5]==='city'?'Новое место на карте':'Новая награда';$('toast').classList.add('on');buzz([20,60,20]);setTimeout(()=>{$('toast').classList.remove('on');setTimeout(()=>{toastBusy=false;showToast()},500)},2600)}
 function checkAch(silent){ACH.forEach(a=>{if(!got[a[0]]&&a[4]()){got[a[0]]=todayKey;if(!silent)toastQ.push(a)}});S.set('ach',got);
@@ -875,7 +927,7 @@ window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
 window.addEventListener('resize',()=>{if($('today').classList.contains('on'))sky();if($('japan').classList.contains('on')&&S.get('jv','map')==='room')drawRoom()});
 setInterval(()=>{applyTheme();if($('today').classList.contains('on')){sky();renderJn()}},60000);
 setInterval(()=>{loadWx();loadFx();loadNews()},30*60e3);
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();if(VN)vnClose()}});
 
 checkAch(true);
 applyTheme();bgInit();renderJn();renderOmi();renderTasks();renderSeg();renderRows();renderGrid();next();renderGuides();renderLine();renderMe();renderMap();go(location.hash.slice(1));
