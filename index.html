@@ -275,6 +275,35 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 .seg.four{grid-template-columns:repeat(4,1fr)}
 .seg.four button{font-size:13px;padding:10px 2px}
 .choices.words button{font-size:18px}
+/* Сейчас в Японии */
+.jn{display:grid;gap:12px}
+.jn .hd{display:flex;gap:12px;align-items:center}
+.jn .pk{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font:900 26px var(--jp);color:#fff;background:var(--per)}
+.jn .hd b{display:block;font:700 19px var(--display)}
+.jn .hd small{color:var(--muted)}
+.wx{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.wx div{background:var(--soft);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted)}
+.wx b{display:block;font:700 17px var(--body);color:var(--ink);font-variant-numeric:tabular-nums}
+.wx .j{font:700 13px var(--jp);color:var(--per)}
+.words{display:grid;gap:6px}
+.wd{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;text-align:left;width:100%;background:transparent;border:0;border-top:1px dashed var(--line);padding:8px 0 4px}
+.wd .jp{font:700 18px var(--jp)} .wd .ro{font-size:13px;color:var(--indigo);font-weight:600} .wd .ru{font-size:13px;color:var(--muted)}
+.wd .sp{grid-row:1/4;grid-column:2;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--indigo);font-size:12px}
+.fact{background:var(--soft);border-radius:14px;padding:12px 14px;font-size:15px}
+.fact b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--per);margin-bottom:2px}
+.conv{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px}
+.conv input{width:110px;font:600 16px var(--body);padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.conv output{font-weight:700;font-variant-numeric:tabular-nums}
+:root{--per:#c0432c}
+:root[data-period="morning"]{--per:#d08a3c} :root[data-period="day"]{--per:#2f7f72} :root[data-period="evening"]{--per:#b0583f} :root[data-period="night"]{--per:#6f7fc8}
+/* Новости */
+.news{display:grid;gap:10px}
+.nw{display:grid;gap:4px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.nw small{color:var(--torii);font-weight:600;font-size:12px}
+.nw b{font:700 16px/1.35 var(--display)}
+.nw span{color:var(--muted);font-size:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.nw.read b{color:var(--muted)}
+.src{font-size:13px;color:var(--muted)}
 /* Нижнее меню */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
 .tabs button{border:0;background:transparent;display:grid;justify-items:center;gap:2px;padding:4px;color:var(--muted);font-size:12px;font-weight:500}
@@ -302,6 +331,7 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
   <div class="now" id="tkNow"></div>
  </div>
  <div class="tasks" id="tasks"></div>
+ <div class="card jn" id="jn"></div>
  <div class="card phrase" id="pday"></div>
  <div class="card omi" id="omi"></div>
 </section>
@@ -334,13 +364,16 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 </section>
 
 <section class="screen" id="guides">
- <div><h2>Гайды</h2><p class="lead">Короткие объяснения на пару минут. Прочитал, нажал «Прочитано», получил опыт.</p></div>
- <div class="glist" id="glist"></div>
+ <div><h2>Читать</h2><p class="lead">Новости Японии на русском и короткие гайды.</p></div>
+ <div class="seg"><button type="button" id="rNews">新聞 · Новости</button><button type="button" id="rGuides">案内 · Гайды</button></div>
+ <div id="newsView" style="display:grid;gap:10px"><div class="src" id="newsSrc"></div><div class="news" id="news"></div></div>
+ <div id="guidesView" style="display:none"><div class="glist" id="glist"></div></div>
 </section>
 
 <section class="screen" id="me">
  <div class="card lvl"><div class="badge" id="lvBadge">初</div><div><div class="rank" id="lvRank">Новичок <span>初心者</span></div><small id="lvXp">0 опыта</small><div class="bar"><i id="lvBar"></i></div></div></div>
  <div class="stats"><div><b id="stDays">1</b><small>день пути</small></div><div><b id="stStreak">0</b><small>подряд</small></div><div><b id="stKana">0</b><small>знаков</small></div><div><b id="stCorrect">0</b><small>ответов</small></div></div>
+ <div class="card" style="display:grid;gap:10px"><b>Тема</b><div class="seg three" id="thSeg"><button type="button" data-m="auto">Как в Токио</button><button type="button" data-m="light">Дневная</button><button type="button" data-m="dark">Ночная</button></div><small class="lead" style="font-size:13px">«Как в Токио»: когда в Токио ночь, приложение тоже становится ночным.</small></div>
  <div class="mini"><h2 style="font-size:20px">Награды</h2><span id="achCnt">0 из 0</span></div>
  <div class="ach" id="ach"></div>
  <h2 style="font-size:20px">Линия Токио</h2>
@@ -371,7 +404,7 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
  <button type="button" data-t="today"><span class="g">今</span>Сегодня</button>
  <button type="button" data-t="kana"><span class="g">あ</span>Азбука</button>
  <button type="button" data-t="japan"><span class="g">地</span>Япония</button>
- <button type="button" data-t="guides"><span class="g">読</span>Гайды</button>
+ <button type="button" data-t="guides"><span class="g">読</span>Читать</button>
  <button type="button" data-t="me"><span class="g">私</span>Я</button>
 </nav>
 
@@ -413,6 +446,10 @@ function drawSky(x,W,H,tower){
  while(bx<W){const bw=(26+rnd()*40)*k,bh=H*(.22+rnd()*.42),by=H-bh;x.fillStyle=night?'#0a0f1e':dusk?'#1d2340':'#2b3a5c';x.fillRect(bx,by,bw,bh);
   if(lit){for(let wy=by+8*k;wy<H-6*k;wy+=9*k)for(let wx=bx+5*k;wx<bx+bw-5*k;wx+=8*k){if(rnd()<.38){x.fillStyle=rnd()<.15?'#f2a07e':'#f1d79c';x.globalAlpha=.55+rnd()*.4;x.fillRect(wx,wy,3*k,4*k)}}x.globalAlpha=1}
   bx+=bw+2+rnd()*6}
+ const w=WX&&Date.now()-WX.ts<6*3600e3?wxKind(WX.code):null;
+ if(w==='cloud'||w==='rain'||w==='fog'||w==='storm'||w==='snow'){x.fillStyle=w==='fog'?'rgba(200,205,215,.35)':'rgba(120,130,150,.28)';for(let i=0;i<5;i++){x.beginPath();x.ellipse(W*(.1+i*.22),H*(.12+(i%2)*.08),W*.16,H*.07,0,0,7);x.fill()}}
+ if(w==='rain'||w==='storm'){x.strokeStyle='rgba(190,210,240,.45)';x.lineWidth=1;for(let i=0;i<70;i++){const rx=rnd()*W,ry=rnd()*H;x.beginPath();x.moveTo(rx,ry);x.lineTo(rx-3,ry+9*k);x.stroke()}}
+ if(w==='snow'){x.fillStyle='rgba(255,255,255,.85)';for(let i=0;i<60;i++){x.beginPath();x.arc(rnd()*W,rnd()*H,1.6*k,0,7);x.fill()}}
  return night}
 function sky(){
  const c=$('sky'),r=c.getBoundingClientRect();if(!r.width)return;const dpr=Math.min(2,window.devicePixelRatio||1);c.width=r.width*dpr;c.height=r.height*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);const W=r.width,H=r.height;
@@ -420,8 +457,52 @@ function sky(){
  drawSky(x,W,H,true);
  const f=x.createLinearGradient(0,0,0,H);f.addColorStop(0,'rgba(10,14,28,.55)');f.addColorStop(.5,'rgba(10,14,28,0)');x.fillStyle=f;x.fillRect(0,0,W,H)}
 
+/* Тема по времени Токио */
+const periodOf=h=>h>=5&&h<11?'morning':h>=11&&h<17?'day':h>=17&&h<21?'evening':'night';
+function applyTheme(){const mode=S.get('themeMode','auto'),[h]=tokyoHM(),dark=mode==='dark'||(mode==='auto'&&(h>=18||h<6));const r=document.documentElement;r.dataset.theme=dark?'dark':'light';r.dataset.period=periodOf(h);
+ const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=dark?'#0f131d':'#f4f3ef';document.querySelectorAll('#thSeg button').forEach(b=>b.className=b.dataset.m===mode?'on':'')}
+document.querySelectorAll('#thSeg button').forEach(b=>b.onclick=()=>{S.set('themeMode',b.dataset.m);applyTheme()});
+
+/* Погода и курс */
+let WX=S.get('wx',null),FX=S.get('fx',null);
+function wxKind(c){if(c===0)return'clear';if(c<=3)return'cloud';if(c===45||c===48)return'fog';if((c>=51&&c<=67)||(c>=80&&c<=82))return'rain';if((c>=71&&c<=77)||c===85||c===86)return'snow';if(c>=95)return'storm';return'cloud'}
+const WXN={clear:['晴れ','hare','Ясно'],cloud:['曇り','kumori','Облачно'],fog:['霧','kiri','Туман'],rain:['雨','ame','Дождь'],snow:['雪','yuki','Снег'],storm:['雷','kaminari','Гроза']};
+async function loadWx(){try{if(WX&&Date.now()-WX.ts<30*60e3)return;const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.69&current=temperature_2m,weather_code&timezone=Asia%2FTokyo');const d=await r.json();WX={t:Math.round(d.current.temperature_2m),code:d.current.weather_code,ts:Date.now()};S.set('wx',WX);renderJn();if($('today').classList.contains('on'))sky()}catch(e){}}
+async function loadFx(){try{if(FX&&Date.now()-FX.ts<6*3600e3)return;const r=await fetch('https://open.er-api.com/v6/latest/JPY');const d=await r.json();if(d.rates&&d.rates.KZT){FX={kzt:d.rates.KZT,ts:Date.now()};S.set('fx',FX);renderJn()}}catch(e){}}
+
+/* Сейчас в Японии: уроки и факты по времени суток */
+const PER={
+ morning:{k:'朝',n:'Утро в Японии',w:[['おはようございます','ohayou gozaimasu','Доброе утро, вежливо'],['朝ごはん','asagohan','Завтрак'],['電車','densha','Электричка'],['遅刻','chikoku','Опоздание'],['コーヒー','koohii','Кофе']],g:['train','polite'],f:['В час пик на станциях Токио работали осия: сотрудники, которые помогают пассажирам уместиться в вагон.','Если электричка опоздала, станция выдаёт справку об опоздании. Её показывают на работе или в школе.','Японские школьники сами убирают свои классы. Уборщиков в школах обычно нет.','В Японии около четырёх миллионов автоматов с напитками. Зимой в них продают горячий кофе в банках.']},
+ day:{k:'昼',n:'День в Японии',w:[['昼ごはん','hirugohan','Обед'],['弁当','bentou','Бэнто, еда в коробочке'],['いくら','ikura','Сколько стоит?'],['安い','yasui','Дёшево'],['高い','takai','Дорого']],g:['konbini','nums'],f:['В конбини можно оплатить счета, распечатать документы и отправить посылку.','Кит-Кат в Японии бывает сотен вкусов: матча, саке, васаби.','Kit Kat звучит похоже на «китто кацу», «обязательно победишь». Поэтому его дарят перед экзаменами.','Короткий сон на работе называют инэмури. Его часто считают признаком того, что человек много трудится.']},
+ evening:{k:'夕',n:'Вечер в Японии',w:[['お疲れ様です','otsukaresama desu','Спасибо за работу'],['晩ごはん','bangohan','Ужин'],['乾杯','kanpai','Тост, «до дна»'],['温泉','onsen','Горячий источник'],['美味しい','oishii','Вкусно']],g:['onsen','trip'],f:['После работы коллеги идут в идзакаю. Первая фраза за столом: «とりあえずビール», «для начала пиво».','В некоторых японских зоопарках капибарам зимой готовят горячие ванны, как в онсэне.','Громко хлебать рамен в Японии нормально. Так показываешь, что вкусно.','На Рождество японцы едят курицу из KFC и заказывают её заранее.']},
+ night:{k:'夜',n:'Ночь в Японии',w:[['こんばんは','konbanwa','Добрый вечер'],['夜景','yakei','Ночной вид на город'],['眠い','nemui','Хочу спать'],['月','tsuki','Луна'],['おやすみ','oyasumi','Спокойной ночи']],g:['adhd','write','cheat'],f:['Кто опоздал на последнюю электричку, ночует в манга-кафе. Там есть кабинка, душ и тысячи томов манги.','Японцы видят на Луне не лицо, а кролика, который толчёт рисовые лепёшки моти.','В Токио больше ресторанов со звёздами Мишлен, чем в любом другом городе мира.','Конбини не закрываются на ночь. Ночью там уютно и тихо.']}};
+function renderJn(){const [h,m]=tokyoHM(),pk=periodOf(h),P2=PER[pk],day=dayN;
+ const diff=Math.round((540+new Date().getTimezoneOffset())/60);const dtxt=diff===0?'как у тебя':(diff>0?'+'+diff:diff)+' ч от тебя';
+ const w=WX?WXN[wxKind(WX.code)]:null;
+ const fact=P2.f[(day+h)%P2.f.length],gid=P2.g[day%P2.g.length],g=GUIDES.find(x=>x[0]===gid);
+ $('jn').innerHTML=`<div class="hd"><div class="pk">${P2.k}</div><div><b>${P2.n}</b><small>Токио ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}, ${dtxt}</small></div></div>
+ <div class="wx"><div>Погода<b>${w?WX.t+'°':'…'}</b><span class="j">${w?w[0]+' '+w[2].toLowerCase():'загрузка'}</span></div><div>1000 円<b>${FX?Math.round(FX.kzt*1000).toLocaleString('ru-RU')+' ₸':'…'}</b>${FX?'по курсу':'загрузка'}</div><div>Разница<b>${diff>0?'+':''}${diff} ч</b>с Токио</div></div>
+ <div class="lbl" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Слова этого времени</div><div class="words" id="jnW"></div>
+ <div class="fact"><b>Прикол дня</b>${fact}</div>
+ ${FX?`<div class="conv"><label for="cv">Перевести</label><input id="cv" type="number" inputmode="numeric" value="${S.get('cv',1000)}" min="0"> 円 = <output id="cvo"></output></div>`:''}
+ ${g?`<button type="button" class="btn ghost sm" id="jnG" style="justify-self:start">Гайд к этому времени: ${g[2]}</button>`:''}`;
+ const wl=$('jnW');P2.w.forEach(([j,r,t])=>{const b=document.createElement('button');b.type='button';b.className='wd';b.innerHTML=`<span class="jp">${j}</span><span class="ro">${r}</span><span class="ru">${t}</span><span class="sp">▶</span>`;b.onclick=()=>{say(j);stats.listened++;saveStats();refresh()};wl.appendChild(b)});
+ if(FX){const cv=$('cv'),upd=()=>{const v=Math.max(0,+cv.value||0);S.set('cv',v);$('cvo').textContent=Math.round(v*FX.kzt).toLocaleString('ru-RU')+' ₸'};cv.oninput=upd;upd()}
+ if(g)$('jnG').onclick=()=>openGuide(gid)}
+
+/* Новости */
+let NEWS=S.get('news',null),newsRead=S.get('newsRead',[]);
+function ago(iso){if(!iso)return'';const m=Math.round((Date.now()-new Date(iso))/60000);if(m<60)return m+' мин назад';const h=Math.round(m/60);if(h<24)return h+' ч назад';const d=Math.round(h/24);return d+' дн назад'}
+function renderNews(){const el=$('news');el.innerHTML='';if(!NEWS||!NEWS.items){el.innerHTML='<p class="lead">Новости загружаются. Нужен интернет.</p>';return}
+ $('newsSrc').innerHTML=`Источник: nippon.com на русском · обновлено ${ago(NEWS.updated)}`;
+ NEWS.items.forEach(n=>{const a=document.createElement('a');a.href=n.l;a.target='_blank';a.rel='noopener';a.className='nw'+(newsRead.includes(n.l)?' read':'');a.innerHTML=`<small>${ago(n.date)}</small><b></b><span></span>`;a.querySelector('b').textContent=n.t;a.querySelector('span').textContent=n.d;
+  a.onclick=()=>{if(!newsRead.includes(n.l)){newsRead.push(n.l);newsRead=newsRead.slice(-200);S.set('newsRead',newsRead);stats.news=(stats.news||0)+1;saveStats();if(!done.watch)setDone('watch',true);else refresh();setTimeout(renderNews,300)}};el.appendChild(a)})}
+async function loadNews(){try{const r=await fetch('news.json?'+Math.floor(Date.now()/600000),{cache:'no-store'});if(!r.ok)return;NEWS=await r.json();S.set('news',NEWS);renderNews()}catch(e){}}
+function setR(v){S.set('rv',v);$('rNews').className=v==='news'?'on':'';$('rGuides').className=v==='guides'?'on':'';$('newsView').style.display=v==='news'?'grid':'none';$('guidesView').style.display=v==='guides'?'block':'none';if(v==='news')renderNews()}
+$('rNews').onclick=()=>setR('news');$('rGuides').onclick=()=>setR('guides');
+
 /* Задачи дня */
-const TASKS=[['kana','あ','Азбука, 5 минут','10 верных ответов закроют задачу'],['phrase','言','Фраза дня вслух','Она ниже, прочитай и послушай'],['watch','夜','Немного Японии','Аниме с японским звуком, гайд или штамп города']];
+const TASKS=[['kana','あ','Азбука, 5 минут','10 верных ответов закроют задачу'],['phrase','言','Фраза дня вслух','Она ниже, прочитай и послушай'],['watch','夜','Немного Японии','Новость, гайд, штамп города или серия аниме']];
 let done=S.get('done_'+todayKey,{});
 function doneDays(){const out=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('jp_done_')){const v=JSON.parse(localStorage.getItem(k)||'{}');out.push(Object.values(v).filter(Boolean).length)}}}catch(e){}return out}
 function streakCalc(){let n=0;for(let i=0;i<400;i++){const v=S.get('done_'+dkey(Date.now()-i*864e5),{});if(Object.values(v).some(Boolean))n++;else if(i>0)break}return n}
@@ -649,7 +730,10 @@ const ACH=[
  ['dk','福','Большая удача','Вытянуть 大吉',()=>!!stats.daikichi],
  ['kyo','結','Оставил в храме','Вытянуть 凶 и не расстроиться',()=>!!stats.kyo],
  ['k5','木','Первые кандзи','Выучить 5 кандзи',()=>learned('J')>=5],
- ['k20','漢','Двадцать кандзи','Выучить все 20 кандзи',()=>learned('J')>=20]];
+ ['k20','漢','Двадцать кандзи','Выучить все 20 кандзи',()=>learned('J')>=20],
+ ['n1','報','Первая новость','Прочитать новость из Японии',()=>(stats.news||0)>=1],
+ ['n10','新','В курсе','Прочитать 10 новостей',()=>(stats.news||0)>=10],
+ ['n50','聞','Знаток Японии','Прочитать 50 новостей',()=>(stats.news||0)>=50]];
 let got=S.get('ach',{}),toastQ=[],toastBusy=false;
 function showToast(){if(toastBusy||!toastQ.length)return;toastBusy=true;const a=toastQ.shift();$('tIc').textContent=a[1];$('tName').textContent=a[2];$('toast').querySelector('small').textContent=a[5]==='city'?'Новое место на карте':'Новая награда';$('toast').classList.add('on');buzz([20,60,20]);setTimeout(()=>{$('toast').classList.remove('on');setTimeout(()=>{toastBusy=false;showToast()},500)},2600)}
 function checkAch(silent){ACH.forEach(a=>{if(!got[a[0]]&&a[4]()){got[a[0]]=todayKey;if(!silent)toastQ.push(a)}});S.set('ach',got);
@@ -668,16 +752,18 @@ function renderLine(){const el=$('line');el.innerHTML='';ST.forEach(([a,b,jp,ru,
 
 /* Навигация */
 const tabs=['today','kana','japan','guides','me'];
-function go(t){if(t==='road')t='me';if(t==='scenes')t='japan';if(!tabs.includes(t))t='today';tabs.forEach(x=>$(x).classList.toggle('on',x===t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);$('sheet').classList.remove('on');window.scrollTo(0,0);if(t==='today')requestAnimationFrame(sky);if(t==='me')renderMe();if(t==='japan')setJ(S.get('jv','map'))}
+function go(t){if(t==='road')t='me';if(t==='scenes')t='japan';if(!tabs.includes(t))t='today';tabs.forEach(x=>$(x).classList.toggle('on',x===t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);$('sheet').classList.remove('on');window.scrollTo(0,0);if(t==='today')requestAnimationFrame(sky);if(t==='me')renderMe();if(t==='japan')setJ(S.get('jv','map'));if(t==='guides')setR(S.get('rv','news'));if(t==='today')renderJn()}
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
 window.addEventListener('resize',()=>{if($('today').classList.contains('on'))sky();if($('japan').classList.contains('on')&&S.get('jv','map')==='room')drawRoom()});
-setInterval(()=>{if($('today').classList.contains('on'))sky()},60000);
+setInterval(()=>{applyTheme();if($('today').classList.contains('on')){sky();renderJn()}},60000);
+setInterval(()=>{loadWx();loadFx();loadNews()},30*60e3);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 
 checkAch(true);
-renderOmi();renderTasks();renderSeg();renderRows();renderGrid();next();renderGuides();renderLine();renderMe();renderMap();go(location.hash.slice(1));
+applyTheme();renderJn();renderOmi();renderTasks();renderSeg();renderRows();renderGrid();next();renderGuides();renderLine();renderMe();renderMap();go(location.hash.slice(1));
 setTimeout(()=>checkAch(false),800);
+loadWx();loadFx();loadNews();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
 </body>
