@@ -326,6 +326,16 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 #vn .qz{display:grid;gap:8px;margin-top:8px}
 #vn .qz button{border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:10px;font:700 18px var(--jp);text-align:left}
 #vn .qz button.no{background:var(--bad);color:#fff} #vn .qz button.ok{background:var(--good);color:#fff}
+/* Копилка и анкета */
+.route{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.route span:last-child{font:700 15px var(--jp);color:var(--torii)}
+.track{position:relative;height:6px;border-radius:9px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px)}
+.track i{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:var(--torii)}
+.track b{position:absolute;top:50%;transform:translate(-50%,-55%) rotate(0deg);font-size:20px;line-height:1;color:var(--indigo);transition:left .6s}
+.pigsum b{font:700 26px var(--body);font-variant-numeric:tabular-nums}
+.pigsum small{color:var(--muted)}
+.piglog{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:14px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.mic{width:30px;height:30px;border-radius:50%;display:inline-grid;place-items:center;border:1px solid var(--line);background:var(--soft);font-size:14px;cursor:pointer}
 /* Нижнее меню */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
 .tabs button{border:0;background:transparent;display:grid;justify-items:center;gap:2px;padding:4px;color:var(--muted);font-size:12px;font-weight:500}
@@ -422,6 +432,8 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 <section class="screen" id="me">
  <div class="card lvl"><div class="badge" id="lvBadge">初</div><div><div class="rank" id="lvRank">Новичок <span>初心者</span></div><small id="lvXp">0 опыта</small><div class="bar"><i id="lvBar"></i></div></div></div>
  <div class="stats"><div><b id="stDays">1</b><small>день пути</small></div><div><b id="stStreak">0</b><small>подряд</small></div><div><b id="stKana">0</b><small>знаков</small></div><div><b id="stCorrect">0</b><small>ответов</small></div></div>
+ <div class="card" style="display:grid;gap:10px" id="pig"></div>
+ <div class="card" style="display:grid;gap:10px" id="qCard"></div>
  <div class="card" style="display:grid;gap:10px"><b>Тема</b><div class="seg three" id="thSeg"><button type="button" data-m="auto">Как в Токио</button><button type="button" data-m="light">桜 Дневная</button><button type="button" data-m="dark">夜 Неоновая</button></div><small class="lead" style="font-size:13px">«Как в Токио»: когда в Токио ночь, приложение тоже становится ночным.</small></div>
  <div class="card" style="display:grid;gap:10px"><b>Японский голос</b><small class="lead" style="font-size:14px" id="vStat2">Проверяю…</small><button type="button" class="btn ghost sm" style="justify-self:start" onclick="openGuide('voice')">Как включить голос</button></div>
  <div class="mini"><h2 style="font-size:20px">Награды</h2><span id="achCnt">0 из 0</span></div>
@@ -624,7 +636,7 @@ function renderJn(){const [h,m]=tokyoHM(),pk=periodOf(h),P2=PER[pk],day=dayN;
  <div class="fact"><b>Прикол дня</b>${fact}</div>
  ${FX?`<div class="conv"><label for="cv">Перевести</label><input id="cv" type="number" inputmode="numeric" value="${S.get('cv',1000)}" min="0"> 円 = <output id="cvo"></output></div>`:''}
  ${g?`<button type="button" class="btn ghost sm" id="jnG" style="justify-self:start">Гайд к этому времени: ${g[2]}</button>`:''}`;
- const wl=$('jnW');P2.w.forEach(([j,r,t])=>{const b=document.createElement('button');b.type='button';b.className='wd';b.innerHTML=`<span class="jp">${j}</span><span class="ro">${r}</span><span class="ru">${t}</span><span class="sp">▶</span>`;b.onclick=()=>{say(j);stats.listened++;saveStats();refresh()};wl.appendChild(b)});
+ const wl=$('jnW');P2.w.forEach(([j,r,t])=>{const b=document.createElement('button');b.type='button';b.className='wd';b.innerHTML=`<span class="jp">${j}</span><span class="ro">${r}</span><span class="ru">${t}</span><span class="sp">▶</span>`;b.onclick=e=>{if(e.target.closest('.mic')){speakCheck(j,r,t);return}say(j);stats.listened++;saveStats();refresh()};const mc=document.createElement('span');mc.className='mic';mc.textContent='🎤';mc.style.cssText='grid-row:1/4;grid-column:3';mc.setAttribute('aria-label','Сказать вслух');b.style.gridTemplateColumns='1fr auto auto';b.appendChild(mc);wl.appendChild(b)});
  if(FX){const cv=$('cv'),upd=()=>{const v=Math.max(0,+cv.value||0);S.set('cv',v);$('cvo').textContent=Math.round(v*FX.kzt).toLocaleString('ru-RU')+' ₸'};cv.oninput=upd;upd()}
  if(g)$('jnG').onclick=()=>openGuide(gid)}
 
@@ -653,8 +665,9 @@ function renderTasks(){const el=$('tasks');el.innerHTML='';TASKS.forEach(([id,ic
 /* Фраза дня */
 const PD=[['逃げちゃダメだ','nigecha dame da','«Нельзя убегать». Синдзи повторял это себе. А тебе иногда можно сбежать: в онсэн.'],['ゆっくりでいい','yukkuri de ii','«Можно не спешить».'],['一歩ずつ','ippo zutsu','«Шаг за шагом».'],['大丈夫','daijoubu','«Всё нормально, справлюсь».'],['夢','yume','«Мечта». Твоя: 東京 или 大阪.'],['今日もお疲れ様','kyou mo otsukaresama','«Ты сегодня хорошо потрудился».'],['頑張って','ganbatte','«Держись, у тебя получится».'],['仲間','nakama','«Свои, команда». Как в Persona и Star Rail.'],['怪盗','kaitou','«Призрачный вор». Persona 5.']];
 const P=PD[(dayN-1)%PD.length];
-$('pday').innerHTML=`<div class="v">${P[0]}</div><div><div class="lbl">Фраза дня</div><div class="ro">${P[1]}</div><p>${P[2]}</p><button type="button" class="btn sm" id="pSay">Слушать</button></div>`;
+$('pday').innerHTML=`<div class="v">${P[0]}</div><div><div class="lbl">Фраза дня</div><div class="ro">${P[1]}</div><p>${P[2]}</p><div class="row" style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn sm" id="pSay">Слушать</button><button type="button" class="btn ghost sm" id="pMic">🎤 Сказать</button></div></div>`;
 $('pSay').onclick=()=>{say(P[0]);if(!done.phrase)setDone('phrase',true)};
+$('pMic').onclick=()=>speakCheck(P[0],P[1],P[2],()=>{if(!done.phrase)setDone('phrase',true)});
 
 /* Омикудзи */
 const OMI=[[15,'大吉','だいきち','Большая удача',300,['Сегодня всё получится. Хороший день, чтобы выучить новый ряд азбуки.','Звёзды за тебя. Сделай сегодня один шаг к Токио.','Большая удача приходит к тем, кто не сдаётся.']],
@@ -710,8 +723,8 @@ const SC=[
  ['Храм','神社 · святилище','神','linear-gradient(135deg,#8c2f22,#c0432c)',[['お参り','omairi','Посещение храма'],['二礼二拍手一礼','nirei nihakushu ichirei','Два поклона, два хлопка, один поклон. Так молятся в святилище'],['おみくじ','omikuji','Бумажка с предсказанием']]],
  ['Первый день в офисе','会社 · компания','社','linear-gradient(135deg,#3a4256,#5a6580)',[['はじめまして','hajimemashite','Приятно познакомиться'],['よろしくお願いします','yoroshiku onegaishimasu','Рад работать вместе'],['お疲れ様です','otsukaresama desu','Спасибо за работу. Так здороваются и прощаются коллеги']]]];
 function sceneCard(si){const [t,w,big,bg,ps]=SC[si];const d=document.createElement('div');d.className='card scene';d.innerHTML=`<div class="art" style="background:${bg}"><span class="big">${big}</span><div><h3>${t}</h3><small>${w}</small></div></div>`;
- ps.forEach(([jp,ro,ru])=>{const b=document.createElement('button');b.type='button';b.className='ph';b.innerHTML=`<span class="jp">${jp}</span><span class="ro">${ro}</span><span class="ru">${ru}</span><span class="sp" aria-hidden="true">▶</span>`;
-  b.onclick=()=>{say(jp);stats.listened++;if(!stats.scenes.includes(si))stats.scenes.push(si);saveStats();refresh()};d.appendChild(b)});return d}
+ ps.forEach(([jp,ro,ru])=>{const b=document.createElement('button');b.type='button';b.className='ph';b.innerHTML=`<span class="jp">${jp}</span><span class="ro">${ro}</span><span class="ru">${ru}</span><span class="sp" aria-hidden="true">▶</span><span class="mic" style="grid-row:1/4;grid-column:3" aria-label="Сказать вслух">🎤</span>`;b.style.gridTemplateColumns='1fr auto auto';
+  b.onclick=e=>{if(e.target.closest('.mic')){speakCheck(jp,ro,ru);return}say(jp);stats.listened++;if(!stats.scenes.includes(si))stats.scenes.push(si);saveStats();refresh()};d.appendChild(b)});return d}
 
 /* Гайды */
 const ex=(j,r,t)=>`<div class="ex"><div class="j">${j}</div><div class="r">${r}</div><div class="t">${t}</div></div>`;
@@ -788,7 +801,7 @@ function openCity(id){const c=PL.find(x=>x.id===id),open=cityOpen(c),st=stamps.i
 /* Комната и магазин */
 const ITEMS=[['futon','布','Футон','Матрас, на котором спят прямо на полу',300],['table','卓','Низкий столик','Тябудай для чая и рамена',400],['plant','緑','Растение','Немного зелени в углу',500],['lantern','灯','Красный фонарик','Тётин под потолком',600],['andon','行','Бумажная лампа','Андон, тёплый свет вечером',800],['poster','画','Плакат с роботом','Тот самый фиолетовый',1000],['shelf','本','Полка с мангой','Ряды томиков на стене',1500],['tv','電','Телик и приставка','Для вечера хикки',2000],['kotatsu','炬','Котацу','Столик с одеялом и обогревом',3000],['cat','猫','Кошка','Приютить кошку. Самое дорогое в жизни',4000],['window','窓','Окно с видом','Большое окно на Токийскую башню',6000]];
 let owned=S.get('owned',[]),spent=S.get('spent',0);
-function earned(){const tasks=doneDays().reduce((a,b)=>a+b,0);return (stats.omiYen||0)+(stats.storyYen||0)+stats.correct*10+tasks*50+stats.guides.length*100+stamps.length*200+Object.keys(got).length*100}
+function earned(){const tasks=doneDays().reduce((a,b)=>a+b,0);return (stats.omiYen||0)+(stats.storyYen||0)+(stats.speakYen||0)+stats.correct*10+tasks*50+stats.guides.length*100+stamps.length*200+Object.keys(got).length*100}
 const yen=()=>Math.max(0,earned()-spent);
 function renderShop(){const el=$('shop');el.innerHTML='';const y=yen();ITEMS.forEach(([id,ic,n,d,p])=>{const own=owned.includes(id);const r=document.createElement('div');r.className='item'+(own?' own':'');r.innerHTML=`<span class="ic">${ic}</span><span><b>${n}</b><small>${d}</small></span>`;
   if(own){const s2=document.createElement('span');s2.className='ownd';s2.textContent='Дома ✓';r.appendChild(s2)}else{const b=document.createElement('button');b.type='button';b.className='btn sm';b.textContent=p+' 円';b.disabled=y<p;b.onclick=()=>{if(yen()<p)return;owned.push(id);spent+=p;S.set('owned',owned);S.set('spent',spent);buzz([15,30,15]);refresh();renderShop();drawRoom()};r.appendChild(b)}el.appendChild(r)});
@@ -857,6 +870,73 @@ function vnShow(){const {c,i}=VN,box=$('vnBox'),av=$('vnAv');
 $('vn').addEventListener('click',e=>{if(!VN||e.target.id==='vnX')return;if(VN.end){vnClose();return}if(VN.quiz)return;VN.i++;vnShow()});
 $('vnX').onclick=e=>{e.stopPropagation();vnClose()};
 
+/* Скажи вслух */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function norm(t){return (t||'').replace(/[\s、。！？!?…・,.「」ー〜~]/g,'').toLowerCase()}
+function sim(a,b){a=norm(a);b=norm(b);if(!a||!b)return 0;const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>[i,...Array(n).fill(0)]);for(let j=1;j<=n;j++)d[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return 1-d[m][n]/Math.max(m,n)}
+function speakCheck(jp,ro,ru,onOk){
+ const box=document.createElement('div');box.style.cssText='display:grid;gap:12px;justify-items:center;text-align:center';
+ box.innerHTML=`<div style="font:700 28px var(--jp)">${jp}</div><div style="color:var(--indigo);font-weight:600">${ro}</div><div class="lead">${ru}</div><button type="button" class="btn" id="micB" style="width:96px;height:96px;border-radius:50%;font-size:36px">🎤</button><div id="micR" class="lead">Нажми на микрофон и скажи фразу</div><button type="button" class="btn ghost sm" id="micL">Сначала послушать</button>`;
+ openSheet({ic:'声',title:'Скажи вслух',sub:'Телефон проверит, понял ли он тебя',body:'',extra:[box],btn:'Готово'});
+ $('micL').onclick=()=>say(jp);
+ const R=$('micR'),B=$('micB');
+ if(!SR){R.innerHTML='Этот браузер не умеет распознавать речь. Открой приложение в Chrome.';B.disabled=true;return}
+ B.onclick=()=>{let rec;try{rec=new SR()}catch(e){R.textContent='Не получилось включить микрофон.';return}rec.lang='ja-JP';rec.interimResults=false;rec.maxAlternatives=5;
+  B.style.background='var(--torii)';B.style.borderColor='var(--torii)';R.textContent='Слушаю…';buzz(20);
+  rec.onresult=e=>{const alts=[...e.results[0]].map(a=>a.transcript);let best=0,heard=alts[0];alts.forEach(a=>{const v=sim(a,jp);if(v>best){best=v;heard=a}});const pc=Math.round(best*100);
+   if(best>=.6){R.innerHTML=`<b style="color:var(--good)">Отлично! ${pc}%</b><br>Услышал: ${heard}`;buzz([20,40,20]);stats.spoke=(stats.spoke||0)+1;stats.speakYen=(stats.speakYen||0)+20;saveStats();if(onOk)onOk();refresh()}
+   else if(best>=.35)R.innerHTML=`<b style="color:var(--gold)">Почти! ${pc}%</b><br>Услышал: ${heard}<br>Попробуй ещё раз, медленнее.`;
+   else R.innerHTML=`<b style="color:var(--bad)">Пока не похоже, ${pc}%</b><br>Услышал: ${heard||'ничего'}<br>Сначала послушай, потом повтори.`;
+   R.innerHTML+='<br><small>Телефон иногда пишет то же слово иероглифами, поэтому процент может быть ниже, чем на самом деле.</small>'};
+  rec.onerror=e=>{R.textContent=e.error==='not-allowed'?'Нужно разрешить микрофон в настройках браузера.':e.error==='no-speech'?'Ничего не услышал. Попробуй ещё.':'Не получилось распознать. Нужен интернет.'};
+  rec.onend=()=>{B.style.background='';B.style.borderColor=''};
+  try{rec.start()}catch(e){R.textContent='Микрофон занят. Попробуй ещё раз.'}}}
+
+/* Копилка «Билет в Токио» */
+let PIG=S.get('pig',{goal:0,log:[]});
+const pigSum=()=>PIG.log.reduce((a,b)=>a+b.v,0);
+const fmt=n=>Math.round(n).toLocaleString('ru-RU');
+function renderPig(){const el=$('pig');if(!el)return;const sum=pigSum(),g=PIG.goal,pc=g?Math.min(1,sum/g):0;
+ el.innerHTML=`<div class="mini"><b style="font:700 18px var(--display);color:var(--ink)">Билет в Токио</b><span>${g?Math.round(pc*100)+'%':'цель не задана'}</span></div>
+ <div class="route"><span>Алматы</span><div class="track"><i style="width:${pc*100}%"></i><b style="left:${pc*100}%">✈</b></div><span>東京</span></div>
+ <div class="pigsum"><b>${fmt(sum)} ₸</b>${g?` из ${fmt(g)} ₸`:''}${FX&&sum?` <small>≈ ${fmt(sum/FX.kzt)} 円</small>`:''}</div>
+ <div class="conv"><input id="pigV" type="number" inputmode="numeric" placeholder="Сумма, ₸" min="0"><button type="button" class="btn sm" id="pigAdd">Отложил</button><button type="button" class="btn ghost sm" id="pigSub">Взял</button></div>
+ <div class="conv"><label for="pigG">Цель</label><input id="pigG" type="number" inputmode="numeric" placeholder="например, на билеты" value="${g||''}" min="0"><span>₸</span></div>
+ <small class="lead" style="font-size:13px">Записывай только настоящие деньги, которые правда отложил. Цену поездки посчитай сам: билеты, виза, жильё на неделю. Цифры видишь только ты.</small>
+ ${PIG.log.length?`<div class="piglog">${PIG.log.slice(-5).reverse().map(x=>`<span>${x.d}</span><b style="color:${x.v>0?'var(--good)':'var(--bad)'}">${x.v>0?'+':''}${fmt(x.v)} ₸</b>`).join('')}</div>`:''}`;
+ const add=k=>{const v=Math.round(Math.abs(+$('pigV').value||0));if(!v)return;PIG.log.push({d:todayKey.slice(5).split('-').reverse().join('.'),v:k*v});S.set('pig',PIG);buzz(k>0?[20,40,20]:30);renderPig();refresh()};
+ $('pigAdd').onclick=()=>add(1);$('pigSub').onclick=()=>add(-1);
+ $('pigG').onchange=()=>{PIG.goal=Math.max(0,Math.round(+$('pigG').value||0));S.set('pig',PIG);renderPig();refresh()}}
+
+/* Анкета: 100 вопросов для Claude */
+const QS=[
+ ['Обо мне',['Как тебя лучше называть?','Сколько тебе лет?','В каком городе ты живёшь?','С кем ты живёшь?','Ты больше интроверт или экстраверт?','Опиши себя тремя словами.','Чем ты в себе гордишься?','Что в себе хотел бы изменить?','Каким было твоё детство, в двух словах?','Кто для тебя пример, живой или вымышленный?']],
+ ['День и силы',['Во сколько ты обычно встаёшь и ложишься?','Как выглядит твой обычный рабочий день?','В какое время дня у тебя больше всего сил?','Что помогает начать дело, когда сил нет?','Что точно сбивает тебя с дела?','Сколько часов ты обычно спишь?','Как ты обычно ешь в течение дня?','Двигаешься ли ты: спорт, прогулки?','Что ты делаешь, когда грустно?','Какие мелочи тебя радуют?']],
+ ['СДВГ и учёба',['Как СДВГ мешает тебе больше всего?','Что ты уже пробовал учить и бросил?','Почему обычно бросаешь?','Как тебе легче запоминать: глазами, ушами или руками?','Тебе больше нравятся короткие задания или длинные?','Нужны ли тебе напоминания и какие не бесят?','Как ты реагируешь на свои ошибки?','Что помогает тебе не забывать важное?','Чему ты научился сам, и получилось?','Что тебя заставляет залипнуть надолго в хорошем смысле?']],
+ ['Япония',['Когда ты впервые захотел в Японию и почему?','Чего ты больше всего ждёшь от жизни там?','Чего боишься в переезде?','Был ли ты за границей?','Какие японские слова ты уже знаешь?','Какое аниме или игра лучше всего показали тебе Японию?','Куда ты пойдёшь в первый день в Токио?','Готов ли ты жить один в маленькой квартире?','Хочешь остаться в Японии навсегда или пожить какое-то время?','По чему из дома ты будешь скучать?']],
+ ['Игры и аниме',['Твой топ-5 аниме?','Любимый персонаж Евангелиона и почему?','Любимый персонаж Persona?','Кто твои мейны в Star Rail и ZZZ?','Любимая визуальная новелла?','Какая игра или аниме изменили тебя?','Что тебе нравится в хоррорах: страх, атмосфера или сюжет?','Во что ты играешь прямо сейчас?','Твой любимый опенинг?','Что бы ты хотел создать сам: игру, новеллу, аниме?']],
+ ['Работа и деньги',['Что тебе нравится в нынешней работе?','Что больше всего бесит в работе?','Сколько денег в месяц нужно, чтобы жить спокойно?','Сколько уходит на кредиты в месяц?','Есть ли у тебя сбережения?','Какая сумма на Японию кажется тебе реальной целью?','Сколько часов в неделю ты готов тратить на сайты?','Что мешает искать клиентов?','Писать незнакомым людям тебе легко или страшно?','Какой доход через год был бы для тебя победой?']],
+ ['Сайты и навыки',['Что ты уже умеешь делать в сайтах сам?','Чему хочешь научиться в первую очередь?','Тебе больше нравится дизайн или код?','Какие сайты тебе нравятся и почему?','Рисуешь ли ты?','Умеешь ли монтировать видео?','Какая работа в IT кажется мечтой?','Хочешь ли ты делать игры или новеллы?','Чему ты готов учиться по часу в день?','Нужен ли тебе наставник, который проверяет и подгоняет?']],
+ ['Люди',['С кем ты можешь поговорить честно?','Есть ли у тебя друзья рядом?','Какие у тебя сейчас отношения с мамой?','Кто тебя поддерживает?','Кого ты хочешь порадовать?','Что мне важно помнить про Настю? Можно пропустить.','Что тебе важно в близких людях?','Легко ли тебе просить о помощи?','Как ты показываешь заботу?','Чего ты ждёшь от меня как от помощника?']],
+ ['Чувства',['Что тебя пугает больше всего?','Что тебя злит?','Что тебя успокаивает?','Когда ты последний раз был по-настоящему счастлив?','Что ты делаешь, когда тревожно?','Есть ли место, где тебе спокойно?','Как понять, что тебе плохо и нужна поддержка?','Какие слова тебе помогают?','Какие слова тебя бесят?','Что ты хочешь услышать в трудный день?']],
+ ['Мечты и как со мной говорить',['Где ты видишь себя через год?','А через пять лет?','Какие у тебя мечты кроме Японии? Типография с кофейней ещё в силе?','Что бы ты сделал, если бы деньги не были проблемой?','Каким человеком ты хочешь быть?','Как мне с тобой говорить: коротко или подробно?','Мне шутить с тобой или лучше серьёзно?','Мне быть мягче или строже, когда ты откладываешь дела?','Что мне не делать никогда?','Что ещё мне важно знать о тебе?']]];
+let QA=S.get('quiz',{});
+const qCount=()=>Object.values(QA).filter(v=>v&&v.trim()).length;
+function quizText(){let out='Мои ответы на анкету для Claude:\n';QS.forEach(([g,qs],gi)=>{const lines=qs.map((q,i)=>{const a=QA[gi+'_'+i];return a&&a.trim()?`${gi*10+i+1}. ${q}\n— ${a.trim()}`:null}).filter(Boolean);if(lines.length)out+=`\n${g}\n`+lines.join('\n')+'\n'});return out}
+function openQuiz(){const wrap=document.createElement('div');wrap.style.cssText='display:grid;gap:18px';
+ const top=document.createElement('div');top.className='lead';top.id='qProg';wrap.appendChild(top);
+ QS.forEach(([g,qs],gi)=>{const sec=document.createElement('div');sec.style.cssText='display:grid;gap:10px';sec.innerHTML=`<h4 style="margin:6px 0 0;font:700 18px var(--display)">${gi+1}. ${g}</h4>`;
+  qs.forEach((q,i)=>{const id='q'+gi+'_'+i,l=document.createElement('label');l.htmlFor=id;l.style.cssText='display:grid;gap:4px;font-size:15px';l.innerHTML=`<span><b style="color:var(--torii)">${gi*10+i+1}.</b> ${q}</span>`;
+   const t=document.createElement('textarea');t.id=id;t.rows=2;t.value=QA[gi+'_'+i]||'';t.style.cssText='font:15px var(--body);padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);resize:vertical';
+   t.oninput=()=>{QA[gi+'_'+i]=t.value;S.set('quiz',QA);upd()};l.appendChild(t);sec.appendChild(l)});wrap.appendChild(sec)});
+ const cp=document.createElement('button');cp.type='button';cp.className='btn';cp.textContent='Скопировать ответы для Claude';
+ const out=document.createElement('textarea');out.rows=6;out.readOnly=true;out.style.cssText='display:none;font:13px var(--body);padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--ink)';
+ cp.onclick=async()=>{const txt=quizText();try{await navigator.clipboard.writeText(txt);cp.textContent='Скопировано! Вставь в чат с Claude';buzz(30)}catch(e){out.style.display='block';out.value=txt;out.select();cp.textContent='Выдели текст ниже и скопируй'}};
+ wrap.appendChild(cp);wrap.appendChild(out);
+ const upd=()=>{$('qProg').textContent=`Отвечено ${qCount()} из 100. Отвечай понемногу, всё сохраняется само. Любой вопрос можно пропустить.`};
+ openSheet({ic:'問',title:'Анкета для Claude',sub:'100 вопросов, чтобы я лучше тебя понимал',body:'',extra:[wrap],btn:'Готово',act:()=>{refresh();renderQuizCard()}});upd()}
+function renderQuizCard(){const el=$('qCard');if(!el)return;const n=qCount();el.innerHTML=`<div class="mini"><b style="font:700 18px var(--display);color:var(--ink)">Анкета для Claude</b><span>${n} из 100</span></div><div class="bar"><i style="width:${n}%"></i></div><small class="lead" style="font-size:13px">Сто вопросов о тебе. Ответы видишь только ты, пока сам не скопируешь их мне в чат.</small><button type="button" class="btn sm" style="justify-self:start" id="qOpen">${n?'Продолжить':'Начать'}</button>`;$('qOpen').onclick=openQuiz}
+
 /* Опыт и звания */
 const RANKS=[[1,'初心者','Новичок'],[3,'旅人','Путник'],[6,'学生','Ученик'],[10,'先輩','Сэмпай'],[15,'達人','Мастер'],[21,'先生','Сэнсэй']];
 function xpCalc(){const tasks=doneDays().reduce((a,b)=>a+b,0);return stats.correct+tasks*5+stats.guides.length*10+stats.listened}
@@ -902,7 +982,14 @@ const ACH=[
  ['n10','新','В курсе','Прочитать 10 новостей',()=>(stats.news||0)>=10],
  ['n50','聞','Знаток Японии','Прочитать 50 новостей',()=>(stats.news||0)>=50],
  ['ch1','話','Первая глава','Пройти главу сюжета',()=>storyDone.length>=1],
- ['chall','物','Вся история','Пройти все главы',()=>storyDone.length>=STORY.length]];
+ ['chall','物','Вся история','Пройти все главы',()=>storyDone.length>=STORY.length],
+ ['mic1','口','Первые слова вслух','Сказать фразу, и телефон понял',()=>(stats.spoke||0)>=1],
+ ['mic10','喋','Болтун','10 удачных фраз вслух',()=>(stats.spoke||0)>=10],
+ ['pig1','貯','Первый взнос','Отложить деньги на поездку',()=>pigSum()>0],
+ ['pig50','半','Полпути','Половина копилки',()=>PIG.goal>0&&pigSum()>=PIG.goal/2],
+ ['pig100','飛','Билет есть!','Копилка заполнена',()=>PIG.goal>0&&pigSum()>=PIG.goal],
+ ['q10','問','Открылся','Ответить на 10 вопросов анкеты',()=>qCount()>=10],
+ ['q100','心','Claude тебя знает','Ответить на все 100 вопросов',()=>qCount()>=100]];
 let got=S.get('ach',{}),toastQ=[],toastBusy=false;
 function showToast(){if(toastBusy||!toastQ.length)return;toastBusy=true;const a=toastQ.shift();$('tIc').textContent=a[1];$('tName').textContent=a[2];$('toast').querySelector('small').textContent=a[5]==='city'?'Новое место на карте':'Новая награда';$('toast').classList.add('on');buzz([20,60,20]);setTimeout(()=>{$('toast').classList.remove('on');setTimeout(()=>{toastBusy=false;showToast()},500)},2600)}
 function checkAch(silent){ACH.forEach(a=>{if(!got[a[0]]&&a[4]()){got[a[0]]=todayKey;if(!silent)toastQ.push(a)}});S.set('ach',got);
@@ -921,7 +1008,7 @@ function renderLine(){const el=$('line');el.innerHTML='';ST.forEach(([a,b,jp,ru,
 
 /* Навигация */
 const tabs=['today','kana','japan','guides','me'];
-function go(t){if(t==='road')t='me';if(t==='scenes')t='japan';if(!tabs.includes(t))t='today';tabs.forEach(x=>$(x).classList.toggle('on',x===t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);$('sheet').classList.remove('on');window.scrollTo(0,0);if(t==='today')requestAnimationFrame(sky);if(t==='me'){renderMe();try{pickVoice()}catch(e){}$('vStat2').textContent=jaVoice?'Найден: '+jaVoice.name:'Не найден. Фразы могут молчать.'}if(t==='japan')setJ(S.get('jv','map'));if(t==='guides')setR(S.get('rv','news'));if(t==='today')renderJn()}
+function go(t){if(t==='road')t='me';if(t==='scenes')t='japan';if(!tabs.includes(t))t='today';tabs.forEach(x=>$(x).classList.toggle('on',x===t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);$('sheet').classList.remove('on');window.scrollTo(0,0);if(t==='today')requestAnimationFrame(sky);if(t==='me'){renderMe();renderPig();renderQuizCard();try{pickVoice()}catch(e){}$('vStat2').textContent=jaVoice?'Найден: '+jaVoice.name:'Не найден. Фразы могут молчать.'}if(t==='japan')setJ(S.get('jv','map'));if(t==='guides')setR(S.get('rv','news'));if(t==='today')renderJn()}
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
 window.addEventListener('resize',()=>{if($('today').classList.contains('on'))sky();if($('japan').classList.contains('on')&&S.get('jv','map')==='room')drawRoom()});
