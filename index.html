@@ -82,6 +82,20 @@ h2{font:700 26px/1.15 var(--display);margin:0;text-wrap:balance}
 .btn.ghost{background:transparent;color:var(--indigo)}
 .btn.sm{padding:6px 12px;font-size:14px;border-radius:10px}
 
+/* Омикудзи */
+const OMI=[[15,'大吉','だいきち','Большая удача',300,['Сегодня всё получится. Хороший день, чтобы выучить новый ряд азбуки.','Звёзды за тебя. Сделай сегодня один шаг к Токио.','Большая удача приходит к тем, кто не сдаётся.']],
+ [20,'中吉','ちゅうきち','Средняя удача',150,['День ровный и спокойный. Десять минут японского, и ты молодец.','Удача рядом, её надо чуть-чуть подтолкнуть.']],
+ [25,'吉','きち','Удача',100,['Хороший день для маленьких дел.','Не спеши. ゆっくりでいい.']],
+ [20,'小吉','しょうきち','Маленькая удача',80,['Маленькие шаги тоже ведут в Токио.','Сегодня хватит и пяти минут. Это тоже засчитывается.']],
+ [12,'末吉','すえきち','Удача придёт позже',50,['Сейчас трудно, но дальше будет лучше. Это и значит 末吉.','Терпение. Твоя удача уже едет на синкансэне.']],
+ [8,'凶','きょう','Неудача',0,['В японских храмах плохую бумажку завязывают на ветке и оставляют. Пусть неудача останется там, а ты иди дальше.']]];
+function renderOmi(){const r=S.get('omi_'+todayKey,null),el=$('omi');
+ if(!r){el.innerHTML=`<div class="box" id="omiBox">おみくじ</div><div><div class="lbl" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Омикудзи дня</div><div class="res">Что скажет храм?</div><p>Встряхни коробку и вытяни бумажку с предсказанием. Один раз в день.</p><button type="button" class="btn sm" id="omiBtn">Встряхнуть</button></div>`;
+  $('omiBtn').onclick=()=>{const b=$('omiBox');b.classList.add('shake');buzz([40,60,40,60,80]);$('omiBtn').disabled=true;setTimeout(drawOmi,750)};return}
+ const o=OMI.find(x=>x[1]===r.k);el.innerHTML=`<div class="paper"><small>${o[2]}</small><b>${o[1]}</b></div><div><div class="lbl" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Омикудзи дня</div><div class="res">${o[3]}</div><p>${r.m}</p>${o[4]?`<span class="bonus">+${o[4]} 円 в копилку</span>`:'<span class="bonus" style="color:var(--muted)">Завтра будет новая</span>'}</div>`}
+function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0]){o=x;break}n-=x[0]}const m=o[5][Math.floor(Math.random()*o[5].length)];
+ S.set('omi_'+todayKey,{k:o[1],m});stats.omi=(stats.omi||0)+1;stats.omiYen=(stats.omiYen||0)+o[4];if(o[1]==='大吉')stats.daikichi=true;if(o[1]==='凶')stats.kyo=true;saveStats();buzz(o[4]?[20,40,20]:60);renderOmi();refresh()}
+
 /* Азбука */
 .seg{display:grid;grid-template-columns:1fr 1fr;background:var(--soft);border-radius:14px;padding:4px}
 .seg button{border:0;background:transparent;border-radius:10px;padding:10px;font-weight:600;color:var(--muted)}
@@ -247,6 +261,20 @@ h2{font:700 26px/1.15 var(--display);margin:0;text-wrap:balance}
 .item button:disabled{opacity:.45;cursor:default}
 .ownd{font-size:13px;font-weight:700;color:var(--good)}
 
+/* Омикудзи */
+.omi{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.omi .box{width:64px;height:86px;border-radius:10px;background:linear-gradient(180deg,#8c2f22,#c0432c);display:grid;place-items:center;color:#f6eddc;font:900 22px/1.1 var(--jp);writing-mode:vertical-rl;box-shadow:inset 0 -6px 0 rgba(0,0,0,.15)}
+.omi .box.shake{animation:shake .7s ease}
+@keyframes shake{20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(5deg)}}
+.omi .paper{width:64px;min-height:120px;background:#f8f4ea;border:1px solid #e3dccb;border-radius:4px;display:grid;justify-items:center;align-content:center;gap:4px;padding:8px 0;box-shadow:var(--shadow)}
+.omi .paper b{font:900 30px/1.05 var(--jp);color:#c0432c;writing-mode:vertical-rl}
+.omi .paper small{font:600 10px var(--body);color:#7b705b}
+.omi .res{font:700 18px var(--display)}
+.omi p{margin:4px 0 8px;color:var(--muted);font-size:15px}
+.omi .bonus{display:inline-block;font-size:13px;font-weight:700;color:var(--good)}
+.seg.four{grid-template-columns:repeat(4,1fr)}
+.seg.four button{font-size:13px;padding:10px 2px}
+.choices.words button{font-size:18px}
 /* Нижнее меню */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
 .tabs button{border:0;background:transparent;display:grid;justify-items:center;gap:2px;padding:4px;color:var(--muted);font-size:12px;font-weight:500}
@@ -275,11 +303,12 @@ h2{font:700 26px/1.15 var(--display);margin:0;text-wrap:balance}
  </div>
  <div class="tasks" id="tasks"></div>
  <div class="card phrase" id="pday"></div>
+ <div class="card omi" id="omi"></div>
 </section>
 
 <section class="screen" id="kana">
  <div><h2>Азбука</h2><p class="lead">Смотри на знак и выбирай, как он читается. Знак выучен после трёх верных ответов подряд.</p></div>
- <div class="seg three"><button type="button" id="sH">Хирагана あ</button><button type="button" id="sK">Катакана ア</button><button type="button" id="sD">Звонкие が</button></div>
+ <div class="seg four"><button type="button" id="sH">あ Хирагана</button><button type="button" id="sK">ア Катакана</button><button type="button" id="sD">が Звонкие</button><button type="button" id="sJ">字 Кандзи</button></div>
  <div class="rows" id="rows"></div>
  <div class="flash" id="flash"><div class="lv" id="lv"></div><button type="button" class="btn ghost sm say" id="kSay" hidden>Слушать</button><div class="k" id="kch">あ</div><div class="hint" id="hint"></div></div>
  <div class="choices" id="choices"></div>
@@ -375,8 +404,8 @@ function drawSky(x,W,H,tower){
  const top=night?'#0d1426':dusk?'#2a2f5a':dawn?'#3b4a78':'#5b7fb6',bot=night?'#22305a':dusk?'#c9805f':dawn?'#e3a98a':'#a9c3e2';
  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,top);g.addColorStop(1,bot);x.fillStyle=g;x.fillRect(0,0,W,H);
  let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;const k=Math.min(1,H/230);
- if(night){x.fillStyle='#fff';for(let i=0;i<40;i++){x.globalAlpha=.3+rnd()*.6;x.fillRect(rnd()*W,rnd()*H*.5,1.2,1.2)}x.globalAlpha=1;x.fillStyle='#f3e6c8';x.beginPath();x.arc(W*.4,H*.2,14*k,0,7);x.fill();x.fillStyle=top;x.beginPath();x.arc(W*.4+6*k,H*.2-4*k,12*k,0,7);x.fill()}
- else{x.fillStyle=dusk||dawn?'rgba(240,120,90,.85)':'rgba(255,240,210,.9)';x.beginPath();x.arc(W*.4,H*(dusk?.55:.25),(dusk||dawn?22:16)*k,0,7);x.fill()}
+ if(night){x.fillStyle='#fff';for(let i=0;i<40;i++){x.globalAlpha=.3+rnd()*.6;x.fillRect(rnd()*W,rnd()*H*.5,1.2,1.2)}x.globalAlpha=1;x.fillStyle='#f3e6c8';x.beginPath();x.arc(W*.71,H*.13,14*k,0,7);x.fill();x.fillStyle=top;x.beginPath();x.arc(W*.71+6*k,H*.13-4*k,12*k,0,7);x.fill()}
+ else{x.fillStyle=dusk||dawn?'rgba(240,120,90,.85)':'rgba(255,240,210,.9)';x.beginPath();x.arc(W*.71,H*(dusk?.55:.2),(dusk||dawn?22:16)*k,0,7);x.fill()}
  if(tower){const tx=W*.62,tb=H,tt=H*.18,tw=22*k;x.strokeStyle=night?'#d8573e':'#c0432c';x.lineWidth=2*k;x.beginPath();x.moveTo(tx-tw,tb);x.lineTo(tx,tt);x.lineTo(tx+tw,tb);x.stroke();
   for(let i=1;i<9;i++){const y=tt+(tb-tt)*i/9,w=tw*i/9;x.beginPath();x.moveTo(tx-w,y);x.lineTo(tx+w,y);x.stroke()}
   x.fillStyle=x.strokeStyle;x.fillRect(tx-10*k,tt+(tb-tt)*.38,20*k,5*k);x.fillRect(tx-14*k,tt+(tb-tt)*.62,28*k,5*k)}
@@ -408,16 +437,31 @@ const P=PD[(dayN-1)%PD.length];
 $('pday').innerHTML=`<div class="v">${P[0]}</div><div><div class="lbl">Фраза дня</div><div class="ro">${P[1]}</div><p>${P[2]}</p><button type="button" class="btn sm" id="pSay">Слушать</button></div>`;
 $('pSay').onclick=()=>{say(P[0]);if(!done.phrase)setDone('phrase',true)};
 
+/* Омикудзи */
+const OMI=[[15,'大吉','だいきち','Большая удача',300,['Сегодня всё получится. Хороший день, чтобы выучить новый ряд азбуки.','Звёзды за тебя. Сделай сегодня один шаг к Токио.','Большая удача приходит к тем, кто не сдаётся.']],
+ [20,'中吉','ちゅうきち','Средняя удача',150,['День ровный и спокойный. Десять минут японского, и ты молодец.','Удача рядом, её надо чуть-чуть подтолкнуть.']],
+ [25,'吉','きち','Удача',100,['Хороший день для маленьких дел.','Не спеши. ゆっくりでいい.']],
+ [20,'小吉','しょうきち','Маленькая удача',80,['Маленькие шаги тоже ведут в Токио.','Сегодня хватит и пяти минут. Это тоже засчитывается.']],
+ [12,'末吉','すえきち','Удача придёт позже',50,['Сейчас трудно, но дальше будет лучше. Это и значит 末吉.','Терпение. Твоя удача уже едет на синкансэне.']],
+ [8,'凶','きょう','Неудача',0,['В японских храмах плохую бумажку завязывают на ветке и оставляют. Пусть неудача останется там, а ты иди дальше.']]];
+function renderOmi(){const r=S.get('omi_'+todayKey,null),el=$('omi');
+ if(!r){el.innerHTML=`<div class="box" id="omiBox">おみくじ</div><div><div class="lbl" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Омикудзи дня</div><div class="res">Что скажет храм?</div><p>Встряхни коробку и вытяни бумажку с предсказанием. Один раз в день.</p><button type="button" class="btn sm" id="omiBtn">Встряхнуть</button></div>`;
+  $('omiBtn').onclick=()=>{const b=$('omiBox');b.classList.add('shake');buzz([40,60,40,60,80]);$('omiBtn').disabled=true;setTimeout(drawOmi,750)};return}
+ const o=OMI.find(x=>x[1]===r.k);el.innerHTML=`<div class="paper"><small>${o[2]}</small><b>${o[1]}</b></div><div><div class="lbl" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Омикудзи дня</div><div class="res">${o[3]}</div><p>${r.m}</p>${o[4]?`<span class="bonus">+${o[4]} 円 в копилку</span>`:'<span class="bonus" style="color:var(--muted)">Завтра будет новая</span>'}</div>`}
+function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0]){o=x;break}n-=x[0]}const m=o[5][Math.floor(Math.random()*o[5].length)];
+ S.set('omi_'+todayKey,{k:o[1],m});stats.omi=(stats.omi||0)+1;stats.omiYen=(stats.omiYen||0)+o[4];if(o[1]==='大吉')stats.daikichi=true;if(o[1]==='凶')stats.kyo=true;saveStats();buzz(o[4]?[20,40,20]:60);renderOmi();refresh()}
+
 /* Азбука */
 const SETS={
  H:{ch:[...'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん'],ro:'a i u e o ka ki ku ke ko sa shi su se so ta chi tsu te to na ni nu ne no ha hi fu he ho ma mi mu me mo ya yu yo ra ri ru re ro wa wo n'.split(' '),rows:[[0,5],[5,10],[10,15],[15,20],[20,25],[25,30],[30,35],[35,38],[38,43],[43,46]],lay:[...Array(36).keys(),-1,36,-1,37,38,39,40,41,42,43,-1,-1,44,45]},
  D:{ch:[...'がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ'],ro:'ga gi gu ge go za ji zu ze zo da ji zu de do ba bi bu be bo pa pi pu pe po'.split(' '),rows:[[0,5],[5,10],[10,15],[15,20],[20,25]],lay:[...Array(25).keys()]}};
+SETS.J={ch:[...'一二三十円日月火水木金土山川人口大小上下'],ro:['один','два','три','десять','иена','солнце','луна','огонь','вода','дерево','золото','земля','гора','река','человек','рот','большой','маленький','верх','низ'],rd:['いち','に','さん','じゅう','えん','ひ · にち','つき · げつ','ひ · か','みず · すい','き · もく','かね · きん','つち · ど','やま','かわ','ひと · じん','くち','おお · だい','ちい · しょう','うえ','した'],rows:[[0,5],[5,10],[10,15],[15,20]],lay:[...Array(20).keys()]};
 SETS.K={ch:[...'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'],ro:SETS.H.ro,rows:SETS.H.rows,lay:SETS.H.lay};
 let set=S.get('set','H');if(!SETS[set])set='H';
 let rowsOn=S.get('rows_'+set,[0,1]),score=S.get('score',{}),cur=null,busy=false,missed=false,answered=S.get('ans_'+todayKey,0);
 const C=()=>SETS[set];
 const learned=k=>SETS[k].ch.filter(c=>(score[c]||0)>=3).length;
-function renderSeg(){['H','K','D'].forEach(k=>$('s'+k).className=set===k?'on':'')}
+function renderSeg(){['H','K','D','J'].forEach(k=>$('s'+k).className=set===k?'on':'');$('choices').classList.toggle('words',set==='J')}
 function renderRows(){const el=$('rows');el.innerHTML='';C().rows.forEach((r,i)=>{const b=document.createElement('button');b.type='button';b.className=rowsOn.includes(i)?'on':'';b.textContent=C().ch.slice(r[0],r[1]).join(' ');b.onclick=()=>{rowsOn=rowsOn.includes(i)?rowsOn.filter(v=>v!==i):[...rowsOn,i];if(!rowsOn.length)rowsOn=[i];S.set('rows_'+set,rowsOn);renderRows();next()};el.appendChild(b)})}
 function renderGrid(){const g=$('kgrid');g.innerHTML='';C().lay.forEach(i=>{const d=document.createElement('div');if(i<0){d.className='gap';g.appendChild(d);return}const c=C().ch[i],l=Math.min(3,score[c]||0);d.className=l?'l'+l:'';d.innerHTML=c+'<small>'+C().ro[i]+'</small>';g.appendChild(d)});
  const n=learned(set),t=C().ch.length;$('kCnt').textContent=n+' из '+t;$('kBar').style.width=(n/t*100)+'%'}
@@ -430,14 +474,14 @@ function next(){const p=pool(),weak=p.filter(i=>(score[C().ch[i]]||0)<3),from=we
  for(const j of shuffle([...(p.length>=6?p:[]),...shuffle([...C().ro.keys()])])){if(!seen.has(C().ro[j])){seen.add(C().ro[j]);others.push(j)}if(others.length===3)break}
  const el=$('choices');el.innerHTML='';shuffle([i,...others]).forEach(j=>{const b=document.createElement('button');b.type='button';b.textContent=C().ro[j];b.onclick=()=>pick(j,b);el.appendChild(b)})}
 function pick(j,b){if(busy)return;const c=C().ch[cur];
- if(C().ro[j]===C().ro[cur]){busy=true;b.className='ok';if(!missed)score[c]=(score[c]||0)+1;$('flash').className='flash ok';$('hint').textContent=(score[c]===3&&!missed)?'Выучено!':'Верно';S.set('score',score);
+ if(C().ro[j]===C().ro[cur]){busy=true;b.className='ok';if(!missed)score[c]=(score[c]||0)+1;$('flash').className='flash ok';$('hint').textContent=((score[c]===3&&!missed)?'Выучено!':'Верно')+(C().rd?' · '+C().rd[cur]:'');S.set('score',score);
   stats.correct++;const hr=new Date().getHours();if(hr>=23||hr<4)stats.night=true;if(hr>=5&&hr<8)stats.morning=true;saveStats();
   answered++;S.set('ans_'+todayKey,answered);if(answered>=10&&!done.kana)setDone('kana',true);else refresh();
   renderGrid();buzz(10);setTimeout(next,missed?900:550)}
  else{missed=true;score[c]=0;S.set('score',score);b.className='no';b.disabled=true;$('flash').className='flash no';$('hint').textContent='Это не '+C().ro[j]+'. Попробуй ещё';buzz([30,40,30]);renderGrid();$('lv').innerHTML='<i></i><i></i><i></i>'}}
 $('kSay').onclick=()=>say(C().ch[cur]);
 function setSet(v){set=v;S.set('set',v);rowsOn=S.get('rows_'+set,[0,1]);renderSeg();renderRows();renderGrid();next()}
-['H','K','D'].forEach(k=>$('s'+k).onclick=()=>setSet(k));
+['H','K','D','J'].forEach(k=>$('s'+k).onclick=()=>setSet(k));
 
 /* Сценки */
 const SC=[
@@ -522,7 +566,7 @@ function openCity(id){const c=PL.find(x=>x.id===id),open=cityOpen(c),st=stamps.i
 /* Комната и магазин */
 const ITEMS=[['futon','布','Футон','Матрас, на котором спят прямо на полу',300],['table','卓','Низкий столик','Тябудай для чая и рамена',400],['plant','緑','Растение','Немного зелени в углу',500],['lantern','灯','Красный фонарик','Тётин под потолком',600],['andon','行','Бумажная лампа','Андон, тёплый свет вечером',800],['poster','画','Плакат с роботом','Тот самый фиолетовый',1000],['shelf','本','Полка с мангой','Ряды томиков на стене',1500],['tv','電','Телик и приставка','Для вечера хикки',2000],['kotatsu','炬','Котацу','Столик с одеялом и обогревом',3000],['cat','猫','Кошка','Приютить кошку. Самое дорогое в жизни',4000],['window','窓','Окно с видом','Большое окно на Токийскую башню',6000]];
 let owned=S.get('owned',[]),spent=S.get('spent',0);
-function earned(){const tasks=doneDays().reduce((a,b)=>a+b,0);return stats.correct*10+tasks*50+stats.guides.length*100+stamps.length*200+Object.keys(got).length*100}
+function earned(){const tasks=doneDays().reduce((a,b)=>a+b,0);return (stats.omiYen||0)+stats.correct*10+tasks*50+stats.guides.length*100+stamps.length*200+Object.keys(got).length*100}
 const yen=()=>Math.max(0,earned()-spent);
 function renderShop(){const el=$('shop');el.innerHTML='';const y=yen();ITEMS.forEach(([id,ic,n,d,p])=>{const own=owned.includes(id);const r=document.createElement('div');r.className='item'+(own?' own':'');r.innerHTML=`<span class="ic">${ic}</span><span><b>${n}</b><small>${d}</small></span>`;
   if(own){const s2=document.createElement('span');s2.className='ownd';s2.textContent='Дома ✓';r.appendChild(s2)}else{const b=document.createElement('button');b.type='button';b.className='btn sm';b.textContent=p+' 円';b.disabled=y<p;b.onclick=()=>{if(yen()<p)return;owned.push(id);spent+=p;S.set('owned',owned);S.set('spent',spent);buzz([15,30,15]);refresh();renderShop();drawRoom()};r.appendChild(b)}el.appendChild(r)});
@@ -599,7 +643,13 @@ const ACH=[
  ['home','家','Новоселье','Первая вещь в комнату',()=>owned.length>=1],
  ['cat','猫','Кошка дома','Приютить кошку',()=>owned.includes('cat')],
  ['cozy','城','Уютная берлога','Купить всё для комнаты',()=>owned.length>=ITEMS.length],
- ['rich','円','Копилка','Накопить 5000 円',()=>yen()>=5000]];
+ ['rich','円','Копилка','Накопить 5000 円',()=>yen()>=5000],
+ ['omi','籤','Омикудзи','Вытянуть первое предсказание',()=>(stats.omi||0)>=1],
+ ['omi7','運','Неделя гаданий','Вытянуть 7 омикудзи',()=>(stats.omi||0)>=7],
+ ['dk','福','Большая удача','Вытянуть 大吉',()=>!!stats.daikichi],
+ ['kyo','結','Оставил в храме','Вытянуть 凶 и не расстроиться',()=>!!stats.kyo],
+ ['k5','木','Первые кандзи','Выучить 5 кандзи',()=>learned('J')>=5],
+ ['k20','漢','Двадцать кандзи','Выучить все 20 кандзи',()=>learned('J')>=20]];
 let got=S.get('ach',{}),toastQ=[],toastBusy=false;
 function showToast(){if(toastBusy||!toastQ.length)return;toastBusy=true;const a=toastQ.shift();$('tIc').textContent=a[1];$('tName').textContent=a[2];$('toast').querySelector('small').textContent=a[5]==='city'?'Новое место на карте':'Новая награда';$('toast').classList.add('on');buzz([20,60,20]);setTimeout(()=>{$('toast').classList.remove('on');setTimeout(()=>{toastBusy=false;showToast()},500)},2600)}
 function checkAch(silent){ACH.forEach(a=>{if(!got[a[0]]&&a[4]()){got[a[0]]=todayKey;if(!silent)toastQ.push(a)}});S.set('ach',got);
@@ -607,7 +657,7 @@ function checkAch(silent){ACH.forEach(a=>{if(!got[a[0]]&&a[4]()){got[a[0]]=today
 function renderMe(){const xp=xpCalc(),l=levelOf(xp),r=rankOf(l),lo=10*(l-1)*(l-1),hi=10*l*l;
  $('lvBadge').textContent=r[1].slice(0,1);$('lvRank').innerHTML=`${r[2]} <span>${r[1]}</span>`;$('lvXp').textContent=`Уровень ${l} · ${xp} опыта · до следующего ${hi-xp}`;$('lvBar').style.width=((xp-lo)/(hi-lo)*100)+'%';
  $('topRank').textContent=r[1];$('topLv').textContent=l;$('yen0').textContent=yen();$('yen1').textContent=yen();
- $('stDays').textContent=dayN;$('stStreak').textContent=streakCalc();$('stKana').textContent=learned('H')+learned('K')+learned('D');$('stCorrect').textContent=stats.correct;
+ $('stDays').textContent=dayN;$('stStreak').textContent=streakCalc();$('stKana').textContent=learned('H')+learned('K')+learned('D')+learned('J');$('stCorrect').textContent=stats.correct;
  const el=$('ach');el.innerHTML='';ACH.forEach(a=>{const d=document.createElement('div');if(got[a[0]])d.className='got';d.innerHTML=`<span class="ic">${a[1]}</span><b>${a[2]}</b><small>${a[3]}</small>`;el.appendChild(d)});
  $('achCnt').textContent=Object.keys(got).filter(k=>ACH.some(a=>a[0]===k)).length+' из '+ACH.length}
 function refresh(){checkAch(false);renderMe()}
@@ -626,7 +676,7 @@ setInterval(()=>{if($('today').classList.contains('on'))sky()},60000);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 
 checkAch(true);
-renderTasks();renderSeg();renderRows();renderGrid();next();renderGuides();renderLine();renderMe();renderMap();go(location.hash.slice(1));
+renderOmi();renderTasks();renderSeg();renderRows();renderGrid();next();renderGuides();renderLine();renderMe();renderMap();go(location.hash.slice(1));
 setTimeout(()=>checkAch(false),800);
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
