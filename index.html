@@ -355,6 +355,23 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 .catpet small{font-size:12px;color:var(--muted)}
 .purr{position:absolute;left:50%;top:-6px;transform:translateX(-50%);font:700 16px var(--jp);color:var(--torii);animation:purr 1.4s ease-out forwards;pointer-events:none;white-space:nowrap}
 @keyframes purr{to{transform:translate(-50%,-40px);opacity:0}}
+/* Кана-дождь */
+#game{position:fixed;inset:0;z-index:17;display:none;flex-direction:column;background:color-mix(in srgb,var(--paper) 95%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:calc(env(safe-area-inset-top) + 10px) 12px calc(env(safe-area-inset-bottom) + 12px)}
+#game.on{display:flex}
+#game .hud{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:700}
+#game .hud b{font:700 26px var(--body);font-variant-numeric:tabular-nums}
+#gLives{color:var(--torii);letter-spacing:2px}
+#gCombo{color:var(--gold);font-size:14px}
+#gArea{position:relative;flex:1;overflow:hidden;margin:8px 0;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,transparent 80%,color-mix(in srgb,var(--torii) 12%,transparent))}
+.fall{position:absolute;top:0;width:58px;height:58px;margin-left:-29px;border-radius:16px;display:grid;place-items:center;font:700 32px var(--jp);background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);transition:opacity .3s}
+.fall.tg{border:2px solid var(--torii);box-shadow:0 0 0 4px color-mix(in srgb,var(--torii) 18%,transparent)}
+.fall.pop{opacity:0;scale:1.5;transition:opacity .3s,scale .3s;background:var(--good);color:#fff}
+.fall.miss{opacity:0;background:var(--bad);color:#fff}
+#gCh{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#gCh button{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 8px;font:600 22px var(--body)}
+#gCh button.no{background:var(--bad);color:#fff}
+#gEnd{display:none;justify-items:center;text-align:center;gap:6px;padding:10px}
+.gamebtn{width:100%;display:flex;gap:12px;align-items:center;justify-content:center;padding:14px;border-radius:16px;border:0;background:linear-gradient(135deg,var(--indigo),var(--torii));color:#fff;font:700 17px var(--body);box-shadow:var(--shadow)}
 /* Нижнее меню */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
 .tabs button{border:0;background:transparent;display:grid;justify-items:center;gap:2px;padding:4px;color:var(--muted);font-size:12px;font-weight:500}
@@ -417,6 +434,7 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 <section class="screen" id="kana">
  <div><h2>Азбука</h2><p class="lead">Смотри на знак и выбирай, как он читается. Знак выучен после трёх верных ответов подряд.</p></div>
  <div class="seg four"><button type="button" id="sH">あ Хирагана</button><button type="button" id="sK">ア Катакана</button><button type="button" id="sD">が Звонкие</button><button type="button" id="sJ">字 Кандзи</button></div>
+ <button type="button" class="gamebtn" id="gOpen">🎮 Игра «Кана-дождь» <span style="font-weight:500;opacity:.85" id="gBestL"></span></button>
  <div class="rows" id="rows"></div>
  <div class="flash" id="flash"><div class="lv" id="lv"></div><button type="button" class="btn ghost sm say" id="kSay" hidden>Слушать</button><div class="k" id="kch">あ</div><div class="hint" id="hint"></div></div>
  <div class="choices" id="choices"></div>
@@ -483,6 +501,7 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 </div></div>
 
 <div id="vn" role="dialog" aria-modal="true" aria-label="Сюжет"><div class="wm" id="vnWm">東</div><div class="ttl" id="vnTtl"></div><button type="button" class="x" id="vnX">Закрыть</button><div class="av" id="vnAv">雪</div><div class="box" id="vnBox"></div></div>
+<div id="game" role="dialog" aria-modal="true" aria-label="Игра Кана-дождь"><div class="hud"><span>Счёт <b id="gScore">0</b> <span id="gCombo"></span></span><span id="gLives">❤❤❤</span><button type="button" class="btn ghost sm" id="gX">Выйти</button></div><div id="gArea"></div><div id="gCh"></div><div id="gEnd"></div></div>
 <div class="toast" id="toast" aria-live="polite"><div class="ic" id="tIc">初</div><div><small>Новая награда</small><b id="tName">Первый шаг</b></div></div>
 
 <nav class="tabs" aria-label="Разделы">
@@ -681,6 +700,7 @@ function renderNews(){const el=$('news');el.innerHTML='';if(!NEWS||!NEWS.items){
 async function loadNews(){try{const r=await fetch('news.json?'+Math.floor(Date.now()/600000),{cache:'no-store'});if(!r.ok)return;NEWS=await r.json();S.set('news',NEWS);renderNews()}catch(e){}}
 function setR(v){S.set('rv',v);$('rNews').className=v==='news'?'on':'';$('rGuides').className=v==='guides'?'on':'';$('newsView').style.display=v==='news'?'grid':'none';$('guidesView').style.display=v==='guides'?'block':'none';if(v==='news')renderNews()}
 $('rNews').onclick=()=>setR('news');
+$('gOpen').onclick=gStart;$('gX').onclick=()=>{if(G.on&&G.score>0)gEnd();gClose()};
 $('calmB').onclick=()=>openCalm();$('rGuides').onclick=()=>setR('guides');
 
 /* Задачи дня */
@@ -834,7 +854,7 @@ function openCity(id){const c=PL.find(x=>x.id===id),open=cityOpen(c),st=stamps.i
 /* Комната и магазин */
 const ITEMS=[['futon','布','Футон','Матрас, на котором спят прямо на полу',300],['table','卓','Низкий столик','Тябудай для чая и рамена',400],['plant','緑','Растение','Немного зелени в углу',500],['lantern','灯','Красный фонарик','Тётин под потолком',600],['andon','行','Бумажная лампа','Андон, тёплый свет вечером',800],['poster','画','Плакат с роботом','Тот самый фиолетовый',1000],['shelf','本','Полка с мангой','Ряды томиков на стене',1500],['tv','電','Телик и приставка','Для вечера хикки',2000],['kotatsu','炬','Котацу','Столик с одеялом и обогревом',3000],['cat','猫','Кошка','Приютить кошку. Самое дорогое в жизни',4000],['window','窓','Окно с видом','Большое окно на Токийскую башню',6000]];
 let owned=S.get('owned',[]),spent=S.get('spent',0);
-function earned(){const tasks=doneDays().reduce((a,b)=>a+b,0);return (stats.omiYen||0)+(stats.storyYen||0)+(stats.speakYen||0)+stats.correct*10+tasks*50+stats.guides.length*100+stamps.length*200+Object.keys(got).length*100}
+function earned(){const tasks=doneDays().reduce((a,b)=>a+b,0);return (stats.omiYen||0)+(stats.storyYen||0)+(stats.speakYen||0)+(stats.gameYen||0)+stats.correct*10+tasks*50+stats.guides.length*100+stamps.length*200+Object.keys(got).length*100}
 const yen=()=>Math.max(0,earned()-spent);
 function renderShop(){const el=$('shop');el.innerHTML='';const y=yen();ITEMS.forEach(([id,ic,n,d,p])=>{const own=owned.includes(id);const r=document.createElement('div');r.className='item'+(own?' own':'');r.innerHTML=`<span class="ic">${ic}</span><span><b>${n}</b><small>${d}</small></span>`;
   if(own){const s2=document.createElement('span');s2.className='ownd';s2.textContent='Дома ✓';r.appendChild(s2)}else{const b=document.createElement('button');b.type='button';b.className='btn sm';b.textContent=p+' 円';b.disabled=y<p;b.onclick=()=>{if(yen()<p)return;owned.push(id);spent+=p;S.set('owned',owned);S.set('spent',spent);buzz([15,30,15]);refresh();renderShop();drawRoom()};r.appendChild(b)}el.appendChild(r)});
@@ -1015,6 +1035,26 @@ function openCalm(){const w=document.createElement('div');w.style.cssText='displ
  stats.calm=(stats.calm||0)+1;saveStats();
  sheetOnClose=()=>{clearInterval(breathT);rainOff()}}
 
+/* Мини-игра «Кана-дождь» */
+const G={on:false,items:[],score:0,combo:0,best:S.get('gbest',0),lives:3,last:0,spawnAt:0,tgt:null,raf:0};
+function gStart(){G.on=true;G.items.forEach(it=>it.el.remove());G.items=[];G.score=0;G.combo=0;G.lives=3;G.last=performance.now();G.spawnAt=0;G.tgt=null;
+ $('game').classList.add('on');$('gEnd').style.display='none';$('gCh').style.display='grid';gHud();cancelAnimationFrame(G.raf);G.raf=requestAnimationFrame(gLoop)}
+function gHud(){$('gScore').textContent=G.score;$('gCombo').textContent=G.combo>1?'комбо ×'+G.combo:'';$('gLives').textContent='❤'.repeat(G.lives)+'♡'.repeat(3-G.lives)}
+function gSpawn(){const p=pool(),i=p[Math.floor(Math.random()*p.length)],el=document.createElement('div');el.className='fall';el.textContent=C().ch[i];el.style.left=(8+Math.random()*72)+'%';$('gArea').appendChild(el);G.items.push({i,el,y:-70})}
+function gTarget(){let t=null;G.items.forEach(it=>{if(!it.dead&&(!t||it.y>t.y))t=it});if(t!==G.tgt){G.items.forEach(it=>it.el.classList.toggle('tg',it===t));G.tgt=t;gChoices()}}
+function gChoices(){const el=$('gCh');el.innerHTML='';if(!G.tgt)return;const right=C().ro[G.tgt.i],seen=new Set([right]),opts=[right];for(const j of shuffle([...C().ro.keys()])){const r=C().ro[j];if(!seen.has(r)){seen.add(r);opts.push(r)}if(opts.length===4)break}
+ shuffle(opts).forEach(r=>{const b=document.createElement('button');b.type='button';b.textContent=r;b.onclick=()=>gPick(r,b);el.appendChild(b)})}
+function gPick(r,b){if(!G.on||!G.tgt)return;const t=G.tgt;if(r===C().ro[t.i]){t.dead=true;t.el.classList.add('pop');setTimeout(()=>t.el.remove(),300);G.items=G.items.filter(x=>x!==t);G.combo++;if(G.combo>(stats.gcombo||0))stats.gcombo=G.combo;G.score+=10+Math.min(G.combo,20)*2;stats.correct++;buzz(8);G.tgt=null;gTarget();gHud()}
+ else{G.combo=0;b.classList.add('no');buzz([20,30,20]);setTimeout(()=>b.classList.remove('no'),300);gHud()}}
+function gLoop(ts){if(!G.on)return;const dt=Math.min(.05,(ts-G.last)/1000);G.last=ts;const H=$('gArea').clientHeight,sp=38+Math.min(110,G.score*.12);
+ if(ts>G.spawnAt){gSpawn();G.spawnAt=ts+Math.max(750,1900-G.score*2.2)}
+ for(const it of [...G.items]){it.y+=sp*dt;it.el.style.transform=`translateY(${it.y}px)`;if(it.y>H-64){it.el.classList.add('miss');setTimeout(()=>it.el.remove(),300);G.items=G.items.filter(x=>x!==it);G.lives--;G.combo=0;buzz(80);if(it===G.tgt)G.tgt=null;gHud();if(G.lives<=0){gEnd();return}}}
+ gTarget();G.raf=requestAnimationFrame(gLoop)}
+function gEnd(){G.on=false;cancelAnimationFrame(G.raf);const y=Math.floor(G.score/5),nb=G.score>G.best;if(nb){G.best=G.score;S.set('gbest',G.best)}stats.gameYen=(stats.gameYen||0)+y;stats.games=(stats.games||0)+1;stats.gbest=Math.max(stats.gbest||0,G.score);if(G.combo>(stats.gcombo||0))stats.gcombo=G.combo;saveStats();
+ $('gCh').style.display='none';$('gEnd').style.display='grid';$('gEnd').innerHTML=`<div style="font:900 44px var(--jp);color:var(--torii)">${nb?'新記録':'お疲れ様'}</div><div class="lead">${nb?'Новый рекорд!':'Хорошая игра!'}</div><div style="font:700 32px var(--body)">${G.score}</div><div class="lead">Лучший: ${G.best} · +${y} 円 в копилку</div><div style="display:flex;gap:10px"><button type="button" class="btn" id="gAgain">Ещё раз</button><button type="button" class="btn ghost" id="gQuit">Выйти</button></div>`;
+ $('gAgain').onclick=gStart;$('gQuit').onclick=gClose;refresh()}
+function gClose(){G.on=false;cancelAnimationFrame(G.raf);G.items.forEach(it=>it.el.remove());G.items=[];$('game').classList.remove('on');renderGrid()}
+
 /* Опыт и звания */
 const RANKS=[[1,'初心者','Новичок'],[3,'旅人','Путник'],[6,'学生','Ученик'],[10,'先輩','Сэмпай'],[15,'達人','Мастер'],[21,'先生','Сэнсэй']];
 function xpCalc(){const tasks=doneDays().reduce((a,b)=>a+b,0);return stats.correct+tasks*5+stats.guides.length*10+stats.listened}
@@ -1072,7 +1112,10 @@ const ACH=[
  ['pet','撫','Горо-горо','Погладить кошку 10 раз',()=>(stats.pets||0)>=10],
  ['bond3','絆','Друзья','Ранг 3 с любым персонажем',()=>BONDS.some(b=>bondRank(b)>=3)],
  ['bond5','友','Близкий человек','Ранг 5 с любым персонажем',()=>BONDS.some(b=>bondRank(b)>=5)],
- ['bondall','輪','Не один','Ранг 3 со всеми',()=>BONDS.every(b=>bondRank(b)>=3)]];
+ ['bondall','輪','Не один','Ранг 3 со всеми',()=>BONDS.every(b=>bondRank(b)>=3)],
+ ['game1','遊','Игрок','Сыграть в «Кана-дождь»',()=>(stats.games||0)>=1],
+ ['combo','連','Комбо ×20','Собрать комбо 20 в игре',()=>(stats.gcombo||0)>=20],
+ ['g500','達','Ловец каны','Набрать 500 очков в игре',()=>(stats.gbest||0)>=500]];
 let got=S.get('ach',{}),toastQ=[],toastBusy=false;
 function showToast(){if(toastBusy||!toastQ.length)return;toastBusy=true;const a=toastQ.shift();$('tIc').textContent=a[1];$('tName').textContent=a[2];$('toast').querySelector('small').textContent=a[5]==='city'?'Новое место на карте':a[5]==='bond'?'絆 Связь стала крепче':'Новая награда';$('toast').classList.add('on');buzz([20,60,20]);setTimeout(()=>{$('toast').classList.remove('on');setTimeout(()=>{toastBusy=false;showToast()},500)},2600)}
 function checkAch(silent){ACH.forEach(a=>{if(!got[a[0]]&&a[4]()){got[a[0]]=todayKey;if(!silent)toastQ.push(a)}});S.set('ach',got);
@@ -1091,7 +1134,7 @@ function renderLine(){const el=$('line');el.innerHTML='';ST.forEach(([a,b,jp,ru,
 
 /* Навигация */
 const tabs=['today','kana','japan','guides','me'];
-function go(t){if(t==='road')t='me';if(t==='scenes')t='japan';if(!tabs.includes(t))t='today';tabs.forEach(x=>$(x).classList.toggle('on',x===t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);$('sheet').classList.remove('on');window.scrollTo(0,0);if(t==='today')requestAnimationFrame(sky);if(t==='me'){renderMe();renderBonds();renderPig();renderQuizCard();try{pickVoice()}catch(e){}$('vStat2').textContent=jaVoice?'Найден: '+jaVoice.name:'Не найден. Фразы могут молчать.'}if(t==='japan')setJ(S.get('jv','map'));if(t==='guides')setR(S.get('rv','news'));if(t==='today')renderJn()}
+function go(t){if(t==='road')t='me';if(t==='scenes')t='japan';if(!tabs.includes(t))t='today';tabs.forEach(x=>$(x).classList.toggle('on',x===t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);$('sheet').classList.remove('on');window.scrollTo(0,0);if(t==='today')requestAnimationFrame(sky);if(t==='kana')$('gBestL').textContent=S.get('gbest',0)?'· рекорд '+S.get('gbest',0):'';if(t==='me'){renderMe();renderBonds();renderPig();renderQuizCard();try{pickVoice()}catch(e){}$('vStat2').textContent=jaVoice?'Найден: '+jaVoice.name:'Не найден. Фразы могут молчать.'}if(t==='japan')setJ(S.get('jv','map'));if(t==='guides')setR(S.get('rv','news'));if(t==='today')renderJn()}
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
 window.addEventListener('resize',()=>{if($('today').classList.contains('on'))sky();if($('japan').classList.contains('on')&&S.get('jv','map')==='room')drawRoom()});
