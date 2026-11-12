@@ -312,9 +312,35 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 .tabs button.on .g{background:var(--soft);color:var(--torii)}
 @media (min-width:700px){.tabs{max-width:560px;margin:0 auto 16px;border:1px solid var(--line);border-radius:20px;left:16px;right:16px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Живой фон: день сакура, ночь неон */
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.screen{position:relative;z-index:1}
+.card,.task,.gitem,.item,.nw,.flash,.choices button,.stats div,.ach div{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.hero{background:transparent;border:1px solid var(--line);box-shadow:var(--shadow);min-height:300px;display:flex;flex-direction:column;justify-content:space-between}
+.hero canvas{display:none}
+.hero::before{content:"";position:absolute;inset:0;background:var(--scrim)}
+.hero{color:var(--hero-ink)} .hero .day small,.hero .streak{color:var(--hero-sub)} .hero .streak{border-color:var(--line)} .hero .streak b{color:var(--torii)}
+.ring circle:first-child{stroke:var(--ringtrack)} #ringC{stroke:var(--torii)}
+.top .hello,.top .clock,.screen>div>h2,.screen>div>.lead{text-shadow:var(--tshadow)}
+:root[data-theme="light"]{
+  --paper:#f6f0ec; --card:rgba(255,255,255,.84); --ink:#2a2233; --muted:#6b6275; --line:rgba(190,160,175,.35); --soft:rgba(244,228,234,.85);
+  --indigo:#3d4c80; --torii:#c4455f; --good:#2f7a55; --bad:#c4455f; --gold:#c8913c;
+  --scrim:linear-gradient(180deg,rgba(255,250,252,.62),rgba(255,250,252,.08) 55%,rgba(255,250,252,.45));
+  --hero-ink:#2a2233; --hero-sub:#5c5068; --ringtrack:rgba(60,40,70,.12); --tshadow:0 1px 8px rgba(255,255,255,.8);
+  --shadow:0 1px 2px rgba(120,60,90,.06),0 8px 24px rgba(120,60,90,.08); color-scheme:light}
+:root[data-theme="dark"]{
+  --paper:#0c0e1b; --card:rgba(20,22,40,.8); --ink:#eeeaf8; --muted:#a8a6c4; --line:rgba(160,150,220,.2); --soft:rgba(40,40,70,.7);
+  --indigo:#b3b8ff; --torii:#ff94b0; --good:#7fd9a8; --bad:#ff94b0; --gold:#ffc77a;
+  --scrim:linear-gradient(180deg,rgba(8,9,22,.6),rgba(8,9,22,.05) 55%,rgba(8,9,22,.55));
+  --hero-ink:#f5f1ff; --hero-sub:#c8c2e4; --ringtrack:rgba(255,255,255,.15); --tshadow:0 1px 10px rgba(0,0,0,.7);
+  --shadow:0 8px 24px rgba(0,0,0,.25); color-scheme:dark}
+:root[data-theme="dark"] .card,:root[data-theme="dark"] .task{border-color:rgba(180,160,255,.18)}
+.btn{color:#fff} :root[data-theme="dark"] .btn{background:#6c6fd0;border-color:#6c6fd0} :root[data-theme="dark"] .btn.ghost{background:transparent;color:var(--indigo);border-color:var(--indigo)}
 </style>
 </head>
 <body>
+<canvas id="bg" aria-hidden="true"></canvas>
 
 <section class="screen" id="today">
  <div class="top">
@@ -373,7 +399,7 @@ function drawOmi(){let n=Math.random()*100,o=OMI[0];for(const x of OMI){if(n<x[0
 <section class="screen" id="me">
  <div class="card lvl"><div class="badge" id="lvBadge">初</div><div><div class="rank" id="lvRank">Новичок <span>初心者</span></div><small id="lvXp">0 опыта</small><div class="bar"><i id="lvBar"></i></div></div></div>
  <div class="stats"><div><b id="stDays">1</b><small>день пути</small></div><div><b id="stStreak">0</b><small>подряд</small></div><div><b id="stKana">0</b><small>знаков</small></div><div><b id="stCorrect">0</b><small>ответов</small></div></div>
- <div class="card" style="display:grid;gap:10px"><b>Тема</b><div class="seg three" id="thSeg"><button type="button" data-m="auto">Как в Токио</button><button type="button" data-m="light">Дневная</button><button type="button" data-m="dark">Ночная</button></div><small class="lead" style="font-size:13px">«Как в Токио»: когда в Токио ночь, приложение тоже становится ночным.</small></div>
+ <div class="card" style="display:grid;gap:10px"><b>Тема</b><div class="seg three" id="thSeg"><button type="button" data-m="auto">Как в Токио</button><button type="button" data-m="light">桜 Дневная</button><button type="button" data-m="dark">夜 Неоновая</button></div><small class="lead" style="font-size:13px">«Как в Токио»: когда в Токио ночь, приложение тоже становится ночным.</small></div>
  <div class="card" style="display:grid;gap:10px"><b>Японский голос</b><small class="lead" style="font-size:14px" id="vStat2">Проверяю…</small><button type="button" class="btn ghost sm" style="justify-self:start" onclick="openGuide('voice')">Как включить голос</button></div>
  <div class="mini"><h2 style="font-size:20px">Награды</h2><span id="achCnt">0 из 0</span></div>
  <div class="ach" id="ach"></div>
@@ -454,23 +480,108 @@ function drawSky(x,W,H,tower){
  if(w==='rain'||w==='storm'){x.strokeStyle='rgba(190,210,240,.45)';x.lineWidth=1;for(let i=0;i<70;i++){const rx=rnd()*W,ry=rnd()*H;x.beginPath();x.moveTo(rx,ry);x.lineTo(rx-3,ry+9*k);x.stroke()}}
  if(w==='snow'){x.fillStyle='rgba(255,255,255,.85)';for(let i=0;i<60;i++){x.beginPath();x.arc(rnd()*W,rnd()*H,1.6*k,0,7);x.fill()}}
  return night}
-function sky(){
- const c=$('sky'),r=c.getBoundingClientRect();if(!r.width)return;const dpr=Math.min(2,window.devicePixelRatio||1);c.width=r.width*dpr;c.height=r.height*dpr;const x=c.getContext('2d');x.scale(dpr,dpr);const W=r.width,H=r.height;
- const [h,m]=tokyoHM(),hm=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('tkT').textContent=hm;$('tkNow').innerHTML='<b>Токио, '+hm+'.</b> '+nowText(h);
- drawSky(x,W,H,true);
- const f=x.createLinearGradient(0,0,0,H);f.addColorStop(0,'rgba(10,14,28,.55)');f.addColorStop(.5,'rgba(10,14,28,0)');x.fillStyle=f;x.fillRect(0,0,W,H)}
+function sky(){const [h,m]=tokyoHM(),hm=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('tkT').textContent=hm;$('tkNow').innerHTML='<b>Токио, '+hm+'.</b> '+nowText(h)}
+
+/* Живой фон: дневная и ночная Япония */
+const BG={c:null,x:null,st:null,mode:null,W:0,H:0,SH:0,dpr:1,p:[],last:0,gx:0.22,signs:[],still:false};
+function bgMode(){return document.documentElement.dataset.theme==='dark'?'night':'day'}
+function bgWx(){const w=WX&&Date.now()-WX.ts<6*3600e3?wxKind(WX.code):null;return w}
+function blossom(x,cx,cy,rr,seed){let s=seed;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;const cols=['#f7c6d3','#f2aec1','#fbdde6','#eba0b5','#fff0f4'];for(let i=0;i<9;i++){const a=rnd()*6.28,d=rnd()*rr;x.fillStyle=cols[Math.floor(rnd()*cols.length)];x.globalAlpha=.85+rnd()*.15;x.beginPath();x.arc(cx+Math.cos(a)*d,cy+Math.sin(a)*d,2.5+rnd()*4.5,0,7);x.fill()}x.globalAlpha=1}
+function branch(x,x0,y0,cx,cy,x1,y1,w,seed){x.strokeStyle='#6b4a44';x.lineCap='round';x.lineWidth=w;x.beginPath();x.moveTo(x0,y0);x.quadraticCurveTo(cx,cy,x1,y1);x.stroke();
+ for(let t=.15;t<=1.001;t+=.09){const px=(1-t)*(1-t)*x0+2*(1-t)*t*cx+t*t*x1,py=(1-t)*(1-t)*y0+2*(1-t)*t*cy+t*t*y1;
+  x.lineWidth=Math.max(1,w*.35);x.beginPath();x.moveTo(px,py);const tx=px+((seed+t*10)%2>1?14:-10),ty=py+(t*37%2>1?16:-8);x.lineTo(tx,ty);x.stroke();blossom(x,tx,ty,13,Math.floor(seed+t*1000));blossom(x,px,py,10,Math.floor(seed*3+t*777))}}
+function dayStatic(x,W,H,SH){
+ x.fillStyle='#f6f0ec';x.fillRect(0,0,W,H);
+ let g=x.createLinearGradient(0,0,0,SH);g.addColorStop(0,'#b7d3ea');g.addColorStop(.55,'#e4e2ef');g.addColorStop(1,'#f5e3e8');x.fillStyle=g;x.fillRect(0,0,W,SH);
+ g=x.createRadialGradient(W*.82,SH*.16,0,W*.82,SH*.16,W*.35);g.addColorStop(0,'rgba(255,250,232,.95)');g.addColorStop(1,'rgba(255,250,232,0)');x.fillStyle=g;x.fillRect(0,0,W,SH);
+ x.fillStyle='#cfd8ea';x.beginPath();x.moveTo(0,SH*.74);x.bezierCurveTo(W*.2,SH*.6,W*.35,SH*.7,W*.5,SH*.66);x.bezierCurveTo(W*.7,SH*.62,W*.85,SH*.72,W,SH*.66);x.lineTo(W,SH*.8);x.lineTo(0,SH*.8);x.fill();
+ g=x.createLinearGradient(0,SH*.3,0,SH*.78);g.addColorStop(0,'#7c93c0');g.addColorStop(1,'#b9c6df');x.fillStyle=g;
+ x.beginPath();x.moveTo(W*.08,SH*.78);x.quadraticCurveTo(W*.44,SH*.5,W*.57,SH*.31);x.lineTo(W*.65,SH*.31);x.quadraticCurveTo(W*.8,SH*.5,W*1.18,SH*.78);x.fill();
+ x.fillStyle='#f8fbff';x.beginPath();x.moveTo(W*.57,SH*.31);x.lineTo(W*.65,SH*.31);x.lineTo(W*.695,SH*.375);x.lineTo(W*.665,SH*.395);x.lineTo(W*.64,SH*.365);x.lineTo(W*.615,SH*.405);x.lineTo(W*.59,SH*.37);x.lineTo(W*.565,SH*.4);x.lineTo(W*.525,SH*.37);x.closePath();x.fill();
+ g=x.createLinearGradient(0,SH*.78,0,SH*.88);g.addColorStop(0,'#d6e2ee');g.addColorStop(1,'#eaeef4');x.fillStyle=g;x.fillRect(0,SH*.78,W,SH*.1);
+ x.strokeStyle='rgba(255,255,255,.7)';x.lineWidth=1;for(let i=0;i<9;i++){const yy=SH*(.795+i*.009),xx=(i*97)%W;x.beginPath();x.moveTo(xx,yy);x.lineTo(xx+40+i*6,yy);x.stroke()}
+ x.fillStyle='#efd9df';x.beginPath();x.moveTo(0,SH*.88);x.bezierCurveTo(W*.3,SH*.84,W*.6,SH*.9,W,SH*.86);x.lineTo(W,SH*1.05);x.lineTo(0,SH*1.05);x.fill();
+ /* пагода */
+ const cx=W*.17,base=SH*.88,th=SH*.065;x.strokeStyle='#3f4c70';x.lineWidth=2;x.beginPath();x.moveTo(cx,base-th*5.6);x.lineTo(cx,base-th*7);x.stroke();
+ for(let i=0;i<5;i++){const yb=base-i*th,bw=W*.055*(1-i*.1),rw=W*.12*(1-i*.11);x.fillStyle='#5d6c92';x.fillRect(cx-bw/2,yb-th*.55,bw,th*.55);const y=yb-th*.55;x.fillStyle='#3f4c70';x.beginPath();x.moveTo(cx-rw/2,y+2);x.quadraticCurveTo(cx-rw*.3,y-2,cx-rw*.28,y-th*.38);x.lineTo(cx+rw*.28,y-th*.38);x.quadraticCurveTo(cx+rw*.3,y-2,cx+rw/2,y+2);x.fill()}
+ /* тории на берегу */
+ const tx=W*.86,tb=SH*.9,tH=SH*.13,tw=W*.1;x.fillStyle='#c4504c';x.fillRect(tx-tw*.38,tb-tH,tw*.09,tH);x.fillRect(tx+tw*.29,tb-tH,tw*.09,tH);x.fillRect(tx-tw*.45,tb-tH*.78,tw*.9,tH*.07);
+ x.fillStyle='#3a2a2a';x.beginPath();x.moveTo(tx-tw*.62,tb-tH*1.02);x.quadraticCurveTo(tx,tb-tH*.9,tx+tw*.62,tb-tH*1.02);x.lineTo(tx+tw*.55,tb-tH*.92);x.quadraticCurveTo(tx,tb-tH*.84,tx-tw*.55,tb-tH*.92);x.fill();
+ g=x.createLinearGradient(0,SH*.98,0,SH*1.25);g.addColorStop(0,'rgba(246,240,236,0)');g.addColorStop(1,'#f6f0ec');x.fillStyle=g;x.fillRect(0,SH*.98,W,SH*.3);
+ /* волны сэйгайха внизу */
+ x.strokeStyle='rgba(200,150,168,.14)';x.lineWidth=1.2;const R=18;for(let row=0,yy=SH*1.15;yy<H+R;row++,yy+=R*.55){for(let xx=(row%2)*R-R;xx<W+R;xx+=R*2){for(let k=1;k<=3;k++){x.beginPath();x.arc(xx,yy,R*k/3,Math.PI,0);x.stroke()}}}
+ /* ветки сакуры */
+ branch(x,-10,SH*.04,W*.18,-SH*.02,W*.48,SH*.17,7,11);branch(x,W+10,SH*.0,W*.85,SH*.14,W*.6,SH*.08,6,29);branch(x,-10,SH*.3,W*.06,SH*.26,W*.14,SH*.36,4,53)}
+function wallPt(side,u,v,W,SH){const xs=side<0?u*W*.4:W-u*W*.4,top=-10+u*(SH*.35+10),bot=SH*1.02-u*SH*.4;return[xs,top+(bot-top)*v]}
+function nightStatic(x,W,H,SH){
+ x.fillStyle='#0c0e1b';x.fillRect(0,0,W,H);
+ let g=x.createLinearGradient(0,0,0,SH*.62);g.addColorStop(0,'#070a17');g.addColorStop(1,'#231a3d');x.fillStyle=g;x.fillRect(0,0,W,SH);
+ let s=5;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
+ x.fillStyle='#fff';for(let i=0;i<30;i++){x.globalAlpha=.25+rnd()*.5;x.fillRect(W*.3+rnd()*W*.4,rnd()*SH*.3,1.2,1.2)}x.globalAlpha=1;
+ /* дальние дома в конце улицы */
+ for(let bx=W*.36;bx<W*.64;){const bw=10+rnd()*18,bh=SH*(.08+rnd()*.2);x.fillStyle='#16193a';x.fillRect(bx,SH*.6-bh,bw,bh);for(let i=0;i<6;i++){x.fillStyle=rnd()<.5?'rgba(255,200,130,.7)':'rgba(140,220,230,.6)';x.fillRect(bx+2+rnd()*(bw-4),SH*.6-bh+3+rnd()*(bh-6),2,2)}bx+=bw+2}
+ g=x.createRadialGradient(W*.5,SH*.58,0,W*.5,SH*.58,W*.25);g.addColorStop(0,'rgba(255,150,170,.35)');g.addColorStop(1,'rgba(255,150,170,0)');x.fillStyle=g;x.fillRect(0,0,W,SH);
+ /* улица */
+ g=x.createLinearGradient(0,SH*.6,0,SH*1.05);g.addColorStop(0,'#1a1c30');g.addColorStop(1,'#0e1020');x.fillStyle=g;x.beginPath();x.moveTo(W*.4,SH*.6);x.lineTo(W*.6,SH*.6);x.lineTo(W,SH*1.04);x.lineTo(0,SH*1.04);x.fill();
+ x.strokeStyle='rgba(255,255,255,.08)';x.lineWidth=2;x.setLineDash([12,14]);x.beginPath();x.moveTo(W*.5,SH*.62);x.lineTo(W*.5,SH*1.04);x.stroke();x.setLineDash([]);
+ /* стены домов */
+ [-1,1].forEach(side=>{const p=(u,v)=>wallPt(side,u,v,W,SH);x.fillStyle='#121427';x.beginPath();x.moveTo(...p(0,0));x.lineTo(...p(1,0));x.lineTo(...p(1,1));x.lineTo(...p(0,1));x.fill();
+  for(let u=.04;u<.95;u+=.11)for(let v=.06;v<.62;v+=.09){if(rnd()<.45){const [a,b]=p(u,v),sz=(1-u*.65);x.fillStyle=rnd()<.7?'rgba(255,205,140,.55)':'rgba(150,200,255,.45)';x.fillRect(a,b,7*sz,9*sz)}}
+  /* витрины внизу */
+  const shop=(u0,u1,col)=>{const a=p(u0,.7),b=p(u1,.7),c=p(u1,.97),d=p(u0,.97);const gg=x.createLinearGradient(0,a[1],0,d[1]);gg.addColorStop(0,col);gg.addColorStop(1,'rgba(40,20,30,.6)');x.fillStyle=gg;x.beginPath();x.moveTo(...a);x.lineTo(...b);x.lineTo(...c);x.lineTo(...d);x.fill()};
+  if(side<0){shop(.08,.4,'rgba(255,180,110,.85)');const n=['ら','ー','め','ん'];n.forEach((ch,i)=>{const u=.1+i*.075,[a,b]=p(u,.7),[,b2]=p(u,.8);x.fillStyle='#2a3d68';x.fillRect(a,b,(.065)*W*.4*(1-u*.4),b2-b);x.fillStyle='#f4efe6';x.font=`700 ${Math.round((b2-b)*.55)}px "Noto Serif JP",serif`;x.textAlign='left';x.fillText(ch,a+2,b+(b2-b)*.7)});shop(.55,.75,'rgba(255,140,120,.7)')}
+  else{shop(.08,.42,'rgba(255,214,150,.85)');const [a,b]=p(.15,.78),[,b2]=p(.15,.95);x.fillStyle='rgba(60,35,30,.85)';x.fillRect(a,b2-14,26,4);x.fillRect(a+11,b2-12,4,10);x.beginPath();x.arc(a+30,b2-20,5,0,7);x.fill();
+   const [va,vb]=p(.55,.6),[,vb2]=p(.55,.97);x.fillStyle='#e8f1ff';x.fillRect(va-14,vb,16,vb2-vb);x.fillStyle='#8fb3e8';for(let i=0;i<4;i++)x.fillRect(va-12,vb+4+i*7,12,4)}});
+ /* гирлянда фонариков */
+ x.strokeStyle='rgba(40,30,40,.9)';x.lineWidth=1.5;x.beginPath();x.moveTo(W*.1,SH*.42);x.quadraticCurveTo(W*.5,SH*.56,W*.9,SH*.42);x.stroke();
+ x.globalCompositeOperation='lighter';for(let i=1;i<8;i++){const t=i/8,lx=(1-t)*(1-t)*W*.1+2*(1-t)*t*W*.5+t*t*W*.9,ly=(1-t)*(1-t)*SH*.42+2*(1-t)*t*SH*.56+t*t*SH*.42+9;const gg=x.createRadialGradient(lx,ly,0,lx,ly,26);gg.addColorStop(0,'rgba(255,120,90,.55)');gg.addColorStop(1,'rgba(255,120,90,0)');x.fillStyle=gg;x.fillRect(lx-30,ly-30,60,60)}x.globalCompositeOperation='source-over';
+ for(let i=1;i<8;i++){const t=i/8,lx=(1-t)*(1-t)*W*.1+2*(1-t)*t*W*.5+t*t*W*.9,ly=(1-t)*(1-t)*SH*.42+2*(1-t)*t*SH*.56+t*t*SH*.42+9;x.fillStyle='#d9573f';x.beginPath();x.ellipse(lx,ly,6,8,0,0,7);x.fill();x.fillStyle='#2b1d22';x.fillRect(lx-4,ly-9,8,2);x.fillRect(lx-4,ly+7,8,2)}
+ /* отражения на мокром асфальте */
+ x.globalCompositeOperation='lighter';[[W*.2,'rgba(255,150,180,.16)'],[W*.8,'rgba(130,230,220,.14)'],[W*.5,'rgba(255,170,120,.12)'],[W*.12,'rgba(255,200,120,.14)']].forEach(([rx,col])=>{const gg=x.createLinearGradient(0,SH*.85,0,SH*1.3);gg.addColorStop(0,col);gg.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=gg;x.fillRect(rx-14,SH*.85,28,SH*.5)});x.globalCompositeOperation='source-over';
+ g=x.createLinearGradient(0,SH*.98,0,SH*1.3);g.addColorStop(0,'rgba(12,14,27,0)');g.addColorStop(1,'#0c0e1b');x.fillStyle=g;x.fillRect(0,SH*.98,W,SH*.35);
+ BG.signs=[{x:W*.04,y:Math.max(104,SH*.27),t:'ゲーセン',c:'#ffc27a',s:.9},{x:W*.955,y:Math.max(212,SH*.54),t:'第3新東京市',c:'#b9a3ff',s:.72},{x:W*.39,y:SH*.45,t:'ラーメン',c:'#ff9ab8',s:.42},{x:W*.465,y:SH*.47,t:'居酒屋',c:'#ff9f85',s:.4},{x:W*.545,y:SH*.47,t:'喫茶',c:'#86e3d8',s:.42},{x:W*.62,y:SH*.45,t:'カラオケ',c:'#9fd48a',s:.4}].map((o,i)=>Object.assign(o,{ph:i*1.7,off:0}))}
+function drawSign(x,o,t){const fs=Math.round(16*o.s*(BG.W/390)+6*o.s),pad=4*o.s,chs=[...o.t],h=chs.length*fs*1.05+pad*2,w=fs+pad*2;
+ if(o.off>0)o.off--;else if(Math.random()<.004)o.off=4+Math.floor(Math.random()*10);const on=o.off>0?(o.off%3===0?.9:.25):1;
+ x.fillStyle='rgba(10,10,22,.92)';x.fillRect(o.x-w/2,o.y,w,h);x.save();x.shadowColor=o.c;x.shadowBlur=14*on;x.strokeStyle=o.c;x.globalAlpha=.55*on+.1;x.lineWidth=1.5;x.strokeRect(o.x-w/2,o.y,w,h);
+ x.globalAlpha=on;x.fillStyle=o.c;x.font=`700 ${fs}px "Noto Serif JP",serif`;x.textAlign='center';chs.forEach((ch,i)=>x.fillText(ch==='ー'?'丨':ch,o.x,o.y+pad+fs*(i+.88)*1.05-fs*.05));x.restore()}
+function drawGeisha(x,gx,gy,s,t){const bob=Math.sin(t/260)*s*.01;x.save();x.translate(gx,gy+bob);
+ x.fillStyle='rgba(0,0,0,.35)';x.beginPath();x.ellipse(0,0,s*.13,s*.025,0,0,7);x.fill();
+ x.fillStyle='#1d1626';x.beginPath();x.moveTo(-s*.07,-s*.62);x.lineTo(s*.07,-s*.62);x.lineTo(s*.11,0);x.lineTo(-s*.11,0);x.fill();
+ x.fillStyle='#7b3b52';x.fillRect(-s*.075,-s*.5,s*.15,s*.08);x.fillStyle='#c8a46a';x.fillRect(-s*.075,-s*.47,s*.15,s*.012);
+ x.fillStyle='#e9ddd6';x.beginPath();x.arc(0,-s*.68,s*.05,0,7);x.fill();
+ x.fillStyle='#151018';x.beginPath();x.arc(0,-s*.72,s*.06,Math.PI,0);x.fill();x.beginPath();x.arc(0,-s*.79,s*.045,0,7);x.fill();
+ x.fillStyle='#ffb3c6';x.beginPath();x.arc(s*.045,-s*.8,s*.012,0,7);x.fill();
+ x.strokeStyle='#3a2a30';x.lineWidth=Math.max(1,s*.012);x.beginPath();x.moveTo(s*.05,-s*.45);x.lineTo(s*.02,-s*.95);x.stroke();
+ const ug=x.createLinearGradient(0,-s*1.15,0,-s*.92);ug.addColorStop(0,'#a8344a');ug.addColorStop(1,'#6e1f33');x.fillStyle=ug;x.beginPath();x.ellipse(s*.02,-s*.94,s*.24,s*.15,0,Math.PI,0);x.fill();
+ x.strokeStyle='rgba(255,210,220,.35)';x.lineWidth=1;for(let i=-3;i<=3;i++){x.beginPath();x.moveTo(s*.02,-s*1.09);x.lineTo(s*.02+i*s*.075,-s*.94);x.stroke()}
+ x.strokeStyle='rgba(255,170,200,.35)';x.lineWidth=1.5;x.beginPath();x.moveTo(-s*.07,-s*.62);x.lineTo(-s*.11,0);x.stroke();x.restore()}
+function bgBuild(){if(!BG.c)return;const W=innerWidth,H=innerHeight,dpr=Math.min(2,devicePixelRatio||1);BG.W=W;BG.H=H;BG.SH=Math.min(H*.46,440);BG.dpr=dpr;BG.c.width=W*dpr;BG.c.height=H*dpr;
+ BG.mode=bgMode();const o=document.createElement('canvas');o.width=W*dpr;o.height=H*dpr;const x=o.getContext('2d');x.scale(dpr,dpr);(BG.mode==='day'?dayStatic:nightStatic)(x,W,H,BG.SH);BG.st=o;
+ const wx=bgWx();BG.p=[];const n=BG.mode==='day'?(wx==='rain'||wx==='storm'?60:wx==='snow'?50:30):(wx==='rain'||wx==='storm'?70:wx==='snow'?50:22);
+ for(let i=0;i<n;i++)BG.p.push({x:Math.random()*W,y:Math.random()*H,s:5+Math.random()*6,r:Math.random()*6,vr:(Math.random()-.5)*.04,vy:.35+Math.random()*.6,vx:.15+Math.random()*.35,ph:Math.random()*6,c:['#f6bccb','#f2a9bd','#fbd5df','#ee9fb4'][i%4],k:wx==='rain'||wx==='storm'?'rain':wx==='snow'?'snow':BG.mode==='day'?'petal':'firefly'});
+ bgFrame(performance.now(),true)}
+function bgFrame(ts,force){if(!BG.c)return;if(!force){requestAnimationFrame(bgFrame);if(document.hidden||BG.still||ts-BG.last<33)return}BG.last=ts;
+ const x=BG.x,W=BG.W,H=BG.H,SH=BG.SH;x.setTransform(1,0,0,1,0,0);x.drawImage(BG.st,0,0);x.setTransform(BG.dpr,0,0,BG.dpr,0,0);
+ if(BG.mode==='night'){BG.signs.forEach(o=>drawSign(x,o,ts));BG.gx+=.00035;if(BG.gx>1.15)BG.gx=-.15;drawGeisha(x,BG.gx*W,SH*.79,SH*.17,ts)}
+ BG.p.forEach(p=>{if(p.k==='rain'){p.y+=9;p.x-=1.5;if(p.y>H){p.y=-10;p.x=Math.random()*W*1.1}x.strokeStyle=BG.mode==='day'?'rgba(120,140,170,.45)':'rgba(180,200,255,.35)';x.lineWidth=1;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x-3,p.y+11);x.stroke();return}
+  if(p.k==='snow'){p.y+=p.vy*.8;p.ph+=.02;p.x+=Math.sin(p.ph)*.4;if(p.y>H)p.y=-6;x.fillStyle='rgba(255,255,255,.9)';x.beginPath();x.arc(p.x,p.y,p.s*.3,0,7);x.fill();return}
+  if(p.k==='firefly'){p.y-=p.vy*.25;p.ph+=.03;p.x+=Math.sin(p.ph)*.3;if(p.y<-10){p.y=H+10;p.x=Math.random()*W}const a=.35+Math.sin(p.ph*2)*.25;const gg=x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.s);gg.addColorStop(0,`rgba(255,215,170,${a})`);gg.addColorStop(1,'rgba(255,215,170,0)');x.fillStyle=gg;x.fillRect(p.x-p.s,p.y-p.s,p.s*2,p.s*2);return}
+  p.y+=p.vy;p.ph+=.03;p.x+=p.vx+Math.sin(p.ph)*.6;p.r+=p.vr;if(p.y>H+10||p.x>W+10){p.y=-10;p.x=Math.random()*W*.9-20}
+  x.save();x.translate(p.x,p.y);x.rotate(p.r);x.scale(1,.35+Math.abs(Math.sin(p.ph))*.65);x.fillStyle=p.c;x.beginPath();x.ellipse(0,0,p.s*.6,p.s*.38,0,0,7);x.fill();x.fillStyle='rgba(255,255,255,.35)';x.beginPath();x.ellipse(-p.s*.15,-p.s*.05,p.s*.2,p.s*.1,0,0,7);x.fill();x.restore()})}
+function bgInit(){BG.c=$('bg');BG.x=BG.c.getContext('2d');BG.still=matchMedia('(prefers-reduced-motion: reduce)').matches;bgBuild();requestAnimationFrame(bgFrame);
+ let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(bgBuild,200)});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(bgBuild)}
 
 /* Тема по времени Токио */
 const periodOf=h=>h>=5&&h<11?'morning':h>=11&&h<17?'day':h>=17&&h<21?'evening':'night';
 function applyTheme(){const mode=S.get('themeMode','auto'),[h]=tokyoHM(),dark=mode==='dark'||(mode==='auto'&&(h>=18||h<6));const r=document.documentElement;r.dataset.theme=dark?'dark':'light';r.dataset.period=periodOf(h);
- const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=dark?'#0f131d':'#f4f3ef';document.querySelectorAll('#thSeg button').forEach(b=>b.className=b.dataset.m===mode?'on':'')}
+ const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=dark?'#0c0e1b':'#f3dfe6';if(BG.c&&BG.mode!==bgMode())bgBuild();document.querySelectorAll('#thSeg button').forEach(b=>b.className=b.dataset.m===mode?'on':'')}
 document.querySelectorAll('#thSeg button').forEach(b=>b.onclick=()=>{S.set('themeMode',b.dataset.m);applyTheme()});
 
 /* Погода и курс */
 let WX=S.get('wx',null),FX=S.get('fx',null);
 function wxKind(c){if(c===0)return'clear';if(c<=3)return'cloud';if(c===45||c===48)return'fog';if((c>=51&&c<=67)||(c>=80&&c<=82))return'rain';if((c>=71&&c<=77)||c===85||c===86)return'snow';if(c>=95)return'storm';return'cloud'}
 const WXN={clear:['晴れ','hare','Ясно'],cloud:['曇り','kumori','Облачно'],fog:['霧','kiri','Туман'],rain:['雨','ame','Дождь'],snow:['雪','yuki','Снег'],storm:['雷','kaminari','Гроза']};
-async function loadWx(){try{if(WX&&Date.now()-WX.ts<30*60e3)return;const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.69&current=temperature_2m,weather_code&timezone=Asia%2FTokyo');const d=await r.json();WX={t:Math.round(d.current.temperature_2m),code:d.current.weather_code,ts:Date.now()};S.set('wx',WX);renderJn();if($('today').classList.contains('on'))sky()}catch(e){}}
+async function loadWx(){try{if(WX&&Date.now()-WX.ts<30*60e3)return;const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.68&longitude=139.69&current=temperature_2m,weather_code&timezone=Asia%2FTokyo');const d=await r.json();WX={t:Math.round(d.current.temperature_2m),code:d.current.weather_code,ts:Date.now()};S.set('wx',WX);renderJn();bgBuild();if($('today').classList.contains('on'))sky()}catch(e){}}
 async function loadFx(){try{if(FX&&Date.now()-FX.ts<6*3600e3)return;const r=await fetch('https://open.er-api.com/v6/latest/JPY');const d=await r.json();if(d.rates&&d.rates.KZT){FX={kzt:d.rates.KZT,ts:Date.now()};S.set('fx',FX);renderJn()}}catch(e){}}
 
 /* Сейчас в Японии: уроки и факты по времени суток */
@@ -765,7 +876,7 @@ setInterval(()=>{loadWx();loadFx();loadNews()},30*60e3);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 
 checkAch(true);
-applyTheme();renderJn();renderOmi();renderTasks();renderSeg();renderRows();renderGrid();next();renderGuides();renderLine();renderMe();renderMap();go(location.hash.slice(1));
+applyTheme();bgInit();renderJn();renderOmi();renderTasks();renderSeg();renderRows();renderGrid();next();renderGuides();renderLine();renderMe();renderMap();go(location.hash.slice(1));
 setTimeout(()=>checkAch(false),800);
 loadWx();loadFx();loadNews();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
